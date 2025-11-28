@@ -18,11 +18,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('google_id')->nullable()->unique();
+            $table->string('facebook_id')->nullable()->unique();
             $table->enum('role', ['admin', 'customer'])->default(UserRole::Customer);
-            $table->string('profile_picture')->nullable();
-            $table->text('address')->nullable();
-            $table->string('contact_number', 20)->nullable();
-            $table->enum('gender', ['male', 'female'])->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
