@@ -3,6 +3,17 @@ import oauth from '@/routes/oauth';
 </script>
 
 <template>
+    <div class="relative my-4">
+        <div class="absolute inset-0 flex items-center">
+            <span class="w-full border-t" />
+        </div>
+        <div class="relative flex justify-center text-xs uppercase">
+            <span class="bg-background px-2 text-muted-foreground">
+                Or continue with
+            </span>
+        </div>
+    </div>
+
     <div class="flex flex-col-2 gap-2">
         <a :href="oauth.redirect('google').url"
             class="inline-flex h-10 w-full items-center justify-center whitespace-nowrap rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
