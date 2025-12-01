@@ -14,7 +14,16 @@ import {
 import { dashboard } from '@/routes/admin';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import {
+    AlertTriangle,
+    BarChart3,
+    Boxes,
+    ClipboardList,
+    Factory,
+    LayoutGrid,
+    ReceiptText,
+    Truck
+} from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -23,19 +32,54 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: 'Inventory',
+        href: dashboard(),
+        icon: Boxes,
+    },
+    {
+        title: 'Suppliers',
+        href: dashboard(),
+        icon: Factory,
+    },
+    {
+        title: 'Damaged Products',
+        href: dashboard(),
+        icon: AlertTriangle,
+    },
+    {
+        title: 'Orders',
+        icon: ClipboardList,
+        items: [
+            {
+                title: 'Online',
+                href: dashboard()
+            },
+            {
+                title: 'Walk-in',
+                href: dashboard()
+            }
+        ]
+    },
+    {
+        title: 'Billings',
+        href: dashboard(),
+        icon: ReceiptText,
+    },
+    {
+        title: 'Delivery',
+        href: dashboard(),
+        icon: Truck,
+    },
+    {
+        title: 'Reports',
+        href: dashboard(),
+        icon: BarChart3,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
-    },
+    //
 ];
 </script>
 
@@ -46,7 +90,7 @@ const footerNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="dashboard()">
-                            <AppLogo />
+                        <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
