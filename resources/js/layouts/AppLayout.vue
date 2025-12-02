@@ -27,6 +27,13 @@ watch(
             messages.scripts = [];
             messages.styles = [];
             flasher.render(messages);
+
+            // Manually clear messages from history state to prevent persistence
+            if (window.history.state && window.history.state.page && window.history.state.page.props) {
+                const state = { ...window.history.state };
+                state.page.props.messages = null;
+                window.history.replaceState(state, '');
+            }
         }
     },
     { immediate: true }
