@@ -9,20 +9,43 @@ use Illuminate\Support\Facades\Storage;
 
 class InventoryService
 {
+    /**
+     * Inject the inventory repository
+     * 
+     * @param InventoryRepositoryInterface $inventoryRepo
+     */
     public function __construct(
         protected InventoryRepositoryInterface $inventoryRepo
     ) {}
 
+    /**
+     * Get all inventory items
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getAll()
     {
         return $this->inventoryRepo->all();
     }
 
+    /**
+     * Find an inventory item by ID
+     * 
+     * @param int $id
+     * @return Inventory|null
+     */
     public function find($id)
     {
         return $this->inventoryRepo->find($id);
     }
 
+    /**
+     * Create a new inventory item
+     * 
+     * @param array $data
+     * @param array $files
+     * @return Inventory
+     */
     public function createInventory(array $data, array $files): Inventory
     {
         // Generate item code
@@ -34,6 +57,14 @@ class InventoryService
         return $this->inventoryRepo->create($data);
     }
 
+    /**
+     * Update an existing inventory item
+     * 
+     * @param int $id
+     * @param array $data
+     * @param array $files
+     * @return bool
+     */
     public function updateInventory(int $id, array $data, array $files): bool
     {
         $inventory = $this->find($id);
@@ -53,6 +84,12 @@ class InventoryService
         return $this->inventoryRepo->update($id, $data);
     }
 
+    /**
+     * Delete an inventory item
+     * 
+     * @param int $id
+     * @return bool
+     */
     public function deleteInventory(int $id): bool
     {
         $inventory = $this->find($id);
@@ -67,6 +104,12 @@ class InventoryService
         return $this->inventoryRepo->delete($id);
     }
 
+    /**
+     * Generate a unique item code
+     * 
+     * @param string $category
+     * @return string
+     */
     protected function generateItemCode(string $category): string
     {
         $prefix = match ($category) {
@@ -95,6 +138,14 @@ class InventoryService
         return $prefix . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
     }
 
+    /**
+     * Handle image uploads
+     * 
+     * @param array $data
+     * @param array $files
+     * @param Inventory|null $existingInventory
+     * @return array
+     */
     protected function handleImageUploads(array $data, array $files, ?Inventory $existingInventory = null): array
     {
         $imageFields = ['item_image_1', 'item_image_2', 'item_image_3'];
@@ -124,6 +175,12 @@ class InventoryService
         return $data;
     }
 
+    /**
+     * Delete all images
+     * 
+     * @param Inventory $inventory
+     * @return void
+     */
     protected function deleteImages(Inventory $inventory)
     {
         $imageFields = ['item_image_1', 'item_image_2', 'item_image_3'];
