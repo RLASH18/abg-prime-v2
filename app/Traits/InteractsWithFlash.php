@@ -3,7 +3,6 @@
 namespace App\Traits;
 
 use Illuminate\Http\RedirectResponse;
-use function Flasher\Notyf\Prime\notyf;
 
 trait InteractsWithFlash
 {

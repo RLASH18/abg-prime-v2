@@ -25,6 +25,7 @@ import {
     Truck
 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import inventory from '@/routes/admin/inventory';
 
 const mainNavItems: NavItem[] = [
     {
@@ -34,7 +35,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Inventory',
-        href: dashboard(),
+        href: inventory.index(),
         icon: Boxes,
     },
     {

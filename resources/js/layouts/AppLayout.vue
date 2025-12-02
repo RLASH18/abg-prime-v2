@@ -5,6 +5,9 @@ import type { BreadcrumbItemType } from '@/types';
 import { usePage } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
 import flasher from '@flasher/flasher';
+import NotyfPlugin from '@flasher/flasher-notyf';
+
+flasher.addPlugin('notyf', NotyfPlugin);
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
