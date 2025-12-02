@@ -24,6 +24,8 @@ watch(
     () => page.props.messages,
     (messages) => {
         if (messages) {
+            messages.scripts = [];
+            messages.styles = [];
             flasher.render(messages);
         }
     },

@@ -1,4 +1,5 @@
 import '../css/app.css';
+import '@flasher/flasher-notyf/dist/flasher-notyf.min.css';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
