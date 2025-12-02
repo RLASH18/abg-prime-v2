@@ -3,7 +3,8 @@ import AdminAppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import CustomerAppLayout from '@/layouts/app/AppHeaderLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
 import { usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
+import flasher from '@flasher/flasher';
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
@@ -15,6 +16,16 @@ withDefaults(defineProps<Props>(), {
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+
+watch(
+    () => page.props.messages,
+    (messages) => {
+        if (messages) {
+            flasher.render(messages);
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <template>
