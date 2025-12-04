@@ -37,7 +37,11 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return to_route('profile.edit');
+        // Dynamically redirect based on the current route prefix
+        $currentRouteName = $request->route()->getName();
+        $routePrefix = str_starts_with($currentRouteName, 'admin.') ? 'admin.' : 'customer.';
+
+        return to_route($routePrefix . 'profile.edit');
     }
 
     /**
