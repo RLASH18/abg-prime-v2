@@ -125,7 +125,7 @@ const actions: DataTableAction<InventoryItem>[] = [
                 <!-- Custom slot for category with badge -->
                 <template #cell-category="{ value }">
                     <span
-                        class="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                        class="inline-flex items-center rounded-full border border-primary/10 bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                         {{ value }}
                     </span>
                 </template>
