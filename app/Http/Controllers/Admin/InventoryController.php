@@ -24,7 +24,7 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $items = $this->inventoryService->getAll();
+        $items = $this->inventoryService->getPaginated();
 
         return Inertia::render('admin/Inventory/Index', [
             'items' => $items

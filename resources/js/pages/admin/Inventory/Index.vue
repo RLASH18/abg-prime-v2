@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+import { PaginationData, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
 import inventory from '@/routes/admin/inventory';
 import LinkButton from '@/components/LinkButton.vue';
 import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn, DataTableAction, InventoryItem } from '@/types/admin';
 import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
+import Pagination from '@/components/Pagination.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,12 +17,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface Props {
-    items?: InventoryItem[];
+    items: PaginationData & {
+        data: InventoryItem[];
+    };
 }
 
-const props = withDefaults(defineProps<Props>(), {
-    items: () => [],
-});
+const props = defineProps<Props>();
 
 const columns: DataTableColumn<InventoryItem>[] = [
     {
@@ -105,7 +106,8 @@ const actions: DataTableAction<InventoryItem>[] = [
                 <LinkButton :href="inventory.create().url" label="Add an Item" />
             </div>
 
-            <DataTable :data="items" :columns="columns" :actions="actions"
+            <!-- Inventory Table -->
+            <DataTable :data="items.data" :columns="columns" :actions="actions"
                 empty-message="No inventory items found. Click 'Add an Item' to get started.">
 
                 <!-- Item name -->
@@ -143,6 +145,9 @@ const actions: DataTableAction<InventoryItem>[] = [
                     </span>
                 </template>
             </DataTable>
+
+            <!-- Pagination -->
+            <Pagination :pagination="items" />
         </div>
     </AppLayout>
 </template>

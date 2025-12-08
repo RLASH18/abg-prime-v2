@@ -19,13 +19,14 @@ class InventoryService
     ) {}
 
     /**
-     * Get all inventory items
+     * Get paginated inventory items
      * 
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAll()
+    public function getPaginated(int $perPage = 10)
     {
-        return $this->inventoryRepo->all();
+        return $this->inventoryRepo->paginate($perPage);
     }
 
     /**
