@@ -115,7 +115,7 @@ const form = useForm({
                     <div class="space-y-2">
                         <Label for="supplier_id">Supplier</Label>
                         <Select name="supplier_id"
-                            :options="suppliers.map(s => ({ value: s.id, label: s.supplier_name }))"
+                            :options="suppliers.map(s => ({ value: s.id.toString(), label: s.supplier_name }))"
                             placeholder="Select a supplier (optional)" v-model="form.supplier_id" />
                         <InputError :message="errors.supplier_id" />
                     </div>

@@ -4,7 +4,7 @@ import InputError from '@/components/InputError.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import inventory from '@/routes/admin/inventory';
 import { type BreadcrumbItem } from '@/types';
-import { Form, Head, useForm } from '@inertiajs/vue3';
+import { Form, Head } from '@inertiajs/vue3';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,11 @@ import Textarea from '@/components/ui/textarea/Textarea.vue';
 import { Spinner } from '@/components/ui/spinner';
 import { X, Upload } from 'lucide-vue-next';
 import { useImagePreviews } from '@/composables/useImagePreviews';
+import { Supplier } from '@/types/admin';
+
+const props = defineProps<{
+    suppliers: Supplier[];
+}>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -89,10 +94,12 @@ const { imagePreviews, handleImageSelect, removeImage } = useImagePreviews(3);
                         <InputError :message="errors.category" />
                     </div>
 
-                    <!-- Supplier ID (Placeholder) -->
+                    <!-- Supplier -->
                     <div class="space-y-2">
-                        <Label for="supplier_id">Supplier ID</Label>
-                        <Input id="supplier_id" name="supplier_id" placeholder="Enter supplier ID" type="number" />
+                        <Label for="supplier_id">Supplier</Label>
+                        <Select name="supplier_id"
+                            :options="suppliers.map(s => ({ value: s.id.toString(), label: s.supplier_name }))"
+                            placeholder="Select a supplier (optional)" />
                         <InputError :message="errors.supplier_id" />
                     </div>
 
