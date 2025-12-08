@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\BaseRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
@@ -94,5 +95,15 @@ abstract class BaseRepository implements BaseRepositoryInterface
         }
 
         return $record->delete();
+    }
+
+    /**
+     * Get query builder instance
+     * 
+     * @return Builder
+     */
+    public function query(): Builder
+    {
+        return $this->model->query();
     }
 }

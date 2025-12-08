@@ -19,14 +19,48 @@ class InventoryService
     ) {}
 
     /**
-     * Get paginated inventory items
+     * Get paginated inventory items with filters
      * 
      * @param int $perPage
+     * @param array $filters
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getPaginated(int $perPage = 10)
+    public function getPaginated(int $perPage = 10, array $filters = [])
     {
-        return $this->inventoryRepo->paginate($perPage);
+        $query = $this->inventoryRepo->query();
+
+        // Search filter
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('item_name', 'like', "%{$search}%")
+                    ->orWhere('item_code', 'like', "%{$search}%")
+                    ->orWhere('brand_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Category filter
+        if (!empty($filters['category'])) {
+            $query->where('category', $filters['category']);
+        }
+
+        // Stock status filter
+        if (!empty($filters['stock_status'])) {
+            switch ($filters['stock_status']) {
+                case 'out_of_stock':
+                    $query->where('quantity', '<=', 0);
+                    break;
+                case 'low_stock':
+                    $query->whereColumn('quantity', '<=', 'restock_threshold')
+                        ->where('quantity', '>', 0);
+                    break;
+                case 'in_stock':
+                    $query->whereColumn('quantity', '>', 'restock_threshold');
+                    break;
+            }
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**

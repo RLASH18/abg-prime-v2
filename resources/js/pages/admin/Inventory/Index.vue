@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import { PaginationData, type BreadcrumbItem } from '@/types';
+import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
 import inventory from '@/routes/admin/inventory';
 import LinkButton from '@/components/LinkButton.vue';
@@ -8,6 +8,8 @@ import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn, DataTableAction, InventoryItem } from '@/types/admin';
 import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
+import { useFilters } from '@/composables/useFilters';
+import Filters from '@/components/Filters.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,9 +22,53 @@ interface Props {
     items: PaginationData & {
         data: InventoryItem[];
     };
+    filters: {
+        search?: string;
+        category?: string;
+        stock_status?: string;
+    };
 }
 
 const props = defineProps<Props>();
+
+// Initialize filters
+const { filters, updateFilter, resetFilters } = useFilters(
+    inventory.index().url,
+    {
+        search: props.filters.search || '',
+        category: props.filters.category || '',
+        stock_status: props.filters.stock_status || '',
+    }
+);
+
+// Filter configurations
+const filterConfigs: FilterConfig[] = [
+    {
+        label: 'Category',
+        key: 'category',
+        options: [
+            { label: 'Hand Tools', value: 'Hand Tools' },
+            { label: 'Power Tools', value: 'Power Tools' },
+            { label: 'Construction Materials', value: 'Construction Materials' },
+            { label: 'Locks and Security', value: 'Locks and Security' },
+            { label: 'Plumbing', value: 'Plumbing' },
+            { label: 'Electrical', value: 'Electrical' },
+            { label: 'Paint and Finishes', value: 'Paint and Finishes' },
+            { label: 'Chemicals', value: 'Chemicals' },
+        ],
+        placeholder: 'All Categories',
+    },
+    {
+        label: 'Stock Status',
+        key: 'stock_status',
+        options: [
+            { label: 'Out of Stock', value: 'out_of_stock' },
+            { label: 'Low Stock', value: 'low_stock' },
+            { label: 'In Stock', value: 'in_stock' },
+        ],
+        placeholder: 'All Stock Levels',
+    },
+];
 
 const columns: DataTableColumn<InventoryItem>[] = [
     {
@@ -105,6 +151,12 @@ const actions: DataTableAction<InventoryItem>[] = [
                 </div>
                 <LinkButton :href="inventory.create().url" label="Add an Item" />
             </div>
+
+            <!-- Filters -->
+            <Filters :search-value="filters.search as string" :filters="filterConfigs"
+                search-placeholder="Search by name, code, or brand..."
+                @update:search="(value) => updateFilter('search', value)"
+                @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
 
             <!-- Inventory Table -->
             <DataTable :data="items.data" :columns="columns" :actions="actions"

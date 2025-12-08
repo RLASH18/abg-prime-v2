@@ -56,3 +56,16 @@ export interface PaginationData {
     to: number;
     links: PaginationLink[];
 }
+
+export interface FilterOption {
+    label: string;
+    value: string;
+}
+
+export interface FilterConfig {
+    label: string;
+    key: string;
+    options: FilterOption[];
+    placeholder?: string;
+    value?: string;
+}

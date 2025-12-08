@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\StoreInventoryRequest;
 use App\Models\Supplier;
 use App\Services\InventoryService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class InventoryController extends Controller
@@ -22,12 +23,19 @@ class InventoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $items = $this->inventoryService->getPaginated();
+        $filters = $request->only([
+            'search',
+            'category',
+            'stock_status',
+        ]);
+
+        $items = $this->inventoryService->getPaginated(10, $filters);
 
         return Inertia::render('admin/Inventory/Index', [
-            'items' => $items
+            'items' => $items,
+            'filters' => $filters
         ]);
     }
 

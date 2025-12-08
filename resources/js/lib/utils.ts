@@ -10,7 +10,13 @@ export function urlIsActive(
     urlToCheck: NonNullable<InertiaLinkProps['href']>,
     currentUrl: string,
 ) {
-    return toUrl(urlToCheck) === currentUrl;
+    const checkUrl = toUrl(urlToCheck);
+
+    // Remove query parameters for comparison
+    const checkUrlPath = checkUrl.split('?')[0];
+    const currentUrlPath = currentUrl.split('?')[0];
+
+    return checkUrlPath === currentUrlPath;
 }
 
 export function toUrl(href: NonNullable<InertiaLinkProps['href']>) {
