@@ -131,7 +131,7 @@ const actions: DataTableAction<InventoryItem>[] = [
         label: 'Delete',
         icon: Trash2,
         onClick: (row) => {
-            router.visit(inventory.destroy(row.id).url);
+            router.delete(inventory.destroy(row.id).url);
         },
         class: 'hover:text-red-600 hover:bg-red-50'
     },
@@ -186,13 +186,14 @@ const actions: DataTableAction<InventoryItem>[] = [
 
                 <!-- Custom slot for quantity with low stock warning -->
                 <template #cell-quantity="{ value, row }">
-                    <span v-if="value <= 0" class="text-destructive font-semibold">
+                    <span v-if="value <= 0" class="text-destructive font-semibold" title="Out of Stock">
                         {{ value }}
                     </span>
-                    <span v-else-if="value <= row.restock_threshold" class="text-warning font-semibold">
+                    <span v-else-if="value <= row.restock_threshold" class="text-warning font-semibold"
+                        title="Low Stock">
                         {{ value }}
                     </span>
-                    <span v-else class="text-primary font-semibold">
+                    <span v-else class="text-primary font-semibold" title="In Stock">
                         {{ value }}
                     </span>
                 </template>
