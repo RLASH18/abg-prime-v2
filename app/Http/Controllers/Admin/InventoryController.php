@@ -60,19 +60,19 @@ class InventoryController extends Controller
      */
     public function show(int $id)
     {
-        $inventory = $this->inventoryService->find($id);
+        $item = $this->inventoryService->find($id);
 
-        if (! $inventory) {
+        if (! $item) {
             return $this->flashError('Item not found', 'admin.inventory.index');
         }
 
-        if (method_exists($inventory, 'supplier')) {
-            $inventory->load('supplier');
+        if (method_exists($item, 'supplier')) {
+            $item->load('supplier');
         }
 
         return Inertia::render('admin/Inventory/Show', [
-            'inventory' => $inventory,
-            'supplier' => $inventory->supplier ?? null
+            'item' => $item,
+            'supplier' => $item->supplier ?? null
         ]);
     }
 
@@ -81,16 +81,16 @@ class InventoryController extends Controller
      */
     public function edit(int $id)
     {
-        $inventory = $this->inventoryService->find($id);
+        $item = $this->inventoryService->find($id);
 
-        if (! $inventory) {
+        if (! $item) {
             return $this->flashError('Item not found', 'admin.inventory.index');
         }
 
         $suppliers = Supplier::all();
 
         return Inertia::render('admin/Inventory/Edit', [
-            'inventory' => $inventory,
+            'item' => $item,
             'suppliers' => $suppliers
         ]);
     }
@@ -100,9 +100,9 @@ class InventoryController extends Controller
      */
     public function update(StoreInventoryRequest $request, int $id)
     {
-        $inventory = $this->inventoryService->updateInventory($id, $request->validated(), $request->allFiles());
+        $item = $this->inventoryService->updateInventory($id, $request->validated(), $request->allFiles());
 
-        if ($inventory) {
+        if ($item) {
             return $this->flashSuccess('Item updated successfully', 'admin.inventory.index');
         }
 
@@ -114,9 +114,9 @@ class InventoryController extends Controller
      */
     public function destroy(int $id)
     {
-        $inventory = $this->inventoryService->deleteInventory($id);
+        $item = $this->inventoryService->deleteInventory($id);
 
-        if ($inventory) {
+        if ($item) {
             return $this->flashSuccess('Item deleted successfully', 'admin.inventory.index');
         }
 

@@ -33,3 +33,15 @@ export interface InventoryItem {
     created_at: string;
     updated_at: string;
 }
+
+export interface Supplier {
+    id: number;
+    supplier_name: string;
+    contact_person?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    status?: string;
+    created_at: string;
+    updated_at: string;
+}
