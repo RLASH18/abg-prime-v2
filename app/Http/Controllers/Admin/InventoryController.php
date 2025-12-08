@@ -24,10 +24,10 @@ class InventoryController extends Controller
      */
     public function index()
     {
-        $inventory = $this->inventoryService->getAll();
+        $items = $this->inventoryService->getAll();
 
         return Inertia::render('admin/Inventory/Index', [
-            'inventory' => $inventory
+            'items' => $items
         ]);
     }
 
