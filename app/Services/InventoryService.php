@@ -49,7 +49,7 @@ class InventoryService
             };
         });
 
-        return $query->paginate($perPage);
+        return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     /**
