@@ -89,32 +89,34 @@ const handleReset = () => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-4 mb-4">
-        <div class="flex flex-col md:flex-row gap-4">
-            <!-- Search Input -->
-            <div class="flex-1">
-                <div class="relative">
-                    <Search :size="18" class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <Input v-model="localSearch" @input="handleSearchInput" :placeholder="searchPlaceholder"
-                        class="pl-10" />
+    <div class="rounded-lg border border-border bg-card shadow-sm p-4 mb-4">
+        <div class="flex flex-col gap-4">
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Search Input -->
+                <div class="flex-1">
+                    <div class="relative">
+                        <Search :size="18" class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        <Input v-model="localSearch" @input="handleSearchInput" :placeholder="searchPlaceholder"
+                            class="pl-10" />
+                    </div>
                 </div>
+
+                <!-- Filter Dropdowns -->
+                <template v-for="filter in filters" :key="filter.key">
+                    <div class="w-full md:w-48">
+                        <Select v-model="localFilterValues[filter.key]" :options="filter.options"
+                            :placeholder="filter.placeholder || `Filter by ${filter.label}`"
+                            @update:modelValue="(value: string) => handleFilterChange(filter.key, value)" />
+                    </div>
+                </template>
+
+                <!-- Reset Button (only show if filters are active) -->
+                <Button v-if="showReset && hasActiveFilters" variant="outline" @click="handleReset"
+                    class="w-full md:w-auto">
+                    <X :size="16" class="mr-2" />
+                    Reset
+                </Button>
             </div>
-
-            <!-- Filter Dropdowns -->
-            <template v-for="filter in filters" :key="filter.key">
-                <div class="w-full md:w-48">
-                    <Select v-model="localFilterValues[filter.key]" :options="filter.options"
-                        :placeholder="filter.placeholder || `Filter by ${filter.label}`"
-                        @update:modelValue="(value: string) => handleFilterChange(filter.key, value)" />
-                </div>
-            </template>
-
-            <!-- Reset Button (only show if filters are active) -->
-            <Button v-if="showReset && hasActiveFilters" variant="outline" @click="handleReset"
-                class="w-full md:w-auto">
-                <X :size="16" class="mr-2" />
-                Reset
-            </Button>
         </div>
     </div>
 </template>
