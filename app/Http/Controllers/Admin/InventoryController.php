@@ -25,13 +25,8 @@ class InventoryController extends Controller
      */
     public function index(Request $request)
     {
-        $filters = $request->only([
-            'search',
-            'category',
-            'stock_status',
-        ]);
-
-        $items = $this->inventoryService->getPaginated(10, $filters);
+        $filters = $request->only(['search', 'category', 'stock_status']);
+        $items = $this->inventoryService->getAllPaginated(10, $filters);
 
         return Inertia::render('admin/Inventory/Index', [
             'items' => $items,

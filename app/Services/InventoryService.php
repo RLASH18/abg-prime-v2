@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Models\Inventory;
 use App\Repositories\Interfaces\InventoryRepositoryInterface;
+use App\Traits\Filterable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class InventoryService
 {
+    use Filterable;
+
     /**
      * Inject the inventory repository
      * 
@@ -25,40 +28,26 @@ class InventoryService
      * @param array $filters
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getPaginated(int $perPage = 10, array $filters = [])
+    public function getAllPaginated(int $perPage = 10, array $filters = [])
     {
         $query = $this->inventoryRepo->query();
 
         // Search filter
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('item_name', 'like', "%{$search}%")
-                    ->orWhere('item_code', 'like', "%{$search}%")
-                    ->orWhere('brand_name', 'like', "%{$search}%");
-            });
-        }
+        $this->applySearchFilter($query, $filters['search'] ?? null, ['item_name', 'item_code', 'brand_name']);
 
-        // Category filter
-        if (!empty($filters['category'])) {
-            $query->where('category', $filters['category']);
-        }
+        // Apply category filter
+        $this->applyExactFilter($query, 'category', $filters['category'] ?? null);
 
         // Stock status filter
-        if (!empty($filters['stock_status'])) {
-            switch ($filters['stock_status']) {
-                case 'out_of_stock':
-                    $query->where('quantity', '<=', 0);
-                    break;
-                case 'low_stock':
-                    $query->whereColumn('quantity', '<=', 'restock_threshold')
-                        ->where('quantity', '>', 0);
-                    break;
-                case 'in_stock':
-                    $query->whereColumn('quantity', '>', 'restock_threshold');
-                    break;
-            }
-        }
+        $this->applyCustomFilter($query, $filters['stock_status'] ?? null, function ($q, $status) {
+            return match ($status) {
+                'out_of_stock' => $q->where('quantity', '<=', 0),
+                'low_stock' => $q->whereColumn('quantity', '<=', 'restock_threshold')
+                    ->where('quantity', '>', 0),
+                'in_stock' => $q->whereColumn('quantity', '>', 'restock_threshold'),
+                default => $q,
+            };
+        });
 
         return $query->paginate($perPage);
     }
