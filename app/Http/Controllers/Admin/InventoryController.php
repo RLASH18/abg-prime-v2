@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\StoreInventoryRequest;
+use App\Http\Requests\Inventory\UpdateInventoryRequest;
 use App\Models\Supplier;
 use App\Services\InventoryService;
 use Illuminate\Http\Request;
@@ -98,7 +99,7 @@ class InventoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StoreInventoryRequest $request, int $id)
+    public function update(UpdateInventoryRequest $request, int $id)
     {
         $item = $this->inventoryService->updateInventory($id, $request->validated(), $request->allFiles());
 
