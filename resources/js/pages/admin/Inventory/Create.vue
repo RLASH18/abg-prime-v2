@@ -97,9 +97,13 @@ const { imagePreviews, handleImageSelect, removeImage } = useImagePreviews(3);
                     <!-- Supplier -->
                     <div class="space-y-2">
                         <Label for="supplier_id">Supplier</Label>
-                        <Select name="supplier_id"
+                        <Select v-if="suppliers.length > 0" name="supplier_id"
                             :options="suppliers.map(s => ({ value: s.id.toString(), label: s.supplier_name }))"
                             placeholder="Select a supplier (optional)" />
+                        <div v-else
+                            class="flex items-center gap-2 p-3 text-sm text-muted-foreground bg-muted rounded-md border border-border">
+                            <span>No suppliers available. Please add suppliers first.</span>
+                        </div>
                         <InputError :message="errors.supplier_id" />
                     </div>
 
