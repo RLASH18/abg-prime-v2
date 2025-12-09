@@ -26,6 +26,7 @@ import {
 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import inventory from '@/routes/admin/inventory';
+import supplier from '@/routes/admin/supplier';
 
 const mainNavItems: NavItem[] = [
     {
@@ -40,7 +41,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Suppliers',
-        href: dashboard(),
+        href: supplier.index(),
         icon: Factory,
     },
     {
@@ -91,7 +92,7 @@ const footerNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="dashboard()">
-                        <AppLogo />
+                            <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
