@@ -52,10 +52,10 @@ const statusIcon = computed(() => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
             <!-- Header -->
-            <div class="flex justify-between items-start">
+            <div class="flex justify-between items-start mb-4">
                 <div class="space-y-1">
                     <div class="flex items-center gap-3">
-                        <h1 class="text-3xl font-bold">{{ props.supplier.supplier_name }}</h1>
+                        <h1 class="text-2xl font-bold">{{ props.supplier.supplier_name }}</h1>
                         <Badge :variant="statusVariant" class="capitalize">
                             <component :is="statusIcon" :size="14" class="mr-1" />
                             {{ props.supplier.status }}
