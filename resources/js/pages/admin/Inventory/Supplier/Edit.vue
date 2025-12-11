@@ -60,9 +60,9 @@ const form = useForm({
             <Form :action="suppliersRoutes.update(props.suppliers.id).url" method="patch" v-slot="{ errors, processing }"
                 class="grid gap-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- suppliers Name -->
+                    <!-- Suppliers Name -->
                     <div class="space-y-2">
-                        <Label for="supplier_name">suppliers Name<span class="text-red-500">*</span></Label>
+                        <Label for="supplier_name">Suppliers Name<span class="text-red-500">*</span></Label>
                         <Input id="supplier_name" name="supplier_name" placeholder="Enter suppliers name"
                             v-model="form.supplier_name" required />
                         <InputError :message="errors.supplier_name" />

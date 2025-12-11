@@ -34,8 +34,8 @@ const statusOptions = ['active', 'inactive'];
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <h1 class="text-2xl font-bold">Add New suppliersRoutes</h1>
-                    <p class="text-sm text-muted-foreground">Fill in the details to add a new suppliersRoutes.</p>
+                    <h1 class="text-2xl font-bold">Add New Supplier</h1>
+                    <p class="text-sm text-muted-foreground">Fill in the details to add a new supplier.</p>
                 </div>
                 <LinkButton :href="suppliersRoutes.index().url" mode="back" label="Back to list" />
             </div>
@@ -49,10 +49,10 @@ const statusOptions = ['active', 'inactive'];
             ]" class="grid gap-6">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- suppliersRoutes Name -->
+                    <!-- Suppliers Name -->
                     <div class="space-y-2">
-                        <Label for="supplier_name">suppliersRoutes Name<span class="text-red-500">*</span></Label>
-                        <Input id="supplier_name" name="supplier_name" placeholder="Enter suppliersRoutes name" required />
+                        <Label for="supplier_name">Supplier Name<span class="text-red-500">*</span></Label>
+                        <Input id="supplier_name" name="supplier_name" placeholder="Enter supplier name" required />
                         <InputError :message="errors.supplier_name" />
                     </div>
 

@@ -103,7 +103,7 @@ const actions: DataTableAction<Supplier>[] = [
                     <h1 class="text-2xl font-bold">Suppliers</h1>
                     <p class="text-sm text-muted-foreground">Manage your suppliers information</p>
                 </div>
-                <LinkButton :href="suppliersRoutes.create().url" label="Add a suppliersRoutes" />
+                <LinkButton :href="suppliersRoutes.create().url" label="Add a supplier" />
             </div>
 
             <!-- Filters -->
@@ -112,11 +112,11 @@ const actions: DataTableAction<Supplier>[] = [
                 @update:search="(value) => updateFilter('search', value)"
                 @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
 
-            <!-- suppliersRoutes Table -->
+            <!-- Suppliers Table -->
             <DataTable :data="suppliers.data" :columns="columns" :actions="actions"
                 empty-message="No suppliers found.">
 
-                <!-- suppliersRoutes Name -->
+                <!-- Suppliers Name -->
                 <template #cell-supplier_name="{ value }">
                     <span class="max-w-[150px] truncate block font-medium" :title="value">
                         {{ value }}
