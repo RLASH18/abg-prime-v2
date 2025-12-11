@@ -14,7 +14,7 @@ import { Spinner } from '@/components/ui/spinner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'suppliersRoutes',
+        title: 'Suppliers',
         href: suppliersRoutes.index().url,
     },
     {
@@ -81,7 +81,7 @@ const statusOptions = ['active', 'inactive'];
                 <!-- Address -->
                 <div class="space-y-2">
                     <Label for="address">Address</Label>
-                    <Textarea id="address" name="address" placeholder="Enter suppliersRoutes address"></Textarea>
+                    <Textarea id="address" name="address" placeholder="Enter supplier address"></Textarea>
                     <InputError :message="errors.address" />
                 </div>
 

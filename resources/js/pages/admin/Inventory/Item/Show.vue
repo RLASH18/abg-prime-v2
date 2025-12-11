@@ -66,7 +66,7 @@ const images = computed(() => {
             <!-- Header -->
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <h1 class="text-3xl font-bold">Item Information</h1>
+                    <h1 class="text-2xl font-bold">Item Information</h1>
                     <p class="text-sm text-muted-foreground mt-1">Item Code: {{ item.item_code }}</p>
                 </div>
                 <div class="flex gap-2">

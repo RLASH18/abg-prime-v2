@@ -14,7 +14,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { type Supplier } from '@/types/admin';
 
 const props = defineProps<{
-    suppliers: Supplier;
+    supplier: Supplier;
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -24,18 +24,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Edit supplier',
-        href: suppliersRoutes.edit(props.suppliers.id).url
+        href: suppliersRoutes.edit(props.supplier.id).url
     },
 ];
 
 const statusOptions = ['active', 'inactive'];
 
 const form = useForm({
-    supplier_name: props.suppliers.supplier_name,
-    email: props.suppliers.email ?? '',
-    phone: props.suppliers.phone ?? '',
-    address: props.suppliers.address ?? '',
-    status: props.suppliers.status,
+    supplier_name: props.supplier.supplier_name,
+    email: props.supplier.email ?? '',
+    phone: props.supplier.phone ?? '',
+    address: props.supplier.address ?? '',
+    status: props.supplier.status,
 });
 </script>
 
@@ -57,7 +57,7 @@ const form = useForm({
             </div>
 
             <!-- Form -->
-            <Form :action="suppliersRoutes.update(props.suppliers.id).url" method="patch" v-slot="{ errors, processing }"
+            <Form :action="suppliersRoutes.update(props.supplier.id).url" method="patch" v-slot="{ errors, processing }"
                 class="grid gap-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Suppliers Name -->
@@ -96,7 +96,8 @@ const form = useForm({
                 <!-- Address -->
                 <div class="space-y-2">
                     <Label for="address">Address</Label>
-                    <Textarea id="address" name="address" placeholder="Enter suppliers address" v-model="form.address" />
+                    <Textarea id="address" name="address" placeholder="Enter suppliers address"
+                        v-model="form.address" />
                     <InputError :message="errors.address" />
                 </div>
 
