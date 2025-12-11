@@ -59,7 +59,7 @@ const images = computed(() => {
 
 <template>
 
-    <Head :title="`Inventory - ${item.item_name}`" />
+    <Head :title="`Items - ${item.item_name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">

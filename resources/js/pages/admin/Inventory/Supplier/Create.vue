@@ -28,7 +28,7 @@ const statusOptions = ['active', 'inactive'];
 
 <template>
 
-    <Head title="suppliersRoutes - Add a suppliersRoutes" />
+    <Head title="Suppliers - Add supplier" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">

@@ -46,7 +46,7 @@ const { imagePreviews, handleImageSelect, removeImage } = useImagePreviews(3);
 
 <template>
 
-    <Head title="Inventory - Add an Item" />
+    <Head title="Items - Add item" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
