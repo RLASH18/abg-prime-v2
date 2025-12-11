@@ -17,12 +17,12 @@ class Supplier extends Model
     ];
 
     /**
-     * Get all of the inventories for the Supplier
+     * Get all of the items for the Supplier
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function inventories(): HasMany
     {
-        return $this->hasMany(Inventory::class, 'supplier_id');
+        return $this->hasMany(Item::class, 'supplier_id');
     }
 }

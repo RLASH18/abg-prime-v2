@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Inventory;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Supplier\StoreSupplierRequest;
@@ -12,8 +12,8 @@ use Inertia\Inertia;
 class SupplierController extends Controller
 {
     /**
-     * Inject SupplierService
-     * 
+     * Inject Supplier Service
+     *
      * @param SupplierService $supplierService
      */
     public function __construct(
@@ -28,7 +28,7 @@ class SupplierController extends Controller
         $filters = $request->only('search');
         $suppliers = $this->supplierService->getAllPaginated(10, $filters);
 
-        return Inertia::render('admin/Supplier/Index', [
+        return Inertia::render('admin/Inventory/Supplier/Index', [
             'suppliers' => $suppliers,
             'filters' => $filters,
         ]);
@@ -39,7 +39,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        return Inertia::render('admin/Supplier/Create');
+        return Inertia::render('admin/Inventory/Supplier/Create');
     }
 
     /**
@@ -48,7 +48,7 @@ class SupplierController extends Controller
     public function store(StoreSupplierRequest $request)
     {
         $this->supplierService->createSupplier($request->validated());
-        return $this->flashSuccess('Supplier created successfully', 'admin.supplier.index');
+        return $this->flashSuccess('Supplier created successfully', 'admin.suppliers.index');
     }
 
     /**
@@ -59,10 +59,10 @@ class SupplierController extends Controller
         $supplier = $this->supplierService->getById($id);
 
         if (! $supplier) {
-            return $this->flashError('Supplier not found', 'admin.supplier.index');
+            return $this->flashError('Supplier not found', 'admin.suppliers.index');
         }
 
-        return Inertia::render('admin/Supplier/Show', [
+        return Inertia::render('admin/Inventory/Supplier/Show', [
             'supplier' => $supplier,
         ]);
     }
@@ -75,10 +75,10 @@ class SupplierController extends Controller
         $supplier = $this->supplierService->getById($id);
 
         if (! $supplier) {
-            return $this->flashError('Supplier not found', 'admin.supplier.index');
+            return $this->flashError('Supplier not found', 'admin.suppliers.index');
         }
 
-        return Inertia::render('admin/Supplier/Edit', [
+        return Inertia::render('admin/Inventory/Supplier/Edit', [
             'supplier' => $supplier,
         ]);
     }
@@ -91,10 +91,10 @@ class SupplierController extends Controller
         $supplier = $this->supplierService->updateSupplier($id, $request->validated());
 
         if ($supplier) {
-            return $this->flashSuccess('Supplier updated successfully', 'admin.supplier.index');
+            return $this->flashSuccess('Supplier updated successfully', 'admin.suppliers.index');
         }
 
-        return $this->flashError('Supplier not found', 'admin.supplier.index');
+        return $this->flashError('Supplier not found', 'admin.suppliers.index');
     }
 
     /**
@@ -105,9 +105,9 @@ class SupplierController extends Controller
         $supplier = $this->supplierService->deleteSupplier($id);
 
         if ($supplier) {
-            return $this->flashSuccess('Supplier deleted successfully', 'admin.supplier.index');
+            return $this->flashSuccess('Supplier deleted successfully', 'admin.suppliers.index');
         }
 
-        return $this->flashError('Supplier not found', 'admin.supplier.index');
+        return $this->flashError('Supplier not found', 'admin.suppliers.index');
     }
 }

@@ -2,8 +2,8 @@
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\InventoryController;
-use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\Inventory\ItemController;
+use App\Http\Controllers\Admin\Inventory\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
@@ -12,8 +12,11 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
     ->group(function () {
 
         Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-        Route::resource('inventory', InventoryController::class);
-        Route::resource('supplier', SupplierController::class);
+
+        Route::prefix('inventory')->group(function () {
+            Route::resource('suppliers', SupplierController::class);
+            Route::resource('items', ItemController::class);
+        });
 
         require __DIR__ . '/settings.php';
     });

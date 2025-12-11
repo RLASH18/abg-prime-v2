@@ -2,35 +2,35 @@
 
 namespace App\Services;
 
-use App\Models\Inventory;
-use App\Repositories\Interfaces\InventoryRepositoryInterface;
+use App\Models\Item;
+use App\Repositories\Interfaces\ItemRepositoryInterface;
 use App\Traits\Filterable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-class InventoryService
+class ItemService
 {
     use Filterable;
 
     /**
-     * Inject the inventory repository
-     * 
-     * @param InventoryRepositoryInterface $inventoryRepo
+     * Inject the item repository
+     *
+     * @param ItemRepositoryInterface $itemRepo
      */
     public function __construct(
-        protected InventoryRepositoryInterface $inventoryRepo
+        protected ItemRepositoryInterface $itemRepo
     ) {}
 
     /**
-     * Get paginated inventory items with filters
-     * 
+     * Get paginated items with filters
+     *
      * @param int $perPage
      * @param array $filters
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getAllPaginated(int $perPage = 10, array $filters = [])
     {
-        $query = $this->inventoryRepo->query();
+        $query = $this->itemRepo->query();
 
         // Search filter
         $this->applySearchFilter($query, $filters['search'] ?? null, ['item_name', 'item_code', 'brand_name']);
@@ -53,24 +53,24 @@ class InventoryService
     }
 
     /**
-     * Find an inventory item by ID
-     * 
+     * Find an item by ID
+     *
      * @param int $id
-     * @return Inventory|null
+     * @return Item|null
      */
     public function find($id)
     {
-        return $this->inventoryRepo->find($id);
+        return $this->itemRepo->find($id);
     }
 
     /**
-     * Create a new inventory item
-     * 
+     * Create a new item
+     *
      * @param array $data
      * @param array $files
-     * @return Inventory
+     * @return Item
      */
-    public function createInventory(array $data, array $files): Inventory
+    public function createItem(array $data, array $files): Item
     {
         // Generate item code
         $data['item_code'] = $this->generateItemCode($data['category']);
@@ -78,59 +78,59 @@ class InventoryService
         // Handle images
         $data = $this->handleImageUploads($data, $files);
 
-        return $this->inventoryRepo->create($data);
+        return $this->itemRepo->create($data);
     }
 
     /**
-     * Update an existing inventory item
-     * 
+     * Update an existing item
+     *
      * @param int $id
      * @param array $data
      * @param array $files
      * @return bool
      */
-    public function updateInventory(int $id, array $data, array $files): bool
+    public function updateItem(int $id, array $data, array $files): bool
     {
-        $inventory = $this->find($id);
+        $item = $this->find($id);
 
-        if (! $inventory) {
+        if (! $item) {
             return false;
         }
 
         // Regenerate item code if category changed
-        if (isset($data['category']) && $data['category'] !== $inventory->category) {
+        if (isset($data['category']) && $data['category'] !== $item->category) {
             $data['item_code'] = $this->generateItemCode($data['category']);
         }
 
         // Handle images
-        $data = $this->handleImageUploads($data, $files, $inventory);
+        $data = $this->handleImageUploads($data, $files, $item);
 
-        return $this->inventoryRepo->update($id, $data);
+        return $this->itemRepo->update($id, $data);
     }
 
     /**
-     * Delete an inventory item
-     * 
+     * Delete an item
+     *
      * @param int $id
      * @return bool
      */
-    public function deleteInventory(int $id): bool
+    public function deleteItem(int $id): bool
     {
-        $inventory = $this->find($id);
+        $item = $this->find($id);
 
-        if (! $inventory) {
+        if (! $item) {
             return false;
         }
 
         // Delete image
-        $this->deleteImages($inventory);
+        $this->deleteImages($item);
 
-        return $this->inventoryRepo->delete($id);
+        return $this->itemRepo->delete($id);
     }
 
     /**
      * Generate a unique item code
-     * 
+     *
      * @param string $category
      * @return string
      */
@@ -148,7 +148,7 @@ class InventoryService
             default => 'OT', // Other
         };
 
-        $latestItem = $this->inventoryRepo->latestByCategory($category);
+        $latestItem = $this->itemRepo->latestByCategory($category);
 
         if (! $latestItem) {
             return $prefix . '001';
@@ -164,13 +164,13 @@ class InventoryService
 
     /**
      * Handle image uploads
-     * 
+     *
      * @param array $data
      * @param array $files
-     * @param Inventory|null $existingInventory
+     * @param Item|null $existingInventory
      * @return array
      */
-    protected function handleImageUploads(array $data, array $files, ?Inventory $existingInventory = null): array
+    protected function handleImageUploads(array $data, array $files, ?Item $existingInventory = null): array
     {
         $imageFields = ['item_image_1', 'item_image_2', 'item_image_3'];
 
@@ -201,17 +201,17 @@ class InventoryService
 
     /**
      * Delete all images
-     * 
-     * @param Inventory $inventory
+     *
+     * @param Item $item
      * @return void
      */
-    protected function deleteImages(Inventory $inventory)
+    protected function deleteImages(Item $item)
     {
         $imageFields = ['item_image_1', 'item_image_2', 'item_image_3'];
 
         foreach ($imageFields as $field) {
-            if ($inventory->$field) {
-                Storage::disk('public')->delete($inventory->$field);
+            if ($item->$field) {
+                Storage::disk('public')->delete($item->$field);
             }
         }
     }

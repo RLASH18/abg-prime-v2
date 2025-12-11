@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
-import supplier from '@/routes/admin/supplier';
+import suppliersRoutes from '@/routes/admin/suppliers';
 import LinkButton from '@/components/LinkButton.vue';
 import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn, DataTableAction, Supplier } from '@/types/admin';
@@ -14,7 +14,7 @@ import Filters from '@/components/Filters.vue';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Suppliers',
-        href: supplier.index().url,
+        href: suppliersRoutes.index().url,
     },
 ];
 
@@ -31,7 +31,7 @@ const props = defineProps<Props>();
 
 // Initialize filters
 const { filters, updateFilter, resetFilters } = useFilters(
-    supplier.index().url,
+    suppliersRoutes.index().url,
     {
         search: props.filters.search || '',
     }
@@ -69,7 +69,7 @@ const actions: DataTableAction<Supplier>[] = [
         label: 'View',
         icon: Eye,
         onClick: (row) => {
-            router.visit(supplier.show(row.id).url);
+            router.visit(suppliersRoutes.show(row.id).url);
         },
         class: 'hover:text-blue-600 hover:bg-blue-50'
     },
@@ -77,7 +77,7 @@ const actions: DataTableAction<Supplier>[] = [
         label: 'Edit',
         icon: Pencil,
         onClick: (row) => {
-            router.visit(supplier.edit(row.id).url);
+            router.visit(suppliersRoutes.edit(row.id).url);
         },
         class: 'hover:text-green-600 hover:bg-green-50'
     },
@@ -85,7 +85,7 @@ const actions: DataTableAction<Supplier>[] = [
         label: 'Delete',
         icon: Trash2,
         onClick: (row) => {
-            router.delete(supplier.destroy(row.id).url);
+            router.delete(suppliersRoutes.destroy(row.id).url);
         },
         class: 'hover:text-red-600 hover:bg-red-50'
     },
@@ -101,9 +101,9 @@ const actions: DataTableAction<Supplier>[] = [
             <div class="flex justify-between items-center mb-4">
                 <div>
                     <h1 class="text-2xl font-bold">Suppliers</h1>
-                    <p class="text-sm text-muted-foreground">Manage your supplier information</p>
+                    <p class="text-sm text-muted-foreground">Manage your suppliers information</p>
                 </div>
-                <LinkButton :href="supplier.create().url" label="Add a Supplier" />
+                <LinkButton :href="suppliersRoutes.create().url" label="Add a suppliersRoutes" />
             </div>
 
             <!-- Filters -->
@@ -112,11 +112,11 @@ const actions: DataTableAction<Supplier>[] = [
                 @update:search="(value) => updateFilter('search', value)"
                 @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
 
-            <!-- Supplier Table -->
+            <!-- suppliersRoutes Table -->
             <DataTable :data="suppliers.data" :columns="columns" :actions="actions"
-                empty-message="No suppliers found. Click 'Add a Supplier' to get started.">
+                empty-message="No suppliers found.">
 
-                <!-- Supplier Name -->
+                <!-- suppliersRoutes Name -->
                 <template #cell-supplier_name="{ value }">
                     <span class="max-w-[150px] truncate block font-medium" :title="value">
                         {{ value }}

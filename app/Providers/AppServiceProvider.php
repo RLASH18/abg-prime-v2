@@ -4,9 +4,9 @@ namespace App\Providers;
 
 use App\Repositories\BaseRepository;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
-use App\Repositories\Interfaces\InventoryRepositoryInterface;
+use App\Repositories\Interfaces\ItemRepositoryInterface;
 use App\Repositories\Interfaces\SupplierRepositoryInterface;
-use App\Repositories\InventoryRepository;
+use App\Repositories\ItemRepository;
 use App\Repositories\SupplierRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,12 +14,12 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Repository bindings
-     * 
+     *
      * @var array<class-string, class-string>
      */
     protected $repositories = [
         BaseRepositoryInterface::class => BaseRepository::class,
-        InventoryRepositoryInterface::class => InventoryRepository::class,
+        ItemRepositoryInterface::class => ItemRepository::class,
         SupplierRepositoryInterface::class => SupplierRepository::class,
     ];
 

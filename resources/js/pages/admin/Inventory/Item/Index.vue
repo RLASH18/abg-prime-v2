@@ -2,7 +2,6 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/vue3';
-import inventory from '@/routes/admin/inventory';
 import LinkButton from '@/components/LinkButton.vue';
 import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn, DataTableAction, InventoryItem } from '@/types/admin';
@@ -10,11 +9,12 @@ import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
 import Filters from '@/components/Filters.vue';
+import itemsRoutes from '@/routes/admin/items';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Inventory',
-        href: inventory.index().url,
+        title: 'Items',
+        href: itemsRoutes.index().url,
     },
 ];
 
@@ -33,7 +33,7 @@ const props = defineProps<Props>();
 
 // Initialize filters
 const { filters, updateFilter, resetFilters } = useFilters(
-    inventory.index().url,
+    itemsRoutes.index().url,
     {
         search: props.filters.search || '',
         category: props.filters.category || '',
@@ -115,7 +115,7 @@ const actions: DataTableAction<InventoryItem>[] = [
         label: 'View',
         icon: Eye,
         onClick: (row) => {
-            router.visit(inventory.show(row.id).url);
+            router.visit(itemsRoutes.show(row.id).url);
         },
         class: 'hover:text-blue-600 hover:bg-blue-50'
     },
@@ -123,7 +123,7 @@ const actions: DataTableAction<InventoryItem>[] = [
         label: 'Edit',
         icon: Pencil,
         onClick: (row) => {
-            router.visit(inventory.edit(row.id).url);
+            router.visit(itemsRoutes.edit(row.id).url);
         },
         class: 'hover:text-green-600 hover:bg-green-50'
     },
@@ -131,7 +131,7 @@ const actions: DataTableAction<InventoryItem>[] = [
         label: 'Delete',
         icon: Trash2,
         onClick: (row) => {
-            router.delete(inventory.destroy(row.id).url);
+            router.delete(itemsRoutes.destroy(row.id).url);
         },
         class: 'hover:text-red-600 hover:bg-red-50'
     },
@@ -140,16 +140,16 @@ const actions: DataTableAction<InventoryItem>[] = [
 
 <template>
 
-    <Head title="Inventory" />
+    <Head title="Items" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <h1 class="text-2xl font-bold">Inventory</h1>
+                    <h1 class="text-2xl font-bold">Items</h1>
                     <p class="text-sm text-muted-foreground">Manage your inventory items</p>
                 </div>
-                <LinkButton :href="inventory.create().url" label="Add an Item" />
+                <LinkButton :href="itemsRoutes.create().url" label="Add an Item" />
             </div>
 
             <!-- Filters -->
@@ -158,9 +158,9 @@ const actions: DataTableAction<InventoryItem>[] = [
                 @update:search="(value) => updateFilter('search', value)"
                 @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
 
-            <!-- Inventory Table -->
+            <!-- items Table -->
             <DataTable :data="items.data" :columns="columns" :actions="actions"
-                empty-message="No inventory items found. Click 'Add an Item' to get started.">
+                empty-message="No items items found.">
 
                 <!-- Item name -->
                 <template #cell-item_name="{ value }">

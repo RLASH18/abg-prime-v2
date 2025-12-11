@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Inventory;
+namespace App\Http\Requests\Item;
 
 use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateInventoryRequest extends FormRequest
+class StoreItemRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,7 +33,7 @@ class UpdateInventoryRequest extends FormRequest
             'item_image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'item_image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'unit_price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0', // Changed from min:1 to allow 0 stock
+            'quantity' => 'required|integer|min:1',
             'restock_threshold' => 'nullable|integer|min:10',
         ];
     }
@@ -67,7 +67,7 @@ class UpdateInventoryRequest extends FormRequest
             'unit_price.min' => 'Unit price cannot be negative.',
             'quantity.required' => 'Please enter the quantity.',
             'quantity.integer' => 'Quantity must be a whole number.',
-            'quantity.min' => 'Quantity cannot be negative.',
+            'quantity.min' => 'Quantity must be at least 1.',
             'restock_threshold.integer' => 'Restock threshold must be a whole number.',
             'restock_threshold.min' => 'Restock threshold must be at least 10.',
         ];

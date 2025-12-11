@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import supplier from '@/routes/admin/supplier';
+import suppliersRoutes from '@/routes/admin/suppliers';
 import LinkButton from '@/components/LinkButton.vue';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,11 +27,11 @@ const props = defineProps<Props>();
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Suppliers',
-        href: supplier.index().url,
+        href: suppliersRoutes.index().url,
     },
     {
         title: props.supplier.supplier_name,
-        href: supplier.show(props.supplier.id).url,
+        href: suppliersRoutes.show(props.supplier.id).url,
     },
 ];
 
@@ -64,8 +64,8 @@ const statusIcon = computed(() => {
                     <p class="text-sm text-muted-foreground">Supplier ID: #{{ props.supplier.id }}</p>
                 </div>
                 <div class="flex gap-2">
-                    <LinkButton :href="supplier.edit(props.supplier.id).url" label="Edit Supplier" />
-                    <LinkButton :href="supplier.index().url" mode="back" label="Back to list" />
+                    <LinkButton :href="suppliersRoutes.edit(props.supplier.id).url" label="Edit Supplier" />
+                    <LinkButton :href="suppliersRoutes.index().url" mode="back" label="Back to list" />
                 </div>
             </div>
 

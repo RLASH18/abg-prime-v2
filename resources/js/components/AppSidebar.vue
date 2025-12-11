@@ -15,18 +15,16 @@ import { dashboard } from '@/routes/admin';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import {
-    AlertTriangle,
     BarChart3,
     Boxes,
     ClipboardList,
-    Factory,
     LayoutGrid,
     ReceiptText,
     Truck
 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
-import inventory from '@/routes/admin/inventory';
-import supplier from '@/routes/admin/supplier';
+import items from '@/routes/admin/items';
+import suppliers from '@/routes/admin/suppliers';
 
 const mainNavItems: NavItem[] = [
     {
@@ -36,18 +34,21 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Inventory',
-        href: inventory.index(),
         icon: Boxes,
-    },
-    {
-        title: 'Suppliers',
-        href: supplier.index(),
-        icon: Factory,
-    },
-    {
-        title: 'Damaged Products',
-        href: dashboard(),
-        icon: AlertTriangle,
+        items: [
+            {
+                title: 'Suppliers',
+                href: suppliers.index()
+            },
+            {
+                title: 'Items',
+                href: items.index()
+            },
+            {
+                title: 'Damaged Products',
+                href: dashboard(),
+            },
+        ]
     },
     {
         title: 'Orders',

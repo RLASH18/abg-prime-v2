@@ -2,7 +2,7 @@
 import LinkButton from '@/components/LinkButton.vue';
 import InputError from '@/components/InputError.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import supplier from '@/routes/admin/supplier';
+import suppliersRoutes from '@/routes/admin/suppliers';
 import { type BreadcrumbItem } from '@/types';
 import { Form, Head } from '@inertiajs/vue3';
 import { Input } from '@/components/ui/input';
@@ -14,12 +14,12 @@ import { Spinner } from '@/components/ui/spinner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Suppliers',
-        href: supplier.index().url,
+        title: 'suppliersRoutes',
+        href: suppliersRoutes.index().url,
     },
     {
-        title: 'Add Supplier',
-        href: supplier.create().url,
+        title: 'Add supplier',
+        href: suppliersRoutes.create().url,
     },
 ];
 
@@ -28,19 +28,19 @@ const statusOptions = ['active', 'inactive'];
 
 <template>
 
-    <Head title="Suppliers - Add a Supplier" />
+    <Head title="suppliersRoutes - Add a suppliersRoutes" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <div class="flex justify-between items-center mb-4">
                 <div>
-                    <h1 class="text-2xl font-bold">Add New Supplier</h1>
-                    <p class="text-sm text-muted-foreground">Fill in the details to add a new supplier.</p>
+                    <h1 class="text-2xl font-bold">Add New suppliersRoutes</h1>
+                    <p class="text-sm text-muted-foreground">Fill in the details to add a new suppliersRoutes.</p>
                 </div>
-                <LinkButton :href="supplier.index().url" mode="back" label="Back to list" />
+                <LinkButton :href="suppliersRoutes.index().url" mode="back" label="Back to list" />
             </div>
 
-            <Form :action="supplier.store()" v-slot="{ errors, processing }" :reset-on-success="[
+            <Form :action="suppliersRoutes.store()" v-slot="{ errors, processing }" :reset-on-success="[
                 'supplier_name',
                 'email',
                 'phone',
@@ -49,10 +49,10 @@ const statusOptions = ['active', 'inactive'];
             ]" class="grid gap-6">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Supplier Name -->
+                    <!-- suppliersRoutes Name -->
                     <div class="space-y-2">
-                        <Label for="supplier_name">Supplier Name<span class="text-red-500">*</span></Label>
-                        <Input id="supplier_name" name="supplier_name" placeholder="Enter supplier name" required />
+                        <Label for="supplier_name">suppliersRoutes Name<span class="text-red-500">*</span></Label>
+                        <Input id="supplier_name" name="supplier_name" placeholder="Enter suppliersRoutes name" required />
                         <InputError :message="errors.supplier_name" />
                     </div>
 
@@ -81,14 +81,14 @@ const statusOptions = ['active', 'inactive'];
                 <!-- Address -->
                 <div class="space-y-2">
                     <Label for="address">Address</Label>
-                    <Textarea id="address" name="address" placeholder="Enter supplier address"></Textarea>
+                    <Textarea id="address" name="address" placeholder="Enter suppliersRoutes address"></Textarea>
                     <InputError :message="errors.address" />
                 </div>
 
                 <div class="flex justify-end">
                     <Button type="submit" :disabled="processing">
                         <Spinner v-if="processing" />
-                        Save Supplier
+                        Save supplier
                     </Button>
                 </div>
             </form>

@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import inventory from '@/routes/admin/inventory';
+import itemsRoutes from '@/routes/admin/items';
 import LinkButton from '@/components/LinkButton.vue';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -15,15 +15,7 @@ import {
     Building2,
 } from 'lucide-vue-next';
 import { computed } from 'vue';
-import type { InventoryItem } from '@/types/admin';
-
-interface Supplier {
-    id: number;
-    supplier_name: string;
-    contact_person?: string;
-    phone_number?: string;
-    email?: string;
-}
+import type { InventoryItem, Supplier } from '@/types/admin';
 
 interface Props {
     item: InventoryItem;
@@ -34,12 +26,12 @@ const props = defineProps<Props>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Inventory',
-        href: inventory.index().url,
+        title: 'Items',
+        href: itemsRoutes.index().url,
     },
     {
-        title: props.item.item_name,
-        href: inventory.show(props.item.id).url,
+        title: 'Item Information',
+        href: itemsRoutes.show(props.item.id).url,
     },
 ];
 
@@ -78,8 +70,8 @@ const images = computed(() => {
                     <p class="text-sm text-muted-foreground mt-1">Item Code: {{ item.item_code }}</p>
                 </div>
                 <div class="flex gap-2">
-                    <LinkButton :href="inventory.edit(item.id).url" label="Edit Item" />
-                    <LinkButton :href="inventory.index().url" mode="back" label="Back to list" />
+                    <LinkButton :href="itemsRoutes.edit(item.id).url" label="Edit Item" />
+                    <LinkButton :href="itemsRoutes.index().url" mode="back" label="Back to list" />
                 </div>
             </div>
 
@@ -236,13 +228,13 @@ const images = computed(() => {
                         <h2 class="text-lg font-semibold mb-4">Supplier Information</h2>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div v-if="supplier.contact_person">
-                                <p class="text-sm text-muted-foreground">Contact Person</p>
-                                <p class="font-medium">{{ supplier.contact_person }}</p>
+                            <div v-if="supplier.supplier_name">
+                                <p class="text-sm text-muted-foreground">Supplier name</p>
+                                <p class="font-medium">{{ supplier.supplier_name }}</p>
                             </div>
-                            <div v-if="supplier.phone_number">
+                            <div v-if="supplier.phone">
                                 <p class="text-sm text-muted-foreground">Phone Number</p>
-                                <p class="font-medium">{{ supplier.phone_number }}</p>
+                                <p class="font-medium">{{ supplier.phone }}</p>
                             </div>
                             <div v-if="supplier.email">
                                 <p class="text-sm text-muted-foreground">Email</p>
