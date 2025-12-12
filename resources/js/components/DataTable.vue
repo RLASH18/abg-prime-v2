@@ -18,12 +18,14 @@ interface Props {
     actions?: DataTableAction<T>[];
     caption?: string;
     emptyMessage?: string;
+    emptyDescription?: string;
     loading?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     caption: '',
     emptyMessage: 'No data available',
+    emptyDescription: 'No data available. Get started by adding something.',
     loading: false,
 });
 
@@ -71,7 +73,7 @@ const shouldShowAction = (action: DataTableAction<T>, row: T): boolean => {
                             </svg>
                         </div>
                         <h3 class="text-base font-semibold text-foreground mb-1">{{ emptyMessage }}</h3>
-                        <p class="text-sm text-muted-foreground">Get started by adding your first item</p>
+                        <p class="text-sm text-muted-foreground">{{ emptyDescription }}</p>
                     </div>
                 </TableEmpty>
 

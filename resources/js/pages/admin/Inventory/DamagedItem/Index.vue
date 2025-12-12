@@ -114,7 +114,7 @@ const actions: DataTableAction<DamagedItem>[] = [
                 @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
 
             <DataTable :data="damagedItems.data" :columns="columns" :actions="actions"
-                empty-message="No damaged items found.">
+                empty-message="No damaged items found." empty-description="Mark items as damaged from the Items page to track them here.">
 
                 <template #cell-status="{ value }">
                     <span :class="[
