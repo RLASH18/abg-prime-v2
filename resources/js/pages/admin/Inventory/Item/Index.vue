@@ -11,7 +11,7 @@ import { useFilters } from '@/composables/useFilters';
 import Filters from '@/components/Filters.vue';
 import itemsRoutes from '@/routes/admin/items';
 import { ref } from 'vue';
-import MarkAsDamagedModal from '@/pages/admin/Inventory/Item/MarkAsDamagedModal.vue';
+import MarkAsDamagedModal from '@/pages/admin/Inventory/DamagedItem/MarkAsDamagedModal.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -176,8 +176,7 @@ const actions: DataTableAction<InventoryItem>[] = [
                 @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
 
             <!-- items Table -->
-            <DataTable :data="items.data" :columns="columns" :actions="actions"
-                empty-message="No items items found.">
+            <DataTable :data="items.data" :columns="columns" :actions="actions" empty-message="No items items found.">
 
                 <!-- Item name -->
                 <template #cell-item_name="{ value }">
