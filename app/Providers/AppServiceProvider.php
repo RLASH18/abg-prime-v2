@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Repositories\BaseRepository;
+use App\Repositories\DamagedItemRepository;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
+use App\Repositories\Interfaces\DamagedItemRepositoryInterface;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
 use App\Repositories\Interfaces\SupplierRepositoryInterface;
 use App\Repositories\ItemRepository;
@@ -21,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
         BaseRepositoryInterface::class => BaseRepository::class,
         ItemRepositoryInterface::class => ItemRepository::class,
         SupplierRepositoryInterface::class => SupplierRepository::class,
+        DamagedItemRepositoryInterface::class => DamagedItemRepository::class,
     ];
 
     /**

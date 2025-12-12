@@ -25,6 +25,7 @@ import {
 import AppLogo from './AppLogo.vue';
 import items from '@/routes/admin/items';
 import suppliers from '@/routes/admin/suppliers';
+import damagedItemsRoutes from '@/routes/admin/damaged-items';
 
 const mainNavItems: NavItem[] = [
     {
@@ -45,8 +46,8 @@ const mainNavItems: NavItem[] = [
                 href: items.index()
             },
             {
-                title: 'Damaged Products',
-                href: dashboard(),
+                title: 'Damaged Items',
+                href: damagedItemsRoutes.index(),
             },
         ]
     },

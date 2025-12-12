@@ -44,3 +44,15 @@ export interface Supplier {
     created_at: string;
     updated_at: string;
 }
+
+export interface DamagedItem {
+    id: number;
+    item_id: number;
+    quantity: number;
+    discount: number | null;
+    status: 'damaged' | 'resellable' | 'disposed';
+    remarks: string | null;
+    created_at: string;
+    updated_at: string;
+    item: InventoryItem;  // The related item (eager loaded)
+}

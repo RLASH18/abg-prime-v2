@@ -5,11 +5,13 @@ import { Head, router } from '@inertiajs/vue3';
 import LinkButton from '@/components/LinkButton.vue';
 import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn, DataTableAction, InventoryItem } from '@/types/admin';
-import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
+import { AlertTriangle, Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
 import Filters from '@/components/Filters.vue';
 import itemsRoutes from '@/routes/admin/items';
+import { ref } from 'vue';
+import MarkAsDamagedModal from '@/pages/admin/Inventory/Item/MarkAsDamagedModal.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,6 +32,15 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+// Modal state
+const showDamageModal = ref(false);
+const selectedItem = ref<InventoryItem | null>(null);
+
+const openDamageModal = (item: InventoryItem) => {
+    selectedItem.value = item;
+    showDamageModal.value = true;
+};
 
 // Initialize filters
 const { filters, updateFilter, resetFilters } = useFilters(
@@ -135,6 +146,12 @@ const actions: DataTableAction<InventoryItem>[] = [
         },
         class: 'hover:text-red-600 hover:bg-red-50'
     },
+    {
+        label: 'Mark as Damaged',
+        icon: AlertTriangle,
+        onClick: (row) => openDamageModal(row),
+        class: 'hover:text-orange-600 hover:bg-orange-50'
+    }
 ];
 </script>
 
@@ -203,4 +220,6 @@ const actions: DataTableAction<InventoryItem>[] = [
             <Pagination :pagination="items" />
         </div>
     </AppLayout>
+
+    <MarkAsDamagedModal v-model:open="showDamageModal" :item="selectedItem" />
 </template>
