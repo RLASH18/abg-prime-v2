@@ -81,3 +81,15 @@ export interface Order {
     user?: User;
     order_items?: OrderItem[];
 }
+
+export interface Billing {
+    id: number;
+    order_id: number;
+    billing_number: string;
+    amount: number;
+    status: 'unpaid' | 'paid' | 'cancelled';
+    paid_at: string | null;
+    created_at: string;
+    updated_at: string;
+    order?: Order;
+}

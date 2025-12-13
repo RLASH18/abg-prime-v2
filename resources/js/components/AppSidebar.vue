@@ -26,7 +26,8 @@ import AppLogo from './AppLogo.vue';
 import items from '@/routes/admin/items';
 import suppliers from '@/routes/admin/suppliers';
 import damagedItemsRoutes from '@/routes/admin/damaged-items';
-import orders from '@/routes/admin/orders';
+import ordersRoutes from '@/routes/admin/orders';
+import billingsRoutes from '@/routes/admin/billings';
 
 const mainNavItems: NavItem[] = [
     {
@@ -54,12 +55,12 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Orders',
-        href: orders.index(),
+        href: ordersRoutes.index(),
         icon: ClipboardList,
     },
     {
         title: 'Billings',
-        href: dashboard(),
+        href: billingsRoutes.index().url,
         icon: ReceiptText,
     },
     {

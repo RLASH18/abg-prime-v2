@@ -10,12 +10,14 @@ class OrderService
     use Filterable;
 
     /**
-     * Inject the order repository
+     * Inject the order repository and billing service
      *
      * @param OrderRepositoryInterface $orderRepo
+     * @param BillingService $billingService
      */
     public function __construct(
-        protected OrderRepositoryInterface $orderRepo
+        protected OrderRepositoryInterface $orderRepo,
+        protected BillingService $billingService
     ) {}
 
     /**
@@ -60,7 +62,22 @@ class OrderService
     public function updateStatus(int $id, string $status): bool
     {
         $data = ['status' => $status];
+        $updated = $this->orderRepo->update($id, $data);
 
-        return $this->orderRepo->update($id, $data);
+        if (! $updated) {
+            return false;
+        }
+
+        // Auto create billing when order is confirmed
+        if ($status === 'confirmed') {
+            $this->billingService->createBillingForOrder($id);
+        }
+
+        // Auto-update billing when order is paid
+        if ($status === 'paid') {
+            $this->billingService->markBillingAsPaid($id);
+        }
+
+        return true;
     }
 }
