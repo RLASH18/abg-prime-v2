@@ -31,4 +31,25 @@ class StoreDamagedItemRequest extends FormRequest
             'status' => 'required|in:resellable,disposed',
         ];
     }
+
+    /**
+     * Get custom validation messages
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'item_id.required' => 'Please select an item.',
+            'item_id.exists' => 'The selected item does not exist.',
+            'quantity.required' => 'Please enter the damaged quantity.',
+            'quantity.integer' => 'Quantity must be a whole number.',
+            'quantity.min' => 'Quantity must be at least 1.',
+            'remarks.max' => 'Remarks cannot exceed 500 characters.',
+            'discount.numeric' => 'Discount must be a valid number.',
+            'discount.min' => 'Discount cannot be negative.',
+            'status.required' => 'Please select a status.',
+            'status.in' => 'Status must be either resellable or disposed.',
+        ];
+    }
 }
