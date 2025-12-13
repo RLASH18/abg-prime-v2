@@ -35,12 +35,11 @@ class BillingService
 
         $this->applySearchFilter($query, $filters['search'] ?? null, ['billing_number', 'order.user.name']);
         $this->applyExactFilter($query, 'status', $filters['status'] ?? null);
-
-        if (! empty($filters['payment_method'])) {
-            $query->whereHas('order', function ($orderQuery) use ($filters) {
-                $orderQuery->where('payment_method', $filters['payment_method']);
+        $this->applyCustomFilter($query, $filters['payment_method'] ?? null, function ($q, $paymentMethod) {
+            return $q->whereHas('order', function ($orderQuery) use ($paymentMethod) {
+                $orderQuery->where('payment_method', $paymentMethod);
             });
-        }
+        });
 
         return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
