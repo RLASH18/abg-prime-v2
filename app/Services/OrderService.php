@@ -29,15 +29,7 @@ class OrderService
     {
         $query = $this->orderRepo->query()->with(['user', 'orderItems.item']);
 
-        if (! empty($filters['search'])) {
-            $query->where(function ($q) use ($filters) {
-                $q->where('id', 'like', '%' . $filters['search'] . '%')
-                    ->orWhereHas('user', function ($userQuery) use ($filters) {
-                        $userQuery->where('name', 'like', '%' . $filters['search'] . '%');
-                    });
-            });
-        }
-
+        $this->applySearchFilter($query, $filters['search'] ?? null, ['id', 'user.name']);
         $this->applyExactFilter($query, 'status', $filters['status'] ?? null);
         $this->applyExactFilter($query, 'payment_method', $filters['payment_method'] ?? null);
         $this->applyExactFilter($query, 'delivery_method', $filters['delivery_method'] ?? null);

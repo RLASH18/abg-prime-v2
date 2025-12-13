@@ -100,7 +100,7 @@ const getStatusColor = (status: string) => {
 
                 <!-- Status Progress Tracker (Read Only) -->
                 <div class="relative mb-8">
-                    <div class="absolute top-4 left-0 w-full h-0.5 bg-gray-200 -z-10"></div>
+                    <div class="absolute top-4 left-[8%] w-[90%] h-0.5 bg-gray-200 -z-10"></div>
                     <div class="flex justify-between relative z-0">
                         <div v-for="(step, index) in statusSteps" :key="step.id"
                             class="flex flex-col items-center group">
