@@ -2,18 +2,22 @@
 
 namespace App\Providers;
 
-use App\Repositories\BaseRepository;
-use App\Repositories\BillingRepository;
-use App\Repositories\DamagedItemRepository;
-use App\Repositories\Interfaces\BaseRepositoryInterface;
-use App\Repositories\Interfaces\BillingRepositoryInterface;
-use App\Repositories\Interfaces\DamagedItemRepositoryInterface;
-use App\Repositories\Interfaces\ItemRepositoryInterface;
-use App\Repositories\Interfaces\OrderRepositoryInterface;
-use App\Repositories\Interfaces\SupplierRepositoryInterface;
-use App\Repositories\ItemRepository;
-use App\Repositories\OrderRepository;
-use App\Repositories\SupplierRepository;
+use App\Repositories\Interfaces\{
+    BaseRepositoryInterface,
+    SupplierRepositoryInterface,
+    ItemRepositoryInterface,
+    DamagedItemRepositoryInterface,
+    OrderRepositoryInterface,
+    BillingRepositoryInterface
+};
+use App\Repositories\{
+    BaseRepository,
+    SupplierRepository,
+    ItemRepository,
+    DamagedItemRepository,
+    OrderRepository,
+    BillingRepository
+};
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
