@@ -25,7 +25,7 @@ return new class extends Migration
             ])->default('pending');
             $table->enum('payment_method', ['cash', 'gcash', 'bank_transfer'])->default('cash');
             $table->decimal('total_amount', 10, 2);
-            $table->enum('delivery_method', ['walk_in', 'delivery'])->default('walk_in');
+            $table->enum('delivery_method', ['pickup', 'delivery'])->default('pickup');
             $table->text('delivery_address')->nullable();
             $table->timestamps();
         });

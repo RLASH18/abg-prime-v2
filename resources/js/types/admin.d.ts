@@ -74,7 +74,7 @@ export interface Order {
     status: 'pending' | 'confirmed' | 'assembled' | 'shipped' | 'delivered' | 'paid' | 'cancelled';
     payment_method: 'cash' | 'gcash' | 'bank_transfer';
     total_amount: number;
-    delivery_method: 'walk_in' | 'delivery';
+    delivery_method: 'pickup' | 'delivery';
     delivery_address: string | null;
     created_at: string;
     updated_at: string;
