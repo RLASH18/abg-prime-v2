@@ -22,17 +22,19 @@ trait Filterable
 
         return $query->where(function ($q) use ($search, $searchableColumns) {
             foreach ($searchableColumns as $index => $column) {
-                // Check if column contains a dot (relationship.column)
+                // Check if column contains a dot (relationship.column or nested.relationship.column)
                 if (str_contains($column, '.')) {
-                    [$relation, $relationColumn] = explode('.', $column, 2);
+                    $parts = explode('.', $column);
+                    $columnName = array_pop($parts);
+                    $relationPath = implode('.', $parts);
 
                     if ($index === 0) {
-                        $q->whereHas($relation, function ($relationQuery) use ($search, $relationColumn) {
-                            $relationQuery->where($relationColumn, 'like', '%' . $search . '%');
+                        $q->whereHas($relationPath, function ($relationQuery) use ($search, $columnName) {
+                            $relationQuery->where($columnName, 'like', '%' . $search . '%');
                         });
                     } else {
-                        $q->orWhereHas($relation, function ($relationQuery) use ($search, $relationColumn) {
-                            $relationQuery->where($relationColumn, 'like', '%' . $search . '%');
+                        $q->orWhereHas($relationPath, function ($relationQuery) use ($search, $columnName) {
+                            $relationQuery->where($columnName, 'like', '%' . $search . '%');
                         });
                     }
                 } else {
