@@ -1,3 +1,5 @@
+import { User } from ".";
+
 export interface DataTableColumn<T = any> {
     label: string;
     key: keyof T | string;
@@ -55,4 +57,27 @@ export interface DamagedItem {
     created_at: string;
     updated_at: string;
     item: InventoryItem;  // The related item (eager loaded)
+}
+
+export interface OrderItem {
+    id: number;
+    order_id: number;
+    item_id: number;
+    quantity: number;
+    unit_price: number;
+    item?: InventoryItem;
+}
+
+export interface Order {
+    id: number;
+    user_id: number;
+    status: 'pending' | 'confirmed' | 'assembled' | 'shipped' | 'delivered' | 'paid' | 'cancelled';
+    payment_method: 'cash' | 'gcash' | 'bank_transfer';
+    total_amount: number;
+    delivery_method: 'walk_in' | 'delivery';
+    delivery_address: string | null;
+    created_at: string;
+    updated_at: string;
+    user?: User;
+    order_items?: OrderItem[];
 }

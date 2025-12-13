@@ -7,8 +7,10 @@ use App\Repositories\DamagedItemRepository;
 use App\Repositories\Interfaces\BaseRepositoryInterface;
 use App\Repositories\Interfaces\DamagedItemRepositoryInterface;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\SupplierRepositoryInterface;
 use App\Repositories\ItemRepository;
+use App\Repositories\OrderRepository;
 use App\Repositories\SupplierRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         ItemRepositoryInterface::class => ItemRepository::class,
         SupplierRepositoryInterface::class => SupplierRepository::class,
         DamagedItemRepositoryInterface::class => DamagedItemRepository::class,
+        OrderRepositoryInterface::class => OrderRepository::class
     ];
 
     /**

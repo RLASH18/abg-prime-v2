@@ -42,4 +42,14 @@ class Item extends Model
     {
         return $this->hasMany(DamagedItem::class, 'item_id');
     }
+
+    /**
+     * Get all of the order items for the Item
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'item_id');
+    }
 }
