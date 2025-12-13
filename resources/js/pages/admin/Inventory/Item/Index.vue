@@ -12,6 +12,7 @@ import Filters from '@/components/Filters.vue';
 import itemsRoutes from '@/routes/admin/items';
 import { ref } from 'vue';
 import MarkAsDamagedModal from '@/pages/admin/Inventory/DamagedItem/MarkAsDamagedModal.vue';
+import { useFormatters } from '@/composables/useFormatters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -32,6 +33,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { formatCurrency } = useFormatters();
 
 // Modal state
 const showDamageModal = ref(false);
@@ -107,7 +109,7 @@ const columns: DataTableColumn<InventoryItem>[] = [
         label: 'Unit Price',
         key: 'unit_price',
         align: 'right',
-        render: (value) => `₱ ${parseFloat(value).toFixed(2)}`,
+        render: (value) => formatCurrency(value),
     },
     {
         label: 'Quantity',

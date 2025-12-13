@@ -30,6 +30,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { formatCurrency, formatDate } = useFormatters();
 
 // Initialize filters
 const { filters, updateFilter, resetFilters } = useFilters(
@@ -40,8 +41,6 @@ const { filters, updateFilter, resetFilters } = useFilters(
         payment_method: props.filters.payment_method || '',
     }
 );
-
-const { formatCurrency, formatDate } = useFormatters();
 
 // Filter configurations
 const filterConfigs: FilterConfig[] = [

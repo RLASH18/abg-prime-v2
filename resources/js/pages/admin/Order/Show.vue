@@ -24,6 +24,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { formatCurrency, formatDate } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -48,8 +49,6 @@ const getStatusColor = (status: string) => {
         default: return 'secondary' as const;
     }
 };
-
-const { formatCurrency, formatDate } = useFormatters();
 
 const subtotal = computed(() => {
     return props.order.order_items?.reduce((sum, item) => {

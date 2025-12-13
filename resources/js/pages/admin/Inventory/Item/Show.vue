@@ -16,6 +16,7 @@ import {
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import type { InventoryItem, Supplier } from '@/types/admin';
+import { useFormatters } from '@/composables/useFormatters';
 
 interface Props {
     item: InventoryItem;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { formatCurrency } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -125,7 +127,8 @@ const images = computed(() => {
                             </div>
                             <div class="text-right">
                                 <p class="text-sm text-muted-foreground mb-1">Unit Price</p>
-                                <p class="text-2xl font-bold text-primary">₱ {{ Number(item.unit_price).toFixed(2) }}
+                                <p class="text-2xl font-bold text-primary">
+                                    {{ formatCurrency(item.unit_price) }}
                                 </p>
                             </div>
                         </div>
@@ -199,7 +202,7 @@ const images = computed(() => {
                                 <div>
                                     <p class="text-sm text-muted-foreground">Total Value</p>
                                     <p class="font-medium">
-                                        ₱ {{ (Number(item.unit_price) * item.quantity).toFixed(2) }}
+                                        {{ formatCurrency(item.unit_price * item.quantity) }}
                                     </p>
                                 </div>
                             </div>

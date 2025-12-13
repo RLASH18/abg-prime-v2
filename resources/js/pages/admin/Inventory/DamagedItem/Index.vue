@@ -9,6 +9,7 @@ import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
 import Filters from '@/components/Filters.vue';
 import damagedItemsRoutes from '@/routes/admin/damaged-items';
+import { useFormatters } from '@/composables/useFormatters';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -28,6 +29,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { formatCurrency } = useFormatters();
 
 const { filters, updateFilter, resetFilters } = useFilters(
     damagedItemsRoutes.index().url,
@@ -73,7 +75,7 @@ const columns: DataTableColumn<DamagedItem>[] = [
         label: 'Discount',
         key: 'discount',
         align: 'right',
-        render: (v) => v ? `₱ ${parseFloat(v).toFixed(2)}` : '-'
+        render: (value) => value ? formatCurrency(value) : '-'
     },
     {
         label: 'Status',
@@ -82,7 +84,7 @@ const columns: DataTableColumn<DamagedItem>[] = [
     {
         label: 'Remarks',
         key: 'remarks',
-        render: (v) => v || '-'
+        render: (value) => value || '-'
     },
 ];
 

@@ -24,6 +24,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { formatDate, formatCurrency } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -45,9 +46,6 @@ const billingStatus = computed(() => {
     }
     return { label: 'Cancelled', variant: 'destructive' as const, class: 'bg-red-500/10 text-red-700 border-red-500/20' };
 });
-
-// Format date helper
-const { formatDate } = useFormatters();
 
 // Format payment method
 const formatPaymentMethod = (method: string) => {
@@ -107,8 +105,9 @@ const subtotal = computed(() => {
                             <!-- Amount -->
                             <div class="flex items-center justify-between p-3 rounded-lg bg-primary/5">
                                 <span class="text-sm text-muted-foreground">Total Amount</span>
-                                <span class="text-xl font-bold text-primary">₱ {{ Number(billing.amount).toFixed(2)
-                                    }}</span>
+                                <span class="text-xl font-bold text-primary">
+                                    {{ formatCurrency(billing.amount) }}
+                                </span>
                             </div>
 
                             <!-- Created Date -->
@@ -201,12 +200,13 @@ const subtotal = computed(() => {
                                                     <p class="font-medium">{{ item.item?.item_name || 'Unknown Item' }}
                                                     </p>
                                                     <p v-if="item.item?.item_code"
-                                                        class="text-xs text-muted-foreground font-mono">{{
-                                                        item.item.item_code }}</p>
+                                                        class="text-xs text-muted-foreground font-mono">
+                                                        {{ item.item.item_code }}
+                                                    </p>
                                                 </div>
                                             </td>
-                                            <td class="py-4 px-2 text-right font-medium">₱ {{
-                                                Number(item.unit_price).toFixed(2) }}</td>
+                                            <td class="py-4 px-2 text-right font-medium">
+                                                {{ formatCurrency(item.unit_price) }}</td>
                                             <td class="py-4 px-2 text-center">
                                                 <span
                                                     class="inline-flex items-center justify-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium">
@@ -214,7 +214,7 @@ const subtotal = computed(() => {
                                                 </span>
                                             </td>
                                             <td class="py-4 px-2 text-right font-semibold text-primary">
-                                                ₱ {{ (item.quantity * item.unit_price).toFixed(2) }}
+                                                {{ formatCurrency(item.quantity * item.unit_price) }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -227,12 +227,13 @@ const subtotal = computed(() => {
                                     <div class="w-full max-w-sm space-y-2">
                                         <div class="flex justify-between items-center py-2">
                                             <span class="text-muted-foreground">Subtotal</span>
-                                            <span class="font-medium">₱ {{ subtotal.toFixed(2) }}</span>
+                                            <span class="font-medium">{{ formatCurrency(subtotal) }}</span>
                                         </div>
                                         <div class="flex justify-between items-center py-3 border-t border-border">
                                             <span class="text-lg font-semibold">Total</span>
-                                            <span class="text-2xl font-bold text-primary">₱ {{
-                                                Number(billing.amount).toFixed(2) }}</span>
+                                            <span class="text-2xl font-bold text-primary">
+                                                {{ formatCurrency(billing.amount) }}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

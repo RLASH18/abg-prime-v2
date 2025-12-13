@@ -17,6 +17,7 @@ import {
 } from 'lucide-vue-next';
 import { computed } from 'vue';
 import type { Supplier } from '@/types/admin';
+import { useFormatters } from '@/composables/useFormatters';
 
 interface Props {
     supplier: Supplier;
@@ -43,6 +44,8 @@ const statusVariant = computed(() => {
 const statusIcon = computed(() => {
     return props.supplier.status === 'active' ? CheckCircle2 : XCircle;
 });
+
+const { formatDate } = useFormatters();
 </script>
 
 <template>
@@ -162,7 +165,7 @@ const statusIcon = computed(() => {
                             <div class="p-4 rounded-lg border border-border bg-card">
                                 <p class="text-xs text-muted-foreground mb-2">Created Date</p>
                                 <p class="font-semibold text-lg">
-                                    {{ new Date(props.supplier.created_at).toLocaleDateString() }}
+                                    {{ formatDate(props.supplier.created_at) }}
                                 </p>
                             </div>
 
@@ -170,7 +173,7 @@ const statusIcon = computed(() => {
                             <div class="p-4 rounded-lg border border-border bg-card">
                                 <p class="text-xs text-muted-foreground mb-2">Last Updated</p>
                                 <p class="font-semibold text-lg">
-                                    {{ new Date(props.supplier.updated_at).toLocaleDateString() }}
+                                    {{ formatDate(props.supplier.updated_at) }}
                                 </p>
                             </div>
                         </div>

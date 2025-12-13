@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/types';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { type Order } from '@/types/admin';
 import { Package, User } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
@@ -32,6 +32,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { formatCurrency, formatDate } = useFormatters();
 
 // Modal state
 const showStatusModal = ref(false);
@@ -89,8 +90,6 @@ const filterConfigs: FilterConfig[] = [
         placeholder: 'All Methods',
     },
 ];
-
-const { formatCurrency, formatDate } = useFormatters();
 
 const getStatusColor = (status: string) => {
     switch (status) {
