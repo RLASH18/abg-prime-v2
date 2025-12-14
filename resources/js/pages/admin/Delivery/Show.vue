@@ -31,7 +31,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: deliveriesRoutes.index().url,
     },
     {
-        title: `Delivery #${props.delivery.id}`,
+        title: `Delivery #${props.delivery.id.toString().padStart(4, '0')}`,
         href: deliveriesRoutes.show(props.delivery.id).url,
     },
 ];
@@ -61,14 +61,14 @@ const getStatusIcon = (status: string) => {
 
 <template>
 
-    <Head :title="`Delivery #${delivery.id}`" />
+    <Head :title="`Delivery #${delivery.id.toString().padStart(4, '0')}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
             <!-- Header -->
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <h1 class="text-2xl font-bold">Delivery #{{ delivery.id }}</h1>
+                    <h1 class="text-2xl font-bold">Delivery #{{ delivery.id.toString().padStart(4, '0') }}</h1>
                     <p class="text-sm text-muted-foreground mt-1">Scheduled for {{ formatDate(delivery.scheduled_date)
                     }}</p>
                 </div>
@@ -110,7 +110,7 @@ const getStatusIcon = (status: string) => {
                     <div class="space-y-4">
                         <div class="flex justify-between items-center pb-3 border-b">
                             <span class="text-sm text-muted-foreground">Order ID</span>
-                            <span class="font-semibold">#{{ delivery.order_id }}</span>
+                            <span class="font-semibold">#{{ delivery.order_id.toString().padStart(4, '0') }}</span>
                         </div>
                         <div class="flex justify-between items-center pb-3 border-b">
                             <span class="text-sm text-muted-foreground">Customer</span>

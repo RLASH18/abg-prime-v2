@@ -87,6 +87,8 @@ const columns: DataTableColumn<InventoryItem>[] = [
     {
         label: 'ID',
         key: 'id',
+        render: (value) => `#${value.toString().padStart(4, '0')}`,
+        class: 'text-gray-700'
     },
     {
         label: 'Item Code',

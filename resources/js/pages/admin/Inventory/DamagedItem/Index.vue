@@ -55,6 +55,8 @@ const columns: DataTableColumn<DamagedItem>[] = [
     {
         label: 'ID',
         key: 'id',
+        render: (value) => `#${value.toString().padStart(4, '0')}`,
+        class: 'text-gray-700'
     },
     {
         label: 'Item Code',
@@ -79,7 +81,8 @@ const columns: DataTableColumn<DamagedItem>[] = [
     },
     {
         label: 'Status',
-        key: 'status'
+        key: 'status',
+        render: (value) => value.charAt(0).toUpperCase() + value.slice(1)
     },
     {
         label: 'Remarks',
@@ -116,7 +119,8 @@ const actions: DataTableAction<DamagedItem>[] = [
                 @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
 
             <DataTable :data="damagedItems.data" :columns="columns" :actions="actions"
-                empty-message="No damaged items found." empty-description="Mark items as damaged from the Items page to track them here.">
+                empty-message="No damaged items found."
+                empty-description="Mark items as damaged from the Items page to track them here.">
 
                 <template #cell-status="{ value }">
                     <span :class="[

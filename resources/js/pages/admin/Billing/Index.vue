@@ -70,6 +70,7 @@ const columns: DataTableColumn<Billing>[] = [
     {
         label: 'ID',
         key: 'id',
+        render: (value) => `#${value.toString().padStart(4, '0')}`
     },
     {
         label: 'Billing Number',

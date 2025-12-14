@@ -64,7 +64,7 @@ const { formatDate } = useFormatters();
                             {{ props.supplier.status }}
                         </Badge>
                     </div>
-                    <p class="text-sm text-muted-foreground">Supplier ID: #{{ props.supplier.id }}</p>
+                    <p class="text-sm text-muted-foreground">Supplier ID: #{{ props.supplier.id.toString().padStart(4,'0') }}</p>
                 </div>
                 <div class="flex gap-2">
                     <LinkButton :href="suppliersRoutes.edit(props.supplier.id).url" label="Edit Supplier" />

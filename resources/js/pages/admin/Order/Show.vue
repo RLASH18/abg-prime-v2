@@ -32,7 +32,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: ordersRoutes.index().url,
     },
     {
-        title: `Order #${props.order.id}`,
+        title: `Order #${props.order.id.toString().padStart(4, '0')}`,
         href: ordersRoutes.show(props.order.id).url,
     },
 ];
@@ -59,14 +59,14 @@ const subtotal = computed(() => {
 
 <template>
 
-    <Head :title="`Order #${order.id}`" />
+    <Head :title="`Order #${order.id.toString().padStart(4, '0')}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
             <!-- Header -->
             <div class="flex justify-between items-start mb-4">
                 <div>
-                    <h1 class="text-2xl font-bold">Order #{{ order.id }}</h1>
+                    <h1 class="text-2xl font-bold">Order #{{ order.id.toString().padStart(4, '0') }}</h1>
                     <p class="text-sm text-muted-foreground mt-1">Placed on {{ formatDate(order.created_at) }}</p>
                 </div>
                 <div class="flex gap-2">

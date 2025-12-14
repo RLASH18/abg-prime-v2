@@ -132,7 +132,7 @@ const getStatusColor = (status: string) => {
                     <!-- Card Header -->
                     <div class="p-4 border-b bg-muted/5 flex justify-between items-start">
                         <div>
-                            <div class="font-mono text-sm font-medium">Order #{{ order.id }}</div>
+                            <div class="font-mono text-sm font-medium">Order #{{ order.id.toString().padStart(4, '0') }}</div>
                             <div class="text-xs text-muted-foreground mt-1">
                                 {{ formatDate(order.created_at) }}
                             </div>
