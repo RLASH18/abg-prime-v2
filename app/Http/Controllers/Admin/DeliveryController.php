@@ -71,17 +71,14 @@ class DeliveryController extends Controller
 
         // Handle proof of delivery upload
         if ($request->hasFile('proof_of_delivery')) {
-            $file = $request->file('proof_of_delivery');
-            $extension = $file->getClientOriginalExtension();
-            $timestamp = now()->format('YmdHis');
-            $filename = "{$file}_{$timestamp}.{$extension}";
-
-            $path = $request->file('proof_of_delivery')->storeAs('deliveries/proofs', $filename, 'public');
-
-            $additionalData['proof_of_delivery'] = $path;
+            $additionalData['proof_of_delivery'] = $this->storeFile(
+                $request->file('proof_of_delivery'),
+                'deliveries/proofs',
+                'proof'
+            );
         }
 
-        $updated = $this->deliveryService->updateDeliverStatus(
+        $updated = $this->deliveryService->updateDeliveryStatus(
             $id,
             $validated['status'],
             $additionalData

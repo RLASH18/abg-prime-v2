@@ -5,12 +5,13 @@ namespace App\Services;
 use App\Models\Item;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
 use App\Traits\Filterable;
+use App\Traits\HandlesFileUploads;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class ItemService
 {
-    use Filterable;
+    use Filterable, HandlesFileUploads;
 
     /**
      * Inject the item repository
@@ -178,17 +179,11 @@ class ItemService
             if (isset($files[$field]) && $files[$field] instanceof UploadedFile) {
                 // Delete old image if updating
                 if ($existingInventory && $existingInventory->$field) {
-                    Storage::disk('public')->delete($existingInventory->$field);
+                    $this->deleteFile($existingInventory->$field);
                 }
 
-                // Generate custom filename
-                $file = $files[$field];
-                $extension = $file->getClientOriginalExtension();
-                $timestamp = now()->format('YmdHis');
-                $filename = "{$field}_{$timestamp}.{$extension}";
-
                 // Store with custom name in items_img folder
-                $data[$field] = $file->storeAs('items_img', $filename, 'public');
+                $data[$field] = $this->storeFile($files[$field], 'items_img', $field);
             } elseif ($existingInventory) {
                 if (array_key_exists($field, $data) && empty($files[$field])) {
                     unset($data[$field]);
@@ -211,7 +206,7 @@ class ItemService
 
         foreach ($imageFields as $field) {
             if ($item->$field) {
-                Storage::disk('public')->delete($item->$field);
+                $this->deleteFile($item->$field);
             }
         }
     }

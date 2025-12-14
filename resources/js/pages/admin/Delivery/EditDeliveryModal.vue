@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import InputError from '@/components/InputError.vue';
 import { Spinner } from '@/components/ui/spinner';
 import deliveriesRoutes from '@/routes/admin/deliveries';
+import { ref, watch } from 'vue';
 
 interface Props {
     open: boolean;
@@ -29,6 +30,26 @@ const statusOptions = [
     { value: 'delivered', label: 'Delivered' },
     { value: 'failed', label: 'Failed' },
 ];
+
+// Reactive form data
+const formData = ref({
+    status: props.delivery?.status || 'scheduled',
+    driver_name: props.delivery?.driver_name || '',
+    scheduled_date: props.delivery?.scheduled_date || '',
+    remarks: props.delivery?.remarks || '',
+});
+
+// Watch for delivery changes to update form
+watch(() => props.delivery, (newDelivery) => {
+    if (newDelivery) {
+        formData.value = {
+            status: newDelivery.status,
+            driver_name: newDelivery.driver_name || '',
+            scheduled_date: newDelivery.scheduled_date,
+            remarks: newDelivery.remarks || '',
+        };
+    }
+}, { immediate: true });
 
 const close = () => {
     emit('update:open', false);
@@ -68,14 +89,14 @@ const close = () => {
                     <div class="space-y-2">
                         <Label for="status">Status<span class="text-red-500">*</span></Label>
                         <Select name="status" :options="statusOptions" placeholder="Select status"
-                            :model-value="delivery.status" required />
+                            v-model="formData.status" required />
                         <InputError :message="errors.status" />
                     </div>
 
                     <!-- Driver Name -->
                     <div class="space-y-2">
                         <Label for="driver_name">Driver Name</Label>
-                        <Input id="driver_name" name="driver_name" :value="delivery.driver_name"
+                        <Input id="driver_name" name="driver_name" v-model="formData.driver_name"
                             placeholder="Enter driver name" />
                         <InputError :message="errors.driver_name" />
                     </div>
@@ -83,7 +104,7 @@ const close = () => {
                     <!-- Scheduled Date -->
                     <div class="space-y-2">
                         <Label for="scheduled_date">Scheduled Date<span class="text-red-500">*</span></Label>
-                        <Input id="scheduled_date" name="scheduled_date" type="date" :value="delivery.scheduled_date"
+                        <Input id="scheduled_date" name="scheduled_date" type="date" v-model="formData.scheduled_date"
                             required />
                         <InputError :message="errors.scheduled_date" />
                     </div>
@@ -91,7 +112,7 @@ const close = () => {
                     <!-- Remarks -->
                     <div class="space-y-2">
                         <Label for="remarks">Remarks</Label>
-                        <Textarea id="remarks" name="remarks" :value="delivery.remarks"
+                        <Textarea id="remarks" name="remarks" v-model="formData.remarks"
                             placeholder="Add any notes or remarks..." rows="3" />
                         <InputError :message="errors.remarks" />
                     </div>
