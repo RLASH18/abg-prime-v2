@@ -28,6 +28,7 @@ import suppliers from '@/routes/admin/suppliers';
 import damagedItemsRoutes from '@/routes/admin/damaged-items';
 import ordersRoutes from '@/routes/admin/orders';
 import billingsRoutes from '@/routes/admin/billings';
+import deliveriesRoutes from '@/routes/admin/deliveries';
 
 const mainNavItems: NavItem[] = [
     {
@@ -65,7 +66,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Delivery',
-        href: dashboard(),
+        href: deliveriesRoutes.index().url,
         icon: Truck,
     },
     {

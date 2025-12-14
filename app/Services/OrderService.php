@@ -4,20 +4,23 @@ namespace App\Services;
 
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Traits\Filterable;
+use App\Traits\SyncOrderDeliveryStatus;
 
 class OrderService
 {
-    use Filterable;
+    use Filterable, SyncOrderDeliveryStatus;
 
     /**
      * Inject the order repository and billing service
      *
      * @param OrderRepositoryInterface $orderRepo
      * @param BillingService $billingService
+     * @param DeliveryService $deliveryService
      */
     public function __construct(
         protected OrderRepositoryInterface $orderRepo,
-        protected BillingService $billingService
+        protected BillingService $billingService,
+        protected DeliveryService $deliveryService
     ) {}
 
     /**
@@ -68,16 +71,72 @@ class OrderService
             return false;
         }
 
-        // Auto create billing when order is confirmed
-        if ($status === 'confirmed') {
-            $this->billingService->createBillingForOrder($id);
-        }
-
-        // Auto-update billing when order is paid
-        if ($status === 'paid') {
-            $this->billingService->markBillingAsPaid($id);
-        }
+        $this->handleBillingSync($id, $status);
+        $this->handleDeliveryCreation($id, $status);
+        $this->handleDeliverySync($id, $status);
 
         return true;
+    }
+
+    /**
+     * Handle billing synchronization
+     *
+     * @param int $orderId
+     * @param string $status
+     * @return void
+     */
+    protected function handleBillingSync(int $orderId, string $status): void
+    {
+        if ($status === 'confirmed') {
+            $this->billingService->createBillingForOrder($orderId);
+        }
+
+        if ($status === 'paid') {
+            $this->billingService->markBillingAsPaid($orderId);
+        }
+    }
+
+    /**
+     * Handle delivery creation
+     *
+     * @param int $orderId
+     * @param string $status
+     * @return void
+     */
+    protected function handleDeliveryCreation(int $orderId, string $status): void
+    {
+        if ($status === 'assembled') {
+            $this->deliveryService->createDeliveryForOrder($orderId);
+        }
+    }
+
+    /**
+     * Handle delivery status synchronization
+     *
+     * @param int $orderId
+     * @param string $orderStatus
+     * @return void
+     */
+    protected function handleDeliverySync(int $orderId, string $orderStatus): void
+    {
+        $mapping = $this->getOrderToDeliveryMapping();
+
+        if (! isset($mapping[$orderStatus])) {
+            return;
+        }
+
+        $delivery = $this->deliveryService->findByOrderId($orderId);
+
+        if (! $delivery) {
+            return;
+        }
+
+        $newDeliveryStatus = $mapping[$orderStatus];
+
+        if (! $this->shouldSync($delivery->status, $newDeliveryStatus)) {
+            return;
+        }
+
+        $this->deliveryService->updateDeliveryStatusOnly($delivery->id, $newDeliveryStatus);
     }
 }

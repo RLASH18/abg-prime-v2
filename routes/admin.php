@@ -4,7 +4,8 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Admin\{
     AdminController,
     OrderController,
-    BillingController
+    BillingController,
+    DeliveryController,
 };
 use App\Http\Controllers\Admin\Inventory\{
     SupplierController,
@@ -43,6 +44,14 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
             Route::controller(BillingController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('{id}', 'show')->name('show');
+            });
+        });
+
+        Route::prefix('deliveries')->name('deliveries.')->group(function () {
+            Route::controller(DeliveryController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('{id}', 'show')->name('show');
+                Route::patch('{id}/status', 'updateStatus')->name('updateStatus');
             });
         });
 

@@ -47,4 +47,14 @@ class Order extends Model
     {
         return $this->hasOne(Billing::class, 'order_id');
     }
+
+    /**
+     * Get the delivery associated with the Order
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function delivery(): HasOne
+    {
+        return $this->hasOne(Delivery::class, 'order_id');
+    }
 }

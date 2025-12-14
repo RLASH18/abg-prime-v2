@@ -93,3 +93,17 @@ export interface Billing {
     updated_at: string;
     order?: Order;
 }
+
+export interface Delivery {
+    id: number;
+    order_id: number;
+    status: 'scheduled' | 'rescheduled' | 'in_transit' | 'delivered' | 'failed';
+    scheduled_date: string;
+    actual_delivery_date: string | null;
+    driver_name: string | null;
+    remarks: string | null;
+    proof_of_delivery: string | null;
+    created_at: string;
+    updated_at: string;
+    order?: Order;
+}
