@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import { Form } from '@inertiajs/vue3';
 import { useTemplateRef } from 'vue';
 
@@ -19,8 +18,11 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useSettingsRoutes } from '@/composables/useSettingsRoutes';
 
 const passwordInput = useTemplateRef('passwordInput');
+
+const settingsRoutes = useSettingsRoutes();
 </script>
 
 <template>
@@ -46,7 +48,7 @@ const passwordInput = useTemplateRef('passwordInput');
                 </DialogTrigger>
                 <DialogContent>
                     <Form
-                        v-bind="ProfileController.destroy.form()"
+                        v-bind="settingsRoutes.profile.destroy.form()"
                         reset-on-success
                         @error="() => passwordInput?.$el?.focus()"
                         :options="{
