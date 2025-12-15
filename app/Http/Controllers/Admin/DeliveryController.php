@@ -55,37 +55,17 @@ class DeliveryController extends Controller
     public function updateStatus(UpdateDeliveryStatusRequest $request, int $id)
     {
         $validated = $request->validated();
-        $additionalData = [];
-
-        if (isset($validated['driver_name'])) {
-            $additionalData['driver_name'] = $validated['driver_name'];
-        }
-
-        if (isset($validated['scheduled_date'])) {
-            $additionalData['scheduled_date'] = $validated['scheduled_date'];
-        }
-
-        if (isset($validated['remarks'])) {
-            $additionalData['remarks'] = $validated['remarks'];
-        }
-
-        // Handle proof of delivery upload
-        if ($request->hasFile('proof_of_delivery')) {
-            $additionalData['proof_of_delivery'] = $this->storeFile(
-                $request->file('proof_of_delivery'),
-                'deliveries/proofs',
-                'proof'
-            );
-        }
+        $proofFile = $request->file('proof_of_delivery');
 
         $updated = $this->deliveryService->updateDeliveryStatus(
             $id,
             $validated['status'],
-            $additionalData
+            $validated,
+            $proofFile
         );
 
         if ($updated) {
-            return $this->flashSuccess('Deliver updated successfully', 'admin.deliveries.index');
+            return $this->flashSuccess('Delivery updated successfully', 'admin.deliveries.index');
         }
 
         return $this->flashError('Delivery not found', 'admin.deliveries.index');

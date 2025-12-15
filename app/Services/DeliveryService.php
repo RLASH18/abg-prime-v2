@@ -6,11 +6,14 @@ use App\Models\Delivery;
 use App\Repositories\Interfaces\DeliveryRepositoryInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Traits\Filterable;
+use App\Traits\HandlesFileUploads;
 use App\Traits\SyncOrderDeliveryStatus;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 
 class DeliveryService
 {
-    use Filterable, SyncOrderDeliveryStatus;
+    use Filterable, SyncOrderDeliveryStatus, HandlesFileUploads;
 
     /**
      * Inject repositories
@@ -99,18 +102,25 @@ class DeliveryService
      *
      * @param int $deliveryId
      * @param string $deliveryStatus
-     * @param array $additionalData
+     * @param array $validatedData
+     * @param UploadedFile|null $proofFile
      * @return bool
      */
-    public function updateDeliveryStatus(int $deliveryId, string $deliveryStatus, array $additionalData = []): bool
-    {
+    public function updateDeliveryStatus(
+        int $deliveryId,
+        string $deliveryStatus,
+        array $validatedData = [],
+        ?UploadedFile $proofFile = null
+    ): bool {
         $delivery = $this->deliveryRepo->find($deliveryId);
 
         if (! $delivery) {
             return false;
         }
 
+        $additionalData = $this->buildAdditionalData($validatedData, $proofFile);
         $data = $this->prepareDeliveryData($deliveryStatus, $additionalData);
+
         $updated = $this->deliveryRepo->update($deliveryId, $data);
 
         if ($updated) {
@@ -132,6 +142,30 @@ class DeliveryService
     {
         $data = $this->prepareDeliveryData($deliveryStatus, $additionalData);
         return $this->deliveryRepo->update($deliveryId, $data);
+    }
+
+    /**
+     * Build additional data from validated input and file upload
+     *
+     * @param array $validatedData
+     * @param UploadedFile|null $proofFile
+     * @return array
+     */
+    protected function buildAdditionalData(array $validatedData, ?UploadedFile $proofFile = null): array
+    {
+        $additionalData = array_filter(
+            Arr::only($validatedData, ['driver_name', 'scheduled_date', 'remarks'])
+        );
+
+        if ($proofFile) {
+            $additionalData['proof_of_delivery'] = $this->storeFile(
+                $proofFile,
+                'deliveries/proofs',
+                'proof'
+            );
+        }
+
+        return $additionalData;
     }
 
     /**
