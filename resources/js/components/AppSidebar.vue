@@ -29,6 +29,7 @@ import damagedItemsRoutes from '@/routes/admin/damaged-items';
 import ordersRoutes from '@/routes/admin/orders';
 import billingsRoutes from '@/routes/admin/billings';
 import deliveriesRoutes from '@/routes/admin/deliveries';
+import reportsRoutes from '@/routes/admin/reports';
 
 const mainNavItems: NavItem[] = [
     {
@@ -71,7 +72,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Reports',
-        href: dashboard(),
+        href: reportsRoutes.index().url,
         icon: BarChart3,
     },
 ];

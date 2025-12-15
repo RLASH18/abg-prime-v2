@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\{
     OrderController,
     BillingController,
     DeliveryController,
+    ReportController,
 };
 use App\Http\Controllers\Admin\Inventory\{
     SupplierController,
@@ -52,6 +53,17 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
                 Route::get('/', 'index')->name('index');
                 Route::get('{id}', 'show')->name('show');
                 Route::patch('{id}/status', 'updateStatus')->name('updateStatus');
+            });
+        });
+
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::controller(ReportController::class)->group(function () {
+                Route::get('/', [ReportController::class, 'index'])->name('index');
+                Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+                Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
+                Route::get('/orders', [ReportController::class, 'orders'])->name('orders');
+                Route::get('/billing', [ReportController::class, 'billing'])->name('billing');
+                Route::get('/delivery', [ReportController::class, 'delivery'])->name('delivery');
             });
         });
 
