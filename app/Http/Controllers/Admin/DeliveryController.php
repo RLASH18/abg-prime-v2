@@ -27,7 +27,7 @@ class DeliveryController extends Controller
         $filters = $request->only(['search', 'status']);
         $deliveries = $this->deliveryService->getAllPaginated(10, $filters);
 
-        return Inertia::render('admin/Delivery/Index', [
+        return Inertia::render('admin/Deliveries/Index', [
             'deliveries' => $deliveries,
             'filters' => $filters
         ]);
@@ -44,7 +44,7 @@ class DeliveryController extends Controller
             return $this->flashError('Delivery not found', 'admin.deliveries.index');
         }
 
-        return Inertia::render('admin/Delivery/Show', [
+        return Inertia::render('admin/Deliveries/Show', [
             'delivery' => $delivery
         ]);
     }

@@ -11,7 +11,7 @@ import { useFilters } from '@/composables/useFilters';
 import Filters from '@/components/Filters.vue';
 import itemsRoutes from '@/routes/admin/items';
 import { ref } from 'vue';
-import MarkAsDamagedModal from '@/pages/admin/Inventory/DamagedItem/MarkAsDamagedModal.vue';
+import MarkAsDamagedModal from '@/pages/admin/Inventory/DamagedItems/MarkAsDamagedModal.vue';
 import { useFormatters } from '@/composables/useFormatters';
 
 const breadcrumbs: BreadcrumbItem[] = [

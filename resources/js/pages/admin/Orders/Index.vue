@@ -7,7 +7,7 @@ import { Package, User } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
 import Filters from '@/components/Filters.vue';
-import OrderStatusModal from '@/pages/admin/Order/OrderStatusModal.vue';
+import OrderStatusModal from '@/pages/admin/Orders/OrderStatusModal.vue';
 import { ref } from 'vue';
 import ordersRoutes from '@/routes/admin/orders';
 import { useFormatters } from '@/composables/useFormatters';
@@ -132,7 +132,8 @@ const getStatusColor = (status: string) => {
                     <!-- Card Header -->
                     <div class="p-4 border-b bg-muted/5 flex justify-between items-start">
                         <div>
-                            <div class="font-mono text-sm font-medium">Order #{{ order.id.toString().padStart(4, '0') }}</div>
+                            <div class="font-mono text-sm font-medium">Order #{{ order.id.toString().padStart(4, '0') }}
+                            </div>
                             <div class="text-xs text-muted-foreground mt-1">
                                 {{ formatDate(order.created_at) }}
                             </div>

@@ -33,7 +33,7 @@ class OrderController extends Controller
 
         $orders = $this->orderService->getAllPaginated(10, $filters);
 
-        return Inertia::render('admin/Order/Index', [
+        return Inertia::render('admin/Orders/Index', [
             'orders' => $orders,
             'filters' => $filters,
         ]);
@@ -50,7 +50,7 @@ class OrderController extends Controller
             return $this->flashError('Order not found', 'admin.orders.index');
         }
 
-        return Inertia::render('admin/Order/Show', [
+        return Inertia::render('admin/Orders/Show', [
             'order' => $order,
         ]);
     }

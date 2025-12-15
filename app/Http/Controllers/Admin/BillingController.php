@@ -26,7 +26,7 @@ class BillingController extends Controller
         $filters = $request->only(['search', 'status', 'payment_method']);
         $billings = $this->billingService->getAllPaginated(10, $filters);
 
-        return Inertia::render('admin/Billing/Index', [
+        return Inertia::render('admin/Billings/Index', [
             'billings' => $billings,
             'filters' => $filters,
         ]);
@@ -43,7 +43,7 @@ class BillingController extends Controller
             return $this->flashError('Billing not found', 'admin.billings.index');
         }
 
-        return Inertia::render('admin/Billing/Show', [
+        return Inertia::render('admin/Billings/Show', [
             'billing' => $billing
         ]);
     }
