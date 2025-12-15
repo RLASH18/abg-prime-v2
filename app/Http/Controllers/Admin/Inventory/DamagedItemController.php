@@ -30,7 +30,7 @@ class DamagedItemController extends Controller
         $filters = $request->only(['search', 'status']);
         $damagedItems = $this->damagedItemService->getAllPaginated(10, $filters);
 
-        return Inertia::render('admin/Inventory/DamagedItem/Index', [
+        return Inertia::render('admin/Inventory/DamagedItems/Index', [
             'damagedItems' => $damagedItems,
             'filters' => $filters
         ]);

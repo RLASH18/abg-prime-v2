@@ -29,7 +29,7 @@ class ItemController extends Controller
         $filters = $request->only(['search', 'category', 'stock_status']);
         $items = $this->itemService->getAllPaginated(10, $filters);
 
-        return Inertia::render('admin/Inventory/Item/Index', [
+        return Inertia::render('admin/Inventory/Items/Index', [
             'items' => $items,
             'filters' => $filters
         ]);
@@ -42,7 +42,7 @@ class ItemController extends Controller
     {
         $suppliers = Supplier::all();
 
-        return Inertia::render('admin/Inventory/Item/Create', [
+        return Inertia::render('admin/Inventory/Items/Create', [
             'suppliers' => $suppliers
         ]);
     }
@@ -71,7 +71,7 @@ class ItemController extends Controller
             $item->load('supplier');
         }
 
-        return Inertia::render('admin/Inventory/Item/Show', [
+        return Inertia::render('admin/Inventory/Items/Show', [
             'item' => $item,
             'supplier' => $item->supplier ?? null
         ]);
@@ -90,7 +90,7 @@ class ItemController extends Controller
 
         $suppliers = Supplier::all();
 
-        return Inertia::render('admin/Inventory/Item/Edit', [
+        return Inertia::render('admin/Inventory/Items/Edit', [
             'item' => $item,
             'suppliers' => $suppliers
         ]);

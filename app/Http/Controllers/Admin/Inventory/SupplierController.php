@@ -28,7 +28,7 @@ class SupplierController extends Controller
         $filters = $request->only('search');
         $suppliers = $this->supplierService->getAllPaginated(10, $filters);
 
-        return Inertia::render('admin/Inventory/Supplier/Index', [
+        return Inertia::render('admin/Inventory/Suppliers/Index', [
             'suppliers' => $suppliers,
             'filters' => $filters,
         ]);
@@ -39,7 +39,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        return Inertia::render('admin/Inventory/Supplier/Create');
+        return Inertia::render('admin/Inventory/Suppliers/Create');
     }
 
     /**
@@ -62,7 +62,7 @@ class SupplierController extends Controller
             return $this->flashError('Supplier not found', 'admin.suppliers.index');
         }
 
-        return Inertia::render('admin/Inventory/Supplier/Show', [
+        return Inertia::render('admin/Inventory/Suppliers/Show', [
             'supplier' => $supplier,
         ]);
     }
@@ -78,7 +78,7 @@ class SupplierController extends Controller
             return $this->flashError('Supplier not found', 'admin.suppliers.index');
         }
 
-        return Inertia::render('admin/Inventory/Supplier/Edit', [
+        return Inertia::render('admin/Inventory/Suppliers/Edit', [
             'supplier' => $supplier,
         ]);
     }
