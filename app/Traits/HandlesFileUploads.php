@@ -35,42 +35,10 @@ trait HandlesFileUploads
      */
     protected function deleteFile(?string $path, string $disk = 'public'): bool
     {
-        if (!$path) {
+        if (! $path) {
             return false;
         }
 
         return Storage::disk($disk)->delete($path);
-    }
-
-    /**
-     * Handle multiple file uploads with optional deletion of old files
-     *
-     * @param array $files
-     * @param array $fieldNames
-     * @param string $directory
-     * @param array|null $oldPaths
-     * @return array
-     */
-    protected function handleMultipleFileUploads(
-        array $files,
-        array $fieldNames,
-        string $directory,
-        ?array $oldPaths = null
-    ): array {
-        $uploadedPaths = [];
-
-        foreach ($fieldNames as $field) {
-            if (isset($files[$field]) && $files[$field] instanceof UploadedFile) {
-                // Delete old file if exists
-                if ($oldPaths && isset($oldPaths[$field])) {
-                    $this->deleteFile($oldPaths[$field]);
-                }
-
-                // Store new file
-                $uploadedPaths[$field] = $this->storeFile($files[$field], $directory, $field);
-            }
-        }
-
-        return $uploadedPaths;
     }
 }
