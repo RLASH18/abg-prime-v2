@@ -20,11 +20,8 @@ class ReportController extends Controller
 
     /**
      * Display report dashboard with overview
-     *
-     * @param Request $request
-     * @return \Inertia\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         // Get summary metrics for dashboard cards
         $overview = [
@@ -46,11 +43,8 @@ class ReportController extends Controller
 
     /**
      * Display sales report
-     *
-     * @param Request $request
-     * @return \Inertia\Response
      */
-    public function sales(Request $request)
+    public function sales()
     {
         $report = $this->reportService->getSalesMetrics();
 
@@ -61,11 +55,8 @@ class ReportController extends Controller
 
     /**
      * Display inventory report
-     *
-     * @param Request $request
-     * @return \Inertia\Response
      */
-    public function inventory(Request $request)
+    public function inventory()
     {
         $report = $this->reportService->getInventoryMetrics();
 
@@ -76,11 +67,8 @@ class ReportController extends Controller
 
     /**
      * Display order report
-     *
-     * @param Request $request
-     * @return \Inertia\Response
      */
-    public function orders(Request $request)
+    public function orders()
     {
         $report = $this->reportService->getOrderMetrics();
 
@@ -91,11 +79,8 @@ class ReportController extends Controller
 
     /**
      * Display billing report
-     *
-     * @param Request $request
-     * @return \Inertia\Response
      */
-    public function billing(Request $request)
+    public function billing()
     {
         $report = $this->reportService->getBillingMetrics();
 
@@ -106,11 +91,8 @@ class ReportController extends Controller
 
     /**
      * Display delivery report
-     *
-     * @param Request $request
-     * @return \Inertia\Response
      */
-    public function delivery(Request $request)
+    public function delivery()
     {
         $report = $this->reportService->getDeliveryMetrics();
 
