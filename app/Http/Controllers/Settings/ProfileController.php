@@ -21,6 +21,7 @@ class ProfileController extends Controller
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'profile' => $request->user()->profile,
         ]);
     }
 
@@ -29,13 +30,35 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+
+        // Update user models fields (name, email)
+        $userFields = ['name', 'email'];
+        $userData = array_intersect_key($validated, array_flip($userFields));
+
+        $request->user()->fill($userData);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
 
         $request->user()->save();
+
+        // Update UserProfile model fields
+        $profileFields = [
+            'address',
+            'contact_number',
+            'gender',
+            'birth_date'
+        ];
+        $profileData = array_intersect_key($validated, array_flip($profileFields));
+
+        if (! empty($profileData)) {
+            $request->user()->profile()->updateOrCreate(
+                ['user_id' => $request->user()->id],
+                $profileData
+            );
+        }
 
         // Dynamically redirect based on the current route prefix
         $currentRouteName = $request->route()->getName();

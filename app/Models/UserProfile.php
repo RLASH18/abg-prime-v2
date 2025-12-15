@@ -13,6 +13,7 @@ class UserProfile extends Model
         'address',
         'contact_number',
         'gender',
+        'birth_date',
     ];
 
     /**
