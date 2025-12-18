@@ -23,8 +23,8 @@ import {
     Truck
 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
-import items from '@/routes/admin/items';
-import suppliers from '@/routes/admin/suppliers';
+import itemsRoutes from '@/routes/admin/items';
+import suppliersRoutes from '@/routes/admin/suppliers';
 import damagedItemsRoutes from '@/routes/admin/damaged-items';
 import ordersRoutes from '@/routes/admin/orders';
 import billingsRoutes from '@/routes/admin/billings';
@@ -43,11 +43,11 @@ const mainNavItems: NavItem[] = [
         items: [
             {
                 title: 'Suppliers',
-                href: suppliers.index()
+                href: suppliersRoutes.index()
             },
             {
                 title: 'Items',
-                href: items.index()
+                href: itemsRoutes.index()
             },
             {
                 title: 'Damaged Items',
