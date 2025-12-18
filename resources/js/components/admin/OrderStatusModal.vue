@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import BaseModal from '@/components/BaseModal.vue';
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle
+} from '@/components/ui/dialog';
 import { type Order } from '@/types/admin';
 import { Truck, CreditCard, Clock, CheckCircle2, Box, MapPin, XCircle } from 'lucide-vue-next';
 import { useForm } from '@inertiajs/vue3';
@@ -84,8 +90,12 @@ const getStatusColor = (status: string) => {
 </script>
 
 <template>
-    <BaseModal :open="open" @update:open="$emit('update:open', $event)" :title="`Update Order #${order?.id}`" size="lg">
-        <template #default>
+    <Dialog :open="open" @update:open="$emit('update:open', $event)">
+        <DialogContent class="sm:max-w-lg">
+            <DialogHeader>
+                <DialogTitle>Update Order #{{ order?.id }}</DialogTitle>
+            </DialogHeader>
+
             <div class="py-4" v-if="order">
                 <!-- Current Status Display -->
                 <div class="flex items-center justify-between mb-8 px-2">
@@ -145,13 +155,13 @@ const getStatusColor = (status: string) => {
                     <p class="text-sm font-medium text-green-900">This order has been completed and paid.</p>
                 </div>
             </div>
-        </template>
 
-        <template #footer>
-            <button @click="$emit('update:open', false)"
-                class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                Close
-            </button>
-        </template>
-    </BaseModal>
+            <DialogFooter>
+                <button @click="$emit('update:open', false)"
+                    class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                    Close
+                </button>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
 </template>

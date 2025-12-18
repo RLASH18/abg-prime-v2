@@ -7,7 +7,7 @@ import { Package, User } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
 import Filters from '@/components/Filters.vue';
-import OrderStatusModal from '@/pages/admin/Orders/OrderStatusModal.vue';
+import OrderStatusModal from '@/components/admin/OrderStatusModal.vue';
 import { ref } from 'vue';
 import ordersRoutes from '@/routes/admin/orders';
 import { useFormatters } from '@/composables/useFormatters';

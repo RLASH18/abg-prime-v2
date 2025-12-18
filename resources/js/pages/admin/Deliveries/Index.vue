@@ -10,7 +10,7 @@ import { useFilters } from '@/composables/useFilters';
 import Filters from '@/components/Filters.vue';
 import deliveriesRoutes from '@/routes/admin/deliveries';
 import { useFormatters } from '@/composables/useFormatters';
-import EditDeliveryModal from './EditDeliveryModal.vue';
+import EditDeliveryModal from '@/components/admin/EditDeliveryModal.vue';
 import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [

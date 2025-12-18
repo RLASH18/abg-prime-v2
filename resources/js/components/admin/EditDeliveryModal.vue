@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import BaseModal from '@/components/BaseModal.vue';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle
+} from '@/components/ui/dialog';
 import { type Delivery } from '@/types/admin';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -57,9 +62,12 @@ const close = () => {
 </script>
 
 <template>
-    <BaseModal :open="open" @update:open="emit('update:open', $event)" :title="`Edit Delivery #${delivery?.id}`"
-        size="lg">
-        <template #default>
+    <Dialog :open="open" @update:open="emit('update:open', $event)">
+        <DialogContent class="sm:max-w-lg">
+            <DialogHeader>
+                <DialogTitle>Edit Delivery #{{ delivery?.id }}</DialogTitle>
+            </DialogHeader>
+
             <div v-if="delivery">
                 <!-- Order Info -->
                 <div class="bg-muted/30 p-3 rounded-lg border mb-4">
@@ -127,6 +135,6 @@ const close = () => {
                     </div>
                 </Form>
             </div>
-        </template>
-    </BaseModal>
+        </DialogContent>
+    </Dialog>
 </template>
