@@ -20,9 +20,11 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
     ->name('admin.')
     ->group(function () {
 
-        Route::get('dashboard', [AdminController::class, 'dashboard'])
+        // Dashboard
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])
             ->name('dashboard');
 
+        // Inventory
         Route::prefix('inventory')->group(function () {
             Route::resources([
                 'suppliers' => SupplierController::class,
@@ -33,37 +35,41 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
                 ->only(['index', 'store', 'destroy']);
         });
 
+        // Orders
         Route::prefix('orders')->name('orders.')->group(function () {
             Route::controller(OrderController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('{id}', 'show')->name('show');
-                Route::patch('{id}/status', 'updateStatus')->name('updateStatus');
+                Route::get('/{id}', 'show')->name('show');
+                Route::patch('/{id}/status', 'updateStatus')->name('updateStatus');
             });
         });
 
+        // Billings
         Route::prefix('billings')->name('billings.')->group(function () {
             Route::controller(BillingController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('{id}', 'show')->name('show');
+                Route::get('/{id}', 'show')->name('show');
             });
         });
 
+        // Deliveries
         Route::prefix('deliveries')->name('deliveries.')->group(function () {
             Route::controller(DeliveryController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('{id}', 'show')->name('show');
-                Route::patch('{id}/status', 'updateStatus')->name('updateStatus');
+                Route::get('/{id}', 'show')->name('show');
+                Route::patch('/{id}/status', 'updateStatus')->name('updateStatus');
             });
         });
 
+        // Reports
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::controller(ReportController::class)->group(function () {
-                Route::get('/', [ReportController::class, 'index'])->name('index');
-                Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
-                Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
-                Route::get('/orders', [ReportController::class, 'orders'])->name('orders');
-                Route::get('/billing', [ReportController::class, 'billing'])->name('billing');
-                Route::get('/delivery', [ReportController::class, 'delivery'])->name('delivery');
+                Route::get('/', 'index')->name('index');
+                Route::get('/sales', 'sales')->name('sales');
+                Route::get('/inventory', 'inventory')->name('inventory');
+                Route::get('/orders', 'orders')->name('orders');
+                Route::get('/billing', 'billing')->name('billing');
+                Route::get('/delivery', 'delivery')->name('delivery');
             });
         });
 
