@@ -10,7 +10,24 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { DataTableAction, DataTableColumn } from '@/types/admin';
+
+interface DataTableColumn<T = any> {
+    label: string;
+    key: keyof T | string;
+    align?: 'left' | 'center' | 'right';
+    render?: (value: any, row: T) => string | number;
+    class?: string;
+    sortable?: boolean;
+}
+
+interface DataTableAction<T = any> {
+    label: string;
+    icon: any;
+    onClick: (row: T) => void;
+    variant?: 'default' | 'ghost' | 'destructive' | 'outline';
+    show?: (row: T) => boolean;
+    class?: string;
+}
 
 interface Props {
     data: T[];
