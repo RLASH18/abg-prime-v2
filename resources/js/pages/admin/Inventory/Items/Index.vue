@@ -4,7 +4,8 @@ import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/t
 import { Head, router } from '@inertiajs/vue3';
 import LinkButton from '@/components/LinkButton.vue';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn, DataTableAction, InventoryItem } from '@/types/admin';
+import type { DataTableColumn, DataTableAction } from '@/types';
+import type { InventoryItem } from '@/types/admin';
 import { AlertTriangle, Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';

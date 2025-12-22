@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/vue3';
 import type { OrderMetrics } from '@/types/admin';
 import { useFormatters } from '@/composables/useFormatters';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn } from '@/types/admin';
+import type { DataTableColumn } from '@/types';
 import { ShoppingCart, Package, Truck, CheckCircle } from 'lucide-vue-next';
 import reportsRoutes from '@/routes/admin/reports';
 

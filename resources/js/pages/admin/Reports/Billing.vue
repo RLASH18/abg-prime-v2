@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/vue3';
 import type { BillingMetrics } from '@/types/admin';
 import { useFormatters } from '@/composables/useFormatters';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn } from '@/types/admin';
+import type { DataTableColumn } from '@/types';
 import { FileText, DollarSign, CheckCircle, AlertCircle } from 'lucide-vue-next';
 import reportsRoutes from '@/routes/admin/reports';
 

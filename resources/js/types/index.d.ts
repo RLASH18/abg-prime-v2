@@ -41,6 +41,24 @@ export interface User {
 
 export type BreadcrumbItemType = BreadcrumbItem;
 
+export interface DataTableColumn<T = any> {
+    label: string;
+    key: keyof T | string;
+    align?: 'left' | 'center' | 'right';
+    render?: (value: any, row: T) => string | number;
+    class?: string;
+    sortable?: boolean;
+}
+
+export interface DataTableAction<T = any> {
+    label: string;
+    icon: any;
+    onClick: (row: T) => void;
+    variant?: 'default' | 'ghost' | 'destructive' | 'outline';
+    show?: (row: T) => boolean;
+    class?: string;
+}
+
 export interface PaginationLink {
     url: string | null;
     label: string;

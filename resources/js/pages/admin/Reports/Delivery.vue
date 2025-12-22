@@ -4,7 +4,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import type { DeliveryMetrics } from '@/types/admin';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn } from '@/types/admin';
+import type { DataTableColumn } from '@/types';
 import { Truck, Package, CheckCircle, Clock } from 'lucide-vue-next';
 import reportsRoutes from '@/routes/admin/reports';
 

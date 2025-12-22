@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/vue3';
 import type { InventoryMetrics } from '@/types/admin';
 import { useFormatters } from '@/composables/useFormatters';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn } from '@/types/admin';
+import type { DataTableColumn } from '@/types';
 import { Package, AlertTriangle, DollarSign, Users } from 'lucide-vue-next';
 import reportsRoutes from '@/routes/admin/reports';
 
@@ -131,7 +131,7 @@ const supplierColumns: DataTableColumn[] = [
                         <div>
                             <p class="text-sm text-muted-foreground">Damaged Items Loss</p>
                             <p class="text-2xl font-bold mt-1">{{ formatCurrency(report.damaged_summary.estimated_loss)
-                            }}</p>
+                                }}</p>
                         </div>
                         <div class="p-3 bg-red-50 rounded-lg">
                             <AlertTriangle class="w-6 h-6 text-red-600" />

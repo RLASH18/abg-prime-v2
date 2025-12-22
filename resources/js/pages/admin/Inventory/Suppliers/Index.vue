@@ -5,7 +5,8 @@ import { Head, router } from '@inertiajs/vue3';
 import suppliersRoutes from '@/routes/admin/suppliers';
 import LinkButton from '@/components/LinkButton.vue';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn, DataTableAction, Supplier } from '@/types/admin';
+import type { DataTableColumn, DataTableAction } from '@/types';
+import type { Supplier } from '@/types/admin';
 import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
@@ -115,8 +116,7 @@ const actions: DataTableAction<Supplier>[] = [
                 @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
 
             <!-- Suppliers Table -->
-            <DataTable :data="suppliers.data" :columns="columns" :actions="actions"
-                empty-message="No suppliers found.">
+            <DataTable :data="suppliers.data" :columns="columns" :actions="actions" empty-message="No suppliers found.">
 
                 <!-- Suppliers Name -->
                 <template #cell-supplier_name="{ value }">
