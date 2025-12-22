@@ -8,6 +8,7 @@ import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn } from '@/types';
 import { TrendingUp, DollarSign, ShoppingBag, CreditCard } from 'lucide-vue-next';
 import reportsRoutes from '@/routes/admin/reports';
+import LinkButton from '@/components/LinkButton.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -62,6 +63,7 @@ const topItemsColumns: DataTableColumn[] = [
                     <h1 class="text-2xl font-bold">Sales Report</h1>
                     <p class="text-sm text-muted-foreground">View sales performance and revenue analytics</p>
                 </div>
+                <LinkButton :href="reportsRoutes.index().url" mode="back" label="Go back" />
             </div>
 
             <!-- Summary Cards -->
@@ -82,7 +84,9 @@ const topItemsColumns: DataTableColumn[] = [
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-muted-foreground">Total Revenue</p>
-                            <p class="text-2xl font-bold mt-1">{{ formatCurrency(report.summary.total_revenue) }}</p>
+                            <p class="text-2xl font-bold mt-1">
+                                {{ formatCurrency(report.summary.total_revenue) }}
+                            </p>
                         </div>
                         <div class="p-3 bg-green-50 rounded-lg">
                             <DollarSign class="w-6 h-6 text-green-600" />
@@ -94,7 +98,8 @@ const topItemsColumns: DataTableColumn[] = [
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-muted-foreground">Average Order Value</p>
-                            <p class="text-2xl font-bold mt-1">{{ formatCurrency(report.summary.average_order_value) }}
+                            <p class="text-2xl font-bold mt-1">
+                                {{ formatCurrency(report.summary.average_order_value) }}
                             </p>
                         </div>
                         <div class="p-3 bg-purple-50 rounded-lg">

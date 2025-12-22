@@ -8,6 +8,7 @@ import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn } from '@/types';
 import { FileText, DollarSign, CheckCircle, AlertCircle } from 'lucide-vue-next';
 import reportsRoutes from '@/routes/admin/reports';
+import LinkButton from '@/components/LinkButton.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -67,6 +68,7 @@ const outstandingColumns: DataTableColumn[] = [
                     <h1 class="text-2xl font-bold">Billing Report</h1>
                     <p class="text-sm text-muted-foreground">Review billing and payment collection</p>
                 </div>
+                <LinkButton :href="reportsRoutes.index().url" mode="back" label="Go back" />
             </div>
 
             <!-- Summary Cards -->

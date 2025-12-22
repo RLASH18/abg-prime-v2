@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
+import ReportsLayout from '@/layouts/reports/Layout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
-import { BarChart3, Package, ShoppingCart, FileText, Truck } from 'lucide-vue-next';
+import { Head } from '@inertiajs/vue3';
 import { useFormatters } from '@/composables/useFormatters';
 import type { ReportOverview } from '@/types/admin';
 import reportsRoutes from '@/routes/admin/reports';
+import HeadingSmall from '@/components/HeadingSmall.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,137 +21,148 @@ interface Props {
 
 const props = defineProps<Props>();
 const { formatCurrency } = useFormatters();
-
-const reportCards = [
-    {
-        title: 'Sales Report',
-        description: 'View sales performance and revenue analytics',
-        icon: BarChart3,
-        href: reportsRoutes.sales().url,
-        stats: [
-            { label: 'Total Orders', value: props.overview.sales_summary.total_orders },
-            { label: 'Total Revenue', value: formatCurrency(props.overview.sales_summary.total_revenue) },
-            { label: 'Avg Order Value', value: formatCurrency(props.overview.sales_summary.average_order_value) },
-        ],
-        color: 'blue',
-    },
-    {
-        title: 'Inventory Report',
-        description: 'Monitor stock levels and inventory value',
-        icon: Package,
-        href: reportsRoutes.inventory().url,
-        stats: [
-            { label: 'Total Items', value: props.overview.inventory_summary.total_items },
-            { label: 'Stock Value', value: formatCurrency(props.overview.inventory_summary.total_stock_value) },
-            { label: 'Low Stock Items', value: props.overview.inventory_summary.low_stock_count },
-        ],
-        color: 'green',
-    },
-    {
-        title: 'Order Report',
-        description: 'Track order status and fulfillment metrics',
-        icon: ShoppingCart,
-        href: reportsRoutes.orders().url,
-        stats: [
-            { label: 'Total Orders', value: props.overview.order_summary.total_orders },
-            { label: 'Delivered', value: props.overview.order_summary.delivered_orders },
-            { label: 'Pending', value: props.overview.order_summary.pending_orders },
-        ],
-        color: 'purple',
-    },
-    {
-        title: 'Billing Report',
-        description: 'Review billing and payment collection',
-        icon: FileText,
-        href: reportsRoutes.billing().url,
-        stats: [
-            { label: 'Total Billings', value: props.overview.billing_summary.total_billings },
-            { label: 'Paid Amount', value: formatCurrency(props.overview.billing_summary.paid_amount) },
-            { label: 'Unpaid Amount', value: formatCurrency(props.overview.billing_summary.unpaid_amount) },
-        ],
-        color: 'orange',
-    },
-    {
-        title: 'Delivery Report',
-        description: 'Monitor delivery status and performance',
-        icon: Truck,
-        href: reportsRoutes.delivery().url,
-        stats: [
-            { label: 'Total Deliveries', value: props.overview.delivery_summary.total_deliveries },
-            { label: 'In Transit', value: props.overview.delivery_summary.in_transit_deliveries },
-            { label: 'Delivered', value: props.overview.delivery_summary.delivered_deliveries },
-        ],
-        color: 'indigo',
-    },
-];
-
-const getColorClasses = (color: string) => {
-    const colors: Record<string, { bg: string; text: string; border: string }> = {
-        blue: { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200' },
-        green: { bg: 'bg-green-50', text: 'text-green-600', border: 'border-green-200' },
-        purple: { bg: 'bg-purple-50', text: 'text-purple-600', border: 'border-purple-200' },
-        orange: { bg: 'bg-orange-50', text: 'text-orange-600', border: 'border-orange-200' },
-        indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-200' },
-    };
-    return colors[color] || colors.blue;
-};
 </script>
 
 <template>
-
-    <Head title="Reports" />
-
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h1 class="text-2xl font-bold">Reports</h1>
-                    <p class="text-sm text-muted-foreground">View comprehensive business analytics and insights</p>
-                </div>
-            </div>
 
-            <!-- Report Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <Link v-for="card in reportCards" :key="card.title" :href="card.href" class="block group">
-                    <div :class="[
-                        'border rounded-lg p-6 transition-all duration-200',
-                        'hover:shadow-lg hover:scale-[1.02]',
-                        getColorClasses(card.color).border,
-                        'bg-white'
-                    ]">
-                        <!-- Card Header -->
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <h3
-                                    class="text-lg font-semibold text-gray-900 group-hover:text-primary transition-colors">
-                                    {{ card.title }}
-                                </h3>
-                                <p class="text-sm text-muted-foreground mt-1">
-                                    {{ card.description }}
-                                </p>
-                            </div>
-                            <div :class="['p-3 rounded-lg', getColorClasses(card.color).bg]">
-                                <component :is="card.icon" :class="['w-6 h-6', getColorClasses(card.color).text]" />
-                            </div>
+        <Head title="Reports" />
+
+        <ReportsLayout>
+            <div class="space-y-6">
+                <HeadingSmall title="Overview" description="Quick summary of all reports" />
+
+                <!-- Sales Summary -->
+                <div class="rounded-lg border bg-card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Sales Summary</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Total Orders</p>
+                            <p class="text-2xl font-bold mt-1">{{ overview.sales_summary.total_orders }}</p>
                         </div>
-
-                        <!-- Stats -->
-                        <div class="space-y-2">
-                            <div v-for="stat in card.stats" :key="stat.label" class="flex justify-between items-center">
-                                <span class="text-sm text-gray-600">{{ stat.label }}</span>
-                                <span class="text-sm font-semibold text-gray-900">{{ stat.value }}</span>
-                            </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Total Revenue</p>
+                            <p class="text-2xl font-bold mt-1">
+                                {{ formatCurrency(overview.sales_summary.total_revenue) }}
+                            </p>
                         </div>
-
-                        <!-- View Details Link -->
-                        <div class="mt-4 pt-4 border-t">
-                            <span class="text-sm font-medium text-primary group-hover:underline">
-                                View Detailed Report →
-                            </span>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Avg Order Value</p>
+                            <p class="text-2xl font-bold mt-1">
+                                {{ formatCurrency(overview.sales_summary.average_order_value) }}</p>
                         </div>
                     </div>
-                </Link>
+                </div>
+
+                <!-- Inventory Summary -->
+                <div class="rounded-lg border bg-card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Inventory Summary</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Total Items</p>
+                            <p class="text-2xl font-bold mt-1">
+                                {{ overview.inventory_summary.total_items }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Stock Value</p>
+                            <p class="text-2xl font-bold mt-1">
+                                {{ formatCurrency(overview.inventory_summary.total_stock_value) }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Low Stock Items</p>
+                            <p class="text-2xl font-bold mt-1 text-warning">
+                                {{ overview.inventory_summary.low_stock_count }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="rounded-lg border bg-card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Order Summary</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Total</p>
+                            <p class="text-xl font-bold mt-1">
+                                {{ overview.order_summary.total_orders }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Pending</p>
+                            <p class="text-xl font-bold mt-1 text-orange-600">
+                                {{ overview.order_summary.pending_orders }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Delivered</p>
+                            <p class="text-xl font-bold mt-1 text-green-600">
+                                {{ overview.order_summary.delivered_orders }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Cancelled</p>
+                            <p class="text-xl font-bold mt-1 text-destructive">
+                                {{ overview.order_summary.cancelled_orders }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Summary -->
+                <div class="rounded-lg border bg-card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Billing Summary</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Total Billings</p>
+                            <p class="text-2xl font-bold mt-1">
+                                {{ overview.billing_summary.total_billings }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Paid Amount</p>
+                            <p class="text-2xl font-bold mt-1 text-green-600">
+                                {{ formatCurrency(overview.billing_summary.paid_amount) }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Unpaid Amount</p>
+                            <p class="text-2xl font-bold mt-1 text-orange-600">
+                                {{ formatCurrency(overview.billing_summary.unpaid_amount) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Summary -->
+                <div class="rounded-lg border bg-card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Delivery Summary</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                            <p class="text-sm text-muted-foreground">Total</p>
+                            <p class="text-xl font-bold mt-1">
+                                {{ overview.delivery_summary.total_deliveries }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Pending</p>
+                            <p class="text-xl font-bold mt-1 text-orange-600">
+                                {{ overview.delivery_summary.pending_deliveries }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">In Transit</p>
+                            <p class="text-xl font-bold mt-1 text-blue-600">
+                                {{ overview.delivery_summary.in_transit_deliveries }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted-foreground">Delivered</p>
+                            <p class="text-xl font-bold mt-1 text-green-600">
+                                {{ overview.delivery_summary.delivered_deliveries }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </ReportsLayout>
     </AppLayout>
 </template>

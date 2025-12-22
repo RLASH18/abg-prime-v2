@@ -8,6 +8,7 @@ import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn } from '@/types';
 import { Package, AlertTriangle, DollarSign, Users } from 'lucide-vue-next';
 import reportsRoutes from '@/routes/admin/reports';
+import LinkButton from '@/components/LinkButton.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -86,6 +87,7 @@ const supplierColumns: DataTableColumn[] = [
                     <h1 class="text-2xl font-bold">Inventory Report</h1>
                     <p class="text-sm text-muted-foreground">Monitor stock levels and inventory value</p>
                 </div>
+                <LinkButton :href="reportsRoutes.index().url" mode="back" label="Go back" />
             </div>
 
             <!-- Summary Cards -->
@@ -106,7 +108,9 @@ const supplierColumns: DataTableColumn[] = [
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-muted-foreground">Total Stock Value</p>
-                            <p class="text-2xl font-bold mt-1">{{ formatCurrency(report.total_stock_value) }}</p>
+                            <p class="text-2xl font-bold mt-1">
+                                {{ formatCurrency(report.total_stock_value) }}
+                            </p>
                         </div>
                         <div class="p-3 bg-green-50 rounded-lg">
                             <DollarSign class="w-6 h-6 text-green-600" />
@@ -130,8 +134,9 @@ const supplierColumns: DataTableColumn[] = [
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-muted-foreground">Damaged Items Loss</p>
-                            <p class="text-2xl font-bold mt-1">{{ formatCurrency(report.damaged_summary.estimated_loss)
-                                }}</p>
+                            <p class="text-2xl font-bold mt-1">
+                                {{ formatCurrency(report.damaged_summary.estimated_loss) }}
+                            </p>
                         </div>
                         <div class="p-3 bg-red-50 rounded-lg">
                             <AlertTriangle class="w-6 h-6 text-red-600" />
@@ -166,16 +171,21 @@ const supplierColumns: DataTableColumn[] = [
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="border rounded-lg p-4">
                         <p class="text-sm text-muted-foreground">Total Records</p>
-                        <p class="text-2xl font-bold mt-1">{{ report.damaged_summary.total_records }}</p>
+                        <p class="text-2xl font-bold mt-1">
+                            {{ report.damaged_summary.total_records }}
+                        </p>
                     </div>
                     <div class="border rounded-lg p-4">
                         <p class="text-sm text-muted-foreground">Total Damaged Quantity</p>
-                        <p class="text-2xl font-bold mt-1">{{ report.damaged_summary.total_damaged_quantity }}</p>
+                        <p class="text-2xl font-bold mt-1">
+                            {{ report.damaged_summary.total_damaged_quantity }}
+                        </p>
                     </div>
                     <div class="border rounded-lg p-4">
                         <p class="text-sm text-muted-foreground">Estimated Loss</p>
-                        <p class="text-2xl font-bold text-destructive mt-1">{{
-                            formatCurrency(report.damaged_summary.estimated_loss) }}</p>
+                        <p class="text-2xl font-bold text-destructive mt-1">
+                            {{ formatCurrency(report.damaged_summary.estimated_loss) }}
+                        </p>
                     </div>
                 </div>
             </div>

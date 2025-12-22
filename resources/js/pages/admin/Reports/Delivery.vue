@@ -7,6 +7,7 @@ import DataTable from '@/components/DataTable.vue';
 import type { DataTableColumn } from '@/types';
 import { Truck, Package, CheckCircle, Clock } from 'lucide-vue-next';
 import reportsRoutes from '@/routes/admin/reports';
+import LinkButton from '@/components/LinkButton.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -51,6 +52,7 @@ const statusColumns: DataTableColumn[] = [
                     <h1 class="text-2xl font-bold">Delivery Report</h1>
                     <p class="text-sm text-muted-foreground">Monitor delivery status and performance</p>
                 </div>
+                <LinkButton :href="reportsRoutes.index().url" mode="back" label="Go back" />
             </div>
 
             <!-- Summary Cards -->
