@@ -18,6 +18,13 @@ export interface DataTableAction<T = any> {
     class?: string;
 }
 
+export interface DashboardStats {
+    countOrders: number;
+    getTotalRevenue: number;
+    countItems: number;
+    countCustomers: number;
+}
+
 export interface InventoryItem {
     id: number;
     item_name: string;

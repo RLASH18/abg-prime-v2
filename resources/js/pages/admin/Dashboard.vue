@@ -2,19 +2,13 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes/admin';
 import { type BreadcrumbItem } from '@/types';
+import { type DashboardStats } from '@/types/admin';
 import { Head } from '@inertiajs/vue3';
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import { useFormatters } from '@/composables/useFormatters';
 import { Package, PhilippinePeso, ShoppingCart, Users } from 'lucide-vue-next';
 
-interface Props {
-    countOrders: number;
-    getTotalRevenue: number;
-    countItems: number;
-    countCustomers: number;
-}
-
-const props = defineProps<Props>();
+const props = defineProps<DashboardStats>();
 const { formatCurrency } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
