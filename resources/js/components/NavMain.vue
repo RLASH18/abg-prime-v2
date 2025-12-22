@@ -45,6 +45,13 @@ const isSubItemActive = (href: NonNullable<NavItem['href']>): boolean => {
     const subItemPath = toUrl(href).split('?')[0];
     return currentUrlPath.startsWith(subItemPath);
 };
+
+// Check if a menu item is active (including child routes)
+const isItemActive = (href: NonNullable<NavItem['href']>): boolean => {
+    const currentUrlPath = page.url.split('?')[0];
+    const itemPath = toUrl(href).split('?')[0];
+    return currentUrlPath.startsWith(itemPath);
+};
 </script>
 
 <template>
@@ -81,7 +88,7 @@ const isSubItemActive = (href: NonNullable<NavItem['href']>): boolean => {
                 </Collapsible>
 
                 <SidebarMenuItem v-else>
-                    <SidebarMenuButton as-child :is-active="item.href ? urlIsActive(item.href, page.url) : false"
+                    <SidebarMenuButton as-child :is-active="item.href ? isItemActive(item.href) : false"
                         :tooltip="item.title">
                         <Link :href="item.href || '#'">
                             <component :is="item.icon" v-if="item.icon" />
