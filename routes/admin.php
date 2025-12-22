@@ -2,7 +2,7 @@
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Admin\{
-    AdminController,
+    DashboardController,
     OrderController,
     BillingController,
     DeliveryController,
@@ -21,7 +21,7 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
     ->group(function () {
 
         // Dashboard
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])
+        Route::get('/dashboard', [DashboardController::class, 'dashboard'])
             ->name('dashboard');
 
         // Inventory

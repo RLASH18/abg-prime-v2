@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\DeliveryRepositoryInterface;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 
-class AdminService
+class DashboardService
 {
     /**
      * Inject repositories

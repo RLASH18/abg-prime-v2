@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\Admin\AdminService;
-use Illuminate\Http\Request;
+use App\Services\Admin\DashboardService;
 use Inertia\Inertia;
 
-class AdminController extends Controller
+class DashboardController extends Controller
 {
     /**
-     * Inject AdminService
+     * Inject DashboardService
      *
-     * @param AdminService $adminService
+     * @param DashboardService $dashboardService
      */
     public function __construct(
-        protected AdminService $adminService
+        protected DashboardService $dashboardService
     ) {}
 
     /**
@@ -25,10 +24,10 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
-        $countOrders = $this->adminService->countOrders();
-        $getTotalRevenue = $this->adminService->getTotalRevenue();
-        $countItems = $this->adminService->countItems();
-        $countCustomers = $this->adminService->countCustomers();
+        $countOrders = $this->dashboardService->countOrders();
+        $getTotalRevenue = $this->dashboardService->getTotalRevenue();
+        $countItems = $this->dashboardService->countItems();
+        $countCustomers = $this->dashboardService->countCustomers();
 
         return Inertia::render('admin/Dashboard', [
             'countOrders' => $countOrders,
