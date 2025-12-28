@@ -18,7 +18,10 @@ class HomepageController extends Controller
         protected HomepageService $homepageService
     ) {}
 
-    public function homepage(Request $request)
+    /**
+     * Display all products on the customer homepage.
+     */
+    public function index(Request $request)
     {
         $filters = $request->only(['search', 'category']);
         $items = $this->homepageService->getAllProductsPaginated(24, $filters);
@@ -29,6 +32,9 @@ class HomepageController extends Controller
         ]);
     }
 
+    /**
+     * Display the specified product.
+     */
     public function show(int $id)
     {
         return Inertia::render('customer/Homepage/Show');

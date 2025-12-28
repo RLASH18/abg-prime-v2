@@ -10,7 +10,7 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
 
         Route::prefix('homepage')->name('homepage.')->group(function () {
             Route::controller(HomepageController::class)->group(function () {
-                Route::get('/', 'homepage')->name('index');
+                Route::get('/', 'index')->name('index');
 
                 Route::get('/items/{item}', 'show')->name('items.show');
             });
