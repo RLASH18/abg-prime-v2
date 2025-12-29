@@ -14,6 +14,6 @@ class RegisterResponse implements RegisterResponseContracts
      */
     public function toResponse($request)
     {
-        return redirect()->intended(route('customer.homepage'));
+        return redirect()->intended(route('customer.homepage.index'));
     }
 }

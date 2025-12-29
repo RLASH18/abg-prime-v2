@@ -4,10 +4,9 @@ namespace App\Http\Responses;
 
 use App\Enums\UserRole;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContracts;
-use Laravel\Fortify\Contracts\TwoFactorLoginResponse as TwoFactorLoginResponseContracts;
+use Laravel\Fortify\Contracts\VerifyEmailResponse as VerifyEmailResponseContract;
 
-class LoginResponse implements LoginResponseContracts, TwoFactorLoginResponseContracts
+class VerifyEmailResponse implements VerifyEmailResponseContract
 {
     /**
      * Create an HTTP response that represents the object.
