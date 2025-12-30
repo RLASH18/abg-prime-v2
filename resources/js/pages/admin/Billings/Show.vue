@@ -142,7 +142,7 @@ const subtotal = computed(() => {
                                 <Hash :size="18" class="text-muted-foreground mt-0.5" />
                                 <div>
                                     <p class="text-sm text-muted-foreground">Order ID</p>
-                                    <p class="font-medium font-mono">#{{ billing.order.id }}</p>
+                                    <p class="font-medium font-mono">#{{ billing.order.id.toString().padStart(4, '0') }}</p>
                                 </div>
                             </div>
 
