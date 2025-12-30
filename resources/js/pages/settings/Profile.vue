@@ -96,22 +96,15 @@ const triggerFileInput = () => {
                             <div>
                                 <Label class="text-base">Profile Picture</Label>
                                 <p class="text-sm text-muted-foreground mt-1">
-                                    Click on the avatar or use the button below to upload a new picture
+                                    Click on the avatar to upload a new picture
                                 </p>
                             </div>
 
                             <div class="flex items-center gap-3">
                                 <input ref="fileInputRef" id="profile_picture" type="file" name="profile_picture"
                                     accept="image/*" @change="onFileChange" class="hidden" />
-
-                                <Button type="button" variant="secondary" size="sm" @click="triggerFileInput">
-                                    <Upload class="mr-2 h-4 w-4" />
-                                    Upload New Picture
-                                </Button>
-
                                 <span class="text-xs text-muted-foreground">JPG, PNG or GIF (max 2MB)</span>
                             </div>
-
                             <InputError :message="errors.profile_picture" />
                         </div>
                     </div>
