@@ -4,7 +4,6 @@ namespace App\Services\Customer;
 
 use App\Repositories\ItemRepository;
 use App\Traits\Filterable;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class HomepageService
 {
@@ -24,9 +23,9 @@ class HomepageService
      *
      * @param int $perPage
      * @param array $filters
-     * @return LengthAwarePaginator
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAllProductsPaginated(int $perPage = 10, array $filters = []): LengthAwarePaginator
+    public function getAllPaginated(int $perPage = 10, array $filters = [])
     {
         $query = $this->itemRepo->query();
 
@@ -34,5 +33,16 @@ class HomepageService
         $this->applyExactFilter($query, 'category', $filters['category'] ?? null);
 
         return $query->orderBy('created_at', 'desc')->paginate($perPage);
+    }
+
+    /**
+     * Find an product by ID
+     *
+     * @param int $id
+     * @return Item|null
+     */
+    public function find(int $id)
+    {
+        return $this->itemRepo->find($id);
     }
 }

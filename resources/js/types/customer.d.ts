@@ -8,5 +8,7 @@ export interface Product {
     quantity: number;
     restock_threshold: number;
     description?: string;
-    image_path?: string;
+    item_image_1?: string;
+    item_image_2?: string;
+    item_image_3?: string;
 }

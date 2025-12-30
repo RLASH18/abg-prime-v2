@@ -12,10 +12,10 @@ import Pagination from '@/components/Pagination.vue';
 import { useFormatters } from '@/composables/useFormatters';
 import { useFilters } from '@/composables/useFilters';
 import homepageRoutes from '@/routes/customer/homepage';
-import itemsRoutes from '@/routes/customer/homepage/items';
+import productsRoutes from '@/routes/customer/homepage/products';
 
 interface Props {
-    items: PaginationData & {
+    products: PaginationData & {
         data: Product[];
     };
     filters: {
@@ -93,7 +93,7 @@ const getStockStatus = (item: Product) => {
                             <div
                                 class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background/50 backdrop-blur-sm border border-border">
                                 <Package class="h-5 w-5 text-primary" />
-                                <span class="text-sm font-medium">{{ items.total }}+ Products</span>
+                                <span class="text-sm font-medium">{{ products.total }}+ Products</span>
                             </div>
                             <div
                                 class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background/50 backdrop-blur-sm border border-border">
@@ -127,34 +127,33 @@ const getStockStatus = (item: Product) => {
             </div>
 
             <!-- Products Grid -->
-            <div v-if="items.data.length > 0"
+            <div v-if="products.data.length > 0"
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-                <Link
-                    v-for="item in items.data"
-                    :key="item.id"
-                    :href="itemsRoutes.show(item.id)"
-                    class="flex h-full"
-                >
+                <Link v-for="product in products.data"
+                    :key="product.id"
+                    :href="productsRoutes.show(product.id).url"
+                    class="flex h-full">
 
                     <Card
                         class="group flex flex-col w-full overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
 
                         <CardContent class="flex-1 p-0">
                             <!-- Product Image -->
-                            <div class="relative aspect-square overflow-hidden bg-muted">
-                                <img v-if="item.image_path" :src="item.image_path" :alt="item.item_name"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                            <div class="relative aspect-square overflow-hidden p-4">
+                                <img v-if="product.item_image_1" :src="`/storage/${product.item_image_1}`"
+                                    :alt="product.item_name"
+                                    class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                                 <div v-else
-                                    class="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+                                    class="w-full h-full flex items-center justify-center rounded-xl bg-gradient-to-br from-muted to-muted/50">
                                     <Package class="h-16 w-16 text-muted-foreground" />
                                 </div>
 
                                 <!-- Stock Badge -->
                                 <div class="absolute top-3 right-3">
-                                    <Badge :class="getStockStatus(item).class"
+                                    <Badge :class="getStockStatus(product).class"
                                         class="border font-semibold shadow-lg backdrop-blur-sm">
-                                        {{ getStockStatus(item).label }}
+                                        {{ getStockStatus(product).label }}
                                     </Badge>
                                 </div>
 
@@ -162,7 +161,7 @@ const getStockStatus = (item: Product) => {
                                 <div class="absolute top-3 left-3">
                                     <Badge variant="secondary"
                                         class="bg-background/80 backdrop-blur-sm border shadow-lg">
-                                        {{ item.category }}
+                                        {{ product.category }}
                                     </Badge>
                                 </div>
                             </div>
@@ -170,39 +169,40 @@ const getStockStatus = (item: Product) => {
                             <!-- Product Info -->
                             <div class="p-4 space-y-3">
                                 <div>
-                                    <p class="text-xs text-muted-foreground font-medium uppercase tracking-wider">{{
-                                        item.brand_name }}</p>
-                                    <h3 class="font-bold text-lg line-clamp-2 mt-1 group-hover:text-primary transition-colors"
-                                        :title="item.item_name">
-                                        {{ item.item_name }}
+                                    <p class="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                                        {{ product.brand_name }}
+                                    </p>
+                                    <h3 class="font-bold text-lg line-clamp-2 mt-1 group-hover:text-primary transition-colors truncate"
+                                        :title="product.item_name">
+                                        {{ product.item_name }}
                                     </h3>
                                 </div>
 
                                 <div class="flex items-baseline gap-2">
-                                    <span class="text-2xl font-bold text-primary">{{ formatCurrency(item.unit_price)
+                                    <span class="text-2xl font-bold text-primary">{{ formatCurrency(product.unit_price)
                                         }}</span>
                                     <span class="text-xs text-muted-foreground">per unit</span>
                                 </div>
 
                                 <div class="flex items-center justify-between text-xs text-muted-foreground">
-                                    <span>Code: {{ item.item_code }}</span>
+                                    <span>Code: {{ product.item_code }}</span>
                                     <span class="font-semibold" :class="{
-                                        'text-destructive': item.quantity <= 0,
-                                        'text-warning': item.quantity > 0 && item.quantity <= item.restock_threshold,
-                                        'text-green-600': item.quantity > item.restock_threshold
+                                        'text-destructive': product.quantity <= 0,
+                                        'text-warning': product.quantity > 0 && product.quantity <= product.restock_threshold,
+                                        'text-green-600': product.quantity > product.restock_threshold
                                     }">
-                                        {{ item.quantity }} available
+                                        {{ product.quantity }} available
                                     </span>
                                 </div>
                             </div>
                         </CardContent>
 
                         <CardFooter class="p-4 pt-0">
-                            <Button :disabled="item.quantity <= 0"
+                            <Button :disabled="product.quantity <= 0"
                                 class="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
                                 size="lg">
                                 <ShoppingCart class="h-4 w-4 mr-2" />
-                                {{ item.quantity <= 0 ? 'Out of Stock' : 'Add to Cart' }} </Button>
+                                {{ product.quantity <= 0 ? 'Out of Stock' : 'Add to Cart' }} </Button>
                         </CardFooter>
                     </Card>
                 </Link>
@@ -223,7 +223,7 @@ const getStockStatus = (item: Product) => {
             </div>
 
             <!-- Pagination -->
-            <Pagination :pagination="items" />
+            <Pagination :pagination="products" />
         </div>
     </AppLayout>
 </template>

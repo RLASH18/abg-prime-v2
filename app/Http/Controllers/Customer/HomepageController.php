@@ -24,10 +24,10 @@ class HomepageController extends Controller
     public function index(Request $request)
     {
         $filters = $request->only(['search', 'category']);
-        $items = $this->homepageService->getAllProductsPaginated(24, $filters);
+        $products = $this->homepageService->getAllPaginated(24, $filters);
 
         return Inertia::render('customer/Homepage/Index', [
-            'items' => $items,
+            'products' => $products,
             'filters' => $filters,
         ]);
     }
@@ -37,6 +37,14 @@ class HomepageController extends Controller
      */
     public function show(int $id)
     {
-        return Inertia::render('customer/Homepage/Show');
+        $product = $this->homepageService->find($id);
+
+        if (! $product) {
+            $this->flashError('Product not found', 'customer.homepage.index');
+        }
+
+        return Inertia::render('customer/Homepage/Show', [
+            'product' => $product
+        ]);
     }
 }

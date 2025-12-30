@@ -12,7 +12,7 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
             Route::controller(HomepageController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
 
-                Route::get('/items/{item}', 'show')->name('items.show');
+                Route::get('/products/{product}', 'show')->name('products.show');
             });
         });
 
