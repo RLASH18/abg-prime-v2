@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Notifications\OrderConfirmationNotification;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Traits\Filterable;
 use App\Traits\SyncOrderDeliveryStatus;
@@ -75,6 +76,10 @@ class OrderService
         $this->handleDeliveryCreation($id, $status);
         $this->handleDeliverySync($id, $status);
 
+        if ($status === 'confirmed') {
+            $this->sendOrderConfirmationEmail($id);
+        }
+
         return true;
     }
 
@@ -138,5 +143,22 @@ class OrderService
         }
 
         $this->deliveryService->updateDeliveryStatusOnly($delivery->id, $newDeliveryStatus);
+    }
+
+    /**
+     * Send order confirmation email to customer
+     *
+     * @param int $orderId
+     * @return void
+     */
+    protected function sendOrderConfirmationEmail(int $orderId): void
+    {
+        $order = $this->orderRepo->query()
+            ->with(['user', 'orderItems.item'])
+            ->find($orderId);
+
+        if ($order && $order->user) {
+            $order->user->notify(new OrderConfirmationNotification($order));
+        }
     }
 }
