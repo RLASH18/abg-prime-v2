@@ -40,7 +40,7 @@ class HomepageController extends Controller
         $product = $this->homepageService->find($id);
 
         if (! $product) {
-            $this->flashError('Product not found', 'customer.homepage.index');
+            return $this->flashError('Product not found', 'customer.homepage.index');
         }
 
         return Inertia::render('customer/Homepage/Show', [
