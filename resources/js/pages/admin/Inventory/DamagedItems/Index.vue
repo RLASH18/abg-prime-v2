@@ -133,7 +133,10 @@ const actions: DataTableAction<DamagedItem>[] = [
                 </template>
             </DataTable>
 
-            <Pagination :pagination="damagedItems" />
+            <!-- Pagination -->
+            <div v-if="damagedItems.total > 10">
+                <Pagination :pagination="damagedItems" />
+            </div>
         </div>
     </AppLayout>
 </template>

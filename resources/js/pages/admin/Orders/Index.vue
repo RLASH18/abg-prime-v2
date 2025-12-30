@@ -198,13 +198,12 @@ const getStatusColor = (status: string) => {
                 <p class="text-muted-foreground text-sm max-w-sm mt-2">
                     Try adjusting your search or filters to find what you're looking for.
                 </p>
-                <button @click="resetFilters" class="mt-4 text-primary hover:underline text-sm font-medium">
-                    Clear all filters
-                </button>
             </div>
 
             <!-- Pagination -->
-            <Pagination :pagination="orders" />
+            <div v-if="orders.total > 9">
+                <Pagination :pagination="orders" />
+            </div>
         </div>
     </AppLayout>
 

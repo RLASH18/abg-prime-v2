@@ -31,7 +31,7 @@ class OrderController extends Controller
             'delivery_method'
         ]);
 
-        $orders = $this->orderService->getAllPaginated(10, $filters);
+        $orders = $this->orderService->getAllPaginated(9, $filters);
 
         return Inertia::render('admin/Orders/Index', [
             'orders' => $orders,

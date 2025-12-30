@@ -160,7 +160,9 @@ const actions: DataTableAction<Supplier>[] = [
             </DataTable>
 
             <!-- Pagination -->
-            <Pagination :pagination="suppliers" />
+            <div v-if="suppliers.total > 10">
+                <Pagination :pagination="suppliers" />
+            </div>
         </div>
     </AppLayout>
 </template>

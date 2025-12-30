@@ -189,7 +189,9 @@ const actions: DataTableAction<Delivery>[] = [
             </DataTable>
 
             <!-- Pagination -->
-            <Pagination :pagination="deliveries" />
+            <div v-if="deliveries.total > 10">
+                <Pagination :pagination="deliveries" />
+            </div>
         </div>
 
         <!-- Edit Delivery Modal -->

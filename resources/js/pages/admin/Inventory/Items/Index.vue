@@ -221,7 +221,9 @@ const actions: DataTableAction<InventoryItem>[] = [
             </DataTable>
 
             <!-- Pagination -->
-            <Pagination :pagination="items" />
+            <div v-if="items.total > 10">
+                <Pagination :pagination="items" />
+            </div>
         </div>
     </AppLayout>
 

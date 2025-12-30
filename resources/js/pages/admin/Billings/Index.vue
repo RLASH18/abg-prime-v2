@@ -191,7 +191,9 @@ const actions: DataTableAction<Billing>[] = [
             </DataTable>
 
             <!-- Pagination -->
-            <Pagination :pagination="billings" />
+            <div v-if="billings.total > 10">
+                <Pagination :pagination="billings" />
+            </div>
         </div>
     </AppLayout>
 </template>
