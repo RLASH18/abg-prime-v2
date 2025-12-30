@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Traits\HandlesFileUploads;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,8 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    use HandlesFileUploads;
+
     /**
      * Show the user's profile settings page.
      */
@@ -32,7 +35,7 @@ class ProfileController extends Controller
     {
         $validated = $request->validated();
 
-        // Update user models fields (name, email)
+        // Update user model fields (name, email)
         $userFields = ['name', 'email'];
         $userData = array_intersect_key($validated, array_flip($userFields));
 
@@ -52,6 +55,24 @@ class ProfileController extends Controller
             'birth_date'
         ];
         $profileData = array_intersect_key($validated, array_flip($profileFields));
+
+        // Handle profile picture upload
+        if ($request->hasFile('profile_picture')) {
+            // Get the current profile to check for existing picture
+            $currentProfile = $request->user()->profile;
+
+            // Delete old profile picture if it exists
+            if ($currentProfile && $currentProfile->profile_picture) {
+                $this->deleteFile($currentProfile->profile_picture);
+            }
+
+            // Store new profile picture using the trait
+            $profileData['profile_picture'] = $this->storeFile(
+                $request->file('profile_picture'),
+                'profile_img',
+                'profile_' . $request->user()->id
+            );
+        }
 
         if (! empty($profileData)) {
             $request->user()->profile()->updateOrCreate(

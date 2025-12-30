@@ -28,6 +28,15 @@ export type AppPageProps<
     messages: any;
 };
 
+export interface UserProfile {
+    profile_picture?: string;
+    profile_picture_url?: string;
+    address?: string;
+    contact_number?: string;
+    gender?: string;
+    birth_date?: string;
+}
+
 export interface User {
     id: number;
     name: string;
@@ -37,6 +46,7 @@ export interface User {
     created_at: string;
     updated_at: string;
     role: 'admin' | 'customer';
+    profile?: UserProfile;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;

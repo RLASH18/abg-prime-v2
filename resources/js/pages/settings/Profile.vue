@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { send } from '@/routes/verification';
 import { Form, Head, Link, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 import DeleteUser from '@/components/DeleteUser.vue';
 import HeadingSmall from '@/components/HeadingSmall.vue';
@@ -10,23 +11,27 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useInitials } from '@/composables/useInitials';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type UserProfile } from '@/types';
 import { useSettingsRoutes } from '@/composables/useSettingsRoutes';
+import { Upload } from 'lucide-vue-next';
 
 interface Props {
     mustVerifyEmail: boolean;
     status?: string;
-    profile?: any;
+    profile?: UserProfile;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const page = usePage();
 const user = page.props.auth.user;
 
 const settingsRoutes = useSettingsRoutes();
+const { getInitials } = useInitials();
 
 const genderOptions = [
     { value: 'male', label: 'Male' },
@@ -39,6 +44,25 @@ const breadcrumbItems: BreadcrumbItem[] = [
         href: settingsRoutes.value.profile.edit().url,
     },
 ];
+
+const imagePreview = ref<string | null>(props.profile?.profile_picture_url || null);
+const fileInputRef = ref<HTMLInputElement | null>(null);
+
+const onFileChange = (e: Event) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            imagePreview.value = event.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+const triggerFileInput = () => {
+    fileInputRef.value?.click();
+};
 </script>
 
 <template>
@@ -52,6 +76,46 @@ const breadcrumbItems: BreadcrumbItem[] = [
 
                 <Form v-bind="settingsRoutes.profile.update.form()" class="space-y-6"
                     v-slot="{ errors, processing, recentlySuccessful }">
+
+                    <!-- Profile Picture Section -->
+                    <div class="flex items-start gap-6 pb-6 border-b border-border">
+                        <div class="relative group">
+                            <Avatar class="h-24 w-24 border-2 border-border">
+                                <AvatarImage v-if="imagePreview" :src="imagePreview" :alt="user.name" />
+                                <AvatarFallback class="text-2xl font-semibold">
+                                    {{ getInitials(user.name) }}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div class="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity group-hover:opacity-100 cursor-pointer"
+                                @click="triggerFileInput">
+                                <Upload class="h-5 w-5 text-white" />
+                            </div>
+                        </div>
+
+                        <div class="flex-1 space-y-3">
+                            <div>
+                                <Label class="text-base">Profile Picture</Label>
+                                <p class="text-sm text-muted-foreground mt-1">
+                                    Click on the avatar or use the button below to upload a new picture
+                                </p>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <input ref="fileInputRef" id="profile_picture" type="file" name="profile_picture"
+                                    accept="image/*" @change="onFileChange" class="hidden" />
+
+                                <Button type="button" variant="secondary" size="sm" @click="triggerFileInput">
+                                    <Upload class="mr-2 h-4 w-4" />
+                                    Upload New Picture
+                                </Button>
+
+                                <span class="text-xs text-muted-foreground">JPG, PNG or GIF (max 2MB)</span>
+                            </div>
+
+                            <InputError :message="errors.profile_picture" />
+                        </div>
+                    </div>
+
                     <div class="grid gap-2">
                         <Label for="name">Name</Label>
                         <Input id="name" class="mt-1 block w-full" name="name" :default-value="user.name" required
