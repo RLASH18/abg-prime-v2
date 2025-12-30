@@ -90,11 +90,11 @@ class SupplierController extends Controller
     {
         $supplier = $this->supplierService->updateSupplier($id, $request->validated());
 
-        if ($supplier) {
-            return $this->flashSuccess('Supplier updated successfully', 'admin.suppliers.index');
+        if (! $supplier) {
+            return $this->flashError('Supplier not found', 'admin.suppliers.index');
         }
 
-        return $this->flashError('Supplier not found', 'admin.suppliers.index');
+        return $this->flashSuccess('Supplier updated successfully', 'admin.suppliers.index');
     }
 
     /**
@@ -104,10 +104,10 @@ class SupplierController extends Controller
     {
         $supplier = $this->supplierService->deleteSupplier($id);
 
-        if ($supplier) {
-            return $this->flashSuccess('Supplier deleted successfully', 'admin.suppliers.index');
+        if (! $supplier) {
+            return $this->flashError('Supplier not found', 'admin.suppliers.index');
         }
 
-        return $this->flashError('Supplier not found', 'admin.suppliers.index');
+        return $this->flashSuccess('Supplier deleted successfully', 'admin.suppliers.index');
     }
 }

@@ -64,10 +64,10 @@ class DeliveryController extends Controller
             $proofFile
         );
 
-        if ($updated) {
-            return $this->flashSuccess('Delivery updated successfully', 'admin.deliveries.index');
+        if (! $updated) {
+            return $this->flashError('Delivery not found', 'admin.deliveries.index');
         }
 
-        return $this->flashError('Delivery not found', 'admin.deliveries.index');
+        return $this->flashSuccess('Delivery updated successfully', 'admin.deliveries.index');
     }
 }

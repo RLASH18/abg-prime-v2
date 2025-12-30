@@ -60,10 +60,10 @@ class DamagedItemController extends Controller
     {
         $result = $this->damagedItemService->deleteDamagedItem($id);
 
-        if ($result) {
-            return $this->flashSuccess('Damaged item record deleted', 'admin.damaged-items.index');
+        if (! $result) {
+            return $this->flashError('Damaged item not found', 'admin.damaged-items.index');
         }
 
-        return $this->flashError('Damaged item not found', 'admin.damaged-items.index');
+        return $this->flashSuccess('Damaged item record deleted', 'admin.damaged-items.index');
     }
 }

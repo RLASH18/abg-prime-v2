@@ -63,10 +63,10 @@ class OrderController extends Controller
         $status = $request->validated()['status'];
         $updated = $this->orderService->updateStatus($id, $status);
 
-        if ($updated) {
-            return $this->flashSuccess('Order status updated successfully', 'admin.orders.index');
+        if (! $updated) {
+            return $this->flashError('Order not found', 'admin.orders.index');
         }
 
-        return $this->flashError('Order not found', 'admin.orders.index');
+        return $this->flashSuccess('Order status updated successfully', 'admin.orders.index');
     }
 }

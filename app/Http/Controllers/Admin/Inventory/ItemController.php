@@ -103,11 +103,11 @@ class ItemController extends Controller
     {
         $item = $this->itemService->updateItem($id, $request->validated(), $request->allFiles());
 
-        if ($item) {
-            return $this->flashSuccess('Item updated successfully', 'admin.items.index');
+        if (! $item) {
+            return $this->flashError('Item not found', 'admin.items.index');
         }
 
-        return $this->flashError('Item not found', 'admin.items.index');
+        return $this->flashSuccess('Item updated successfully', 'admin.items.index');
     }
 
     /**
@@ -117,10 +117,10 @@ class ItemController extends Controller
     {
         $item = $this->itemService->deleteItem($id);
 
-        if ($item) {
-            return $this->flashSuccess('Item deleted successfully', 'admin.items.index');
+        if (! $item) {
+            return $this->flashError('Item not found', 'admin.items.index');
         }
 
-        return $this->flashError('Item not found', 'admin.items.index');
+        return $this->flashSuccess('Item deleted successfully', 'admin.items.index');
     }
 }
