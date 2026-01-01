@@ -91,7 +91,7 @@ class CartService
             return false;
         }
 
-        if ($cart->item->quantity < $quantity) {
+        if ($cart->product->quantity < $quantity) {
             throw new \Exception('Insufficient stock');
         }
 

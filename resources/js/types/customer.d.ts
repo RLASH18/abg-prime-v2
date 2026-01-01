@@ -12,3 +12,14 @@ export interface Product {
     item_image_2?: string;
     item_image_3?: string;
 }
+
+export interface CartItem {
+    id: number;
+    user_id: number;
+    item_id: number;
+    quantity: number;
+    price: number;
+    created_at: string;
+    updated_at: string;
+    product: Product
+}

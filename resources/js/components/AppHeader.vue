@@ -31,10 +31,11 @@ import {
 import UserMenuContent from '@/components/UserMenuContent.vue';
 import { getInitials } from '@/composables/useInitials';
 import { toUrl, urlIsActive } from '@/lib/utils';
+import cartsRoutes from '@/routes/customer/carts';
 import homepageRoutes from '@/routes/customer/homepage';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { InertiaLinkProps, Link, usePage } from '@inertiajs/vue3';
-import { LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import { LayoutGrid, Menu, Search, ShoppingBag } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 interface Props {
@@ -66,6 +67,11 @@ const mainNavItems: NavItem[] = [
         href: homepageRoutes.index(),
         icon: LayoutGrid,
     },
+    {
+        title: 'My Cart',
+        href: cartsRoutes.index(),
+        icon: ShoppingBag
+    }
 ];
 
 const rightNavItems: NavItem[] = [

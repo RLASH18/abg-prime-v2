@@ -25,11 +25,11 @@ class Cart extends Model
     }
 
     /**
-     * Get the item that owns the Cart
+     * Get the product (item) for this cart entry
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function item(): BelongsTo
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Item::class, 'item_id');
     }

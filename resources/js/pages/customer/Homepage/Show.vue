@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { Product } from '@/types/customer';
 import {
     Package,
@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input';
 import { useFormatters } from '@/composables/useFormatters';
 import homepageRoutes from '@/routes/customer/homepage';
 import { ref, computed } from 'vue';
+import cartsRoutes from '@/routes/customer/carts';
 
 interface Props {
     product: Product;
@@ -93,6 +94,15 @@ const stockStatus = computed(() => {
 });
 
 const isOutOfStock = computed(() => props.product.quantity <= 0);
+
+const addToCart = () => {
+    router.post(cartsRoutes.store().url, {
+        item_id: props.product.id,
+        quantity: quantity.value,
+    }, {
+        preserveScroll: true
+    });
+}
 </script>
 
 <template>
@@ -209,16 +219,25 @@ const isOutOfStock = computed(() => props.product.quantity <= 0);
                             <div>
                                 <label class="text-sm font-medium mb-2 block">Quantity</label>
                                 <div class="flex items-center gap-3">
-                                    <Button @click="decrementQuantity" :disabled="quantity <= 1 || isOutOfStock"
-                                        variant="outline" size="icon" class="h-10 w-10">
+                                    <Button
+                                        @click="decrementQuantity"
+                                        :disabled="quantity <= 1 || isOutOfStock"
+                                        variant="outline"
+                                        size="icon"
+                                        class="h-10 w-10"
+                                    >
                                         <Minus class="h-4 w-4" />
                                     </Button>
                                     <Input v-model.number="quantity" type="number" :min="1" :max="product.quantity"
                                         :disabled="isOutOfStock"
                                         class="text-center font-semibold text-lg h-10 w-20 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                                    <Button @click="incrementQuantity"
-                                        :disabled="quantity >= product.quantity || isOutOfStock" variant="outline"
-                                        size="icon" class="h-10 w-10">
+                                    <Button
+                                        @click="incrementQuantity"
+                                        :disabled="quantity >= product.quantity || isOutOfStock"
+                                        variant="outline"
+                                        size="icon"
+                                        class="h-10 w-10"
+                                    >
                                         <Plus class="h-4 w-4" />
                                     </Button>
                                     <div class="flex-1 text-right">
@@ -231,7 +250,12 @@ const isOutOfStock = computed(() => props.product.quantity <= 0);
                             </div>
 
                             <!-- Add to Cart Button -->
-                            <Button :disabled="isOutOfStock" size="lg" class="w-full text-lg h-12">
+                            <Button
+                                :disabled="isOutOfStock"
+                                @click="addToCart"
+                                size="lg"
+                                class="w-full text-lg h-12"
+                            >
                                 <ShoppingCart class="h-5 w-5 mr-2" />
                                 {{ isOutOfStock ? 'Out of Stock' : 'Add to Cart' }}
                             </Button>
