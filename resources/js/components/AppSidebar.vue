@@ -66,7 +66,7 @@ const mainNavItems: NavItem[] = [
         icon: ReceiptText,
     },
     {
-        title: 'Delivery',
+        title: 'Deliveries',
         href: deliveriesRoutes.index().url,
         icon: Truck,
     },
