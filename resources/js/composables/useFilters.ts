@@ -1,6 +1,6 @@
-import { ref } from "vue";
-import { router } from "@inertiajs/vue3";
-import { debounce } from "lodash-es";
+import { router } from '@inertiajs/vue3';
+import { debounce } from 'lodash-es';
+import { ref } from 'vue';
 
 export interface FilterConfig {
     [key: string]: string | number | null;
@@ -22,7 +22,7 @@ export function useFilters(baseUrl: string, initialFilters: FilterConfig = {}) {
         router.get(baseUrl, params, {
             preserveState: true,
             preserveScroll: true,
-        })
+        });
     };
 
     // Debounced version of applyFilters for search inputs
@@ -31,14 +31,22 @@ export function useFilters(baseUrl: string, initialFilters: FilterConfig = {}) {
     // Reset all filters to initial state
     const resetFilters = (): void => {
         filters.value = { ...initialFilters };
-        router.get(baseUrl, {}, {
-            preserveState: true,
-            preserveScroll: true,
-        });
+        router.get(
+            baseUrl,
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
     };
 
     // Update a specific filter value
-    const updateFilter = (key: string, value: string | number | null, immediate: boolean = false): void => {
+    const updateFilter = (
+        key: string,
+        value: string | number | null,
+        immediate: boolean = false,
+    ): void => {
         filters.value[key] = value;
 
         if (immediate) {

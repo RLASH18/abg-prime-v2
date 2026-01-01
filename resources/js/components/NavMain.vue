@@ -3,7 +3,7 @@ import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+} from '@/components/ui/collapsible';
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -13,12 +13,11 @@ import {
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
-} from '@/components/ui/sidebar'
-import { toUrl, urlIsActive } from '@/lib/utils';
+} from '@/components/ui/sidebar';
+import { toUrl } from '@/lib/utils';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 import { ChevronRight } from 'lucide-vue-next';
-import { computed } from 'vue';
 
 defineProps<{
     items: NavItem[];
@@ -32,7 +31,7 @@ const isGroupActive = (item: NavItem): boolean => {
 
     const currentUrlPath = page.url.split('?')[0];
 
-    return item.items.some(subItem => {
+    return item.items.some((subItem) => {
         const subItemPath = toUrl(subItem.href!).split('?')[0];
         // Check if current URL starts with the sub-item URL
         return currentUrlPath.startsWith(subItemPath);
@@ -59,24 +58,36 @@ const isItemActive = (href: NonNullable<NavItem['href']>): boolean => {
         <SidebarGroupLabel>Platform</SidebarGroupLabel>
         <SidebarMenu>
             <template v-for="item in items" :key="item.title">
-
-                <Collapsible v-if="item.items && item.items.length > 0" as-child :default-open="isGroupActive(item)"
-                    class="group/collapsible">
+                <Collapsible
+                    v-if="item.items && item.items.length > 0"
+                    as-child
+                    :default-open="isGroupActive(item)"
+                    class="group/collapsible"
+                >
                     <SidebarMenuItem>
                         <CollapsibleTrigger as-child>
                             <SidebarMenuButton :tooltip="item.title">
                                 <component :is="item.icon" v-if="item.icon" />
                                 <span>{{ item.title }}</span>
                                 <ChevronRight
-                                    class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                    class="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
+                                />
                             </SidebarMenuButton>
                         </CollapsibleTrigger>
 
                         <CollapsibleContent>
                             <SidebarMenuSub class="mr-0 pr-0">
-                                <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
-                                    <SidebarMenuSubButton as-child :is-active="isSubItemActive(subItem.href!)"
-                                        class="w-full">
+                                <SidebarMenuSubItem
+                                    v-for="subItem in item.items"
+                                    :key="subItem.title"
+                                >
+                                    <SidebarMenuSubButton
+                                        as-child
+                                        :is-active="
+                                            isSubItemActive(subItem.href!)
+                                        "
+                                        class="w-full"
+                                    >
                                         <Link :href="subItem.href!">
                                             <span>{{ subItem.title }}</span>
                                         </Link>
@@ -88,8 +99,11 @@ const isItemActive = (href: NonNullable<NavItem['href']>): boolean => {
                 </Collapsible>
 
                 <SidebarMenuItem v-else>
-                    <SidebarMenuButton as-child :is-active="item.href ? isItemActive(item.href) : false"
-                        :tooltip="item.title">
+                    <SidebarMenuButton
+                        as-child
+                        :is-active="item.href ? isItemActive(item.href) : false"
+                        :tooltip="item.title"
+                    >
                         <Link :href="item.href || '#'">
                             <component :is="item.icon" v-if="item.icon" />
                             <span>{{ item.title }}</span>

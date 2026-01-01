@@ -10,6 +10,8 @@ import AppLogoIcon from '@/components/AppLogoIcon.vue';
     </div>
     <div class="ml-1 grid flex-1 text-left text-sm">
         <span class="truncate leading-tight font-semibold">ABG Prime</span>
-        <span class="truncate text-xs font-normal text-muted-foreground">Builders Supplies Inc.</span>
+        <span class="truncate text-xs font-normal text-muted-foreground"
+            >Builders Supplies Inc.</span
+        >
     </div>
 </template>

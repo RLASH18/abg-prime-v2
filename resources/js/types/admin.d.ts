@@ -1,4 +1,4 @@
-import { User } from ".";
+import { User } from '.';
 
 export interface DashboardStats {
     countOrders: number;
@@ -45,7 +45,7 @@ export interface DamagedItem {
     remarks: string | null;
     created_at: string;
     updated_at: string;
-    item: InventoryItem;  // The related item (eager loaded)
+    item: InventoryItem; // The related item (eager loaded)
 }
 
 export interface OrderItem {
@@ -60,7 +60,14 @@ export interface OrderItem {
 export interface Order {
     id: number;
     user_id: number;
-    status: 'pending' | 'confirmed' | 'assembled' | 'shipped' | 'delivered' | 'paid' | 'cancelled';
+    status:
+        | 'pending'
+        | 'confirmed'
+        | 'assembled'
+        | 'shipped'
+        | 'delivered'
+        | 'paid'
+        | 'cancelled';
     payment_method: 'cash' | 'gcash' | 'bank_transfer';
     total_amount: number;
     delivery_method: 'pickup' | 'delivery';

@@ -15,7 +15,7 @@ export function useFormatters() {
             year: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
-            hour12: true
+            hour12: true,
         }).format(new Date(dateString));
     };
 

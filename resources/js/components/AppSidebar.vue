@@ -12,6 +12,13 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes/admin';
+import billingsRoutes from '@/routes/admin/billings';
+import damagedItemsRoutes from '@/routes/admin/damaged-items';
+import deliveriesRoutes from '@/routes/admin/deliveries';
+import itemsRoutes from '@/routes/admin/items';
+import ordersRoutes from '@/routes/admin/orders';
+import reportsRoutes from '@/routes/admin/reports';
+import suppliersRoutes from '@/routes/admin/suppliers';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import {
@@ -20,16 +27,9 @@ import {
     ClipboardList,
     LayoutGrid,
     ReceiptText,
-    Truck
+    Truck,
 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
-import itemsRoutes from '@/routes/admin/items';
-import suppliersRoutes from '@/routes/admin/suppliers';
-import damagedItemsRoutes from '@/routes/admin/damaged-items';
-import ordersRoutes from '@/routes/admin/orders';
-import billingsRoutes from '@/routes/admin/billings';
-import deliveriesRoutes from '@/routes/admin/deliveries';
-import reportsRoutes from '@/routes/admin/reports';
 
 const mainNavItems: NavItem[] = [
     {
@@ -43,17 +43,17 @@ const mainNavItems: NavItem[] = [
         items: [
             {
                 title: 'Suppliers',
-                href: suppliersRoutes.index()
+                href: suppliersRoutes.index(),
             },
             {
                 title: 'Items',
-                href: itemsRoutes.index()
+                href: itemsRoutes.index(),
             },
             {
                 title: 'Damaged Items',
                 href: damagedItemsRoutes.index(),
             },
-        ]
+        ],
     },
     {
         title: 'Orders',

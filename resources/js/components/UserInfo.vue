@@ -16,8 +16,10 @@ const props = withDefaults(defineProps<Props>(), {
 const { getInitials } = useInitials();
 
 // Use the profile_picture_url accessor from UserProfile model
-const showAvatar = computed(() =>
-    props.user.profile?.profile_picture_url && props.user.profile.profile_picture_url !== ''
+const showAvatar = computed(
+    () =>
+        props.user.profile?.profile_picture_url &&
+        props.user.profile.profile_picture_url !== '',
 );
 </script>
 

@@ -21,5 +21,5 @@ export interface CartItem {
     price: number;
     created_at: string;
     updated_at: string;
-    product: Product
+    product: Product;
 }

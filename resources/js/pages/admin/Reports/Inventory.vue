@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import type { InventoryMetrics } from '@/types/admin';
-import { useFormatters } from '@/composables/useFormatters';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn } from '@/types';
-import { Package, AlertTriangle, DollarSign, Users } from 'lucide-vue-next';
-import reportsRoutes from '@/routes/admin/reports';
 import LinkButton from '@/components/LinkButton.vue';
+import { useFormatters } from '@/composables/useFormatters';
+import AppLayout from '@/layouts/AppLayout.vue';
+import reportsRoutes from '@/routes/admin/reports';
+import type { DataTableColumn } from '@/types';
+import { type BreadcrumbItem } from '@/types';
+import type { InventoryMetrics } from '@/types/admin';
+import { Head } from '@inertiajs/vue3';
+import { AlertTriangle, DollarSign, Package, Users } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -77,114 +77,155 @@ const supplierColumns: DataTableColumn[] = [
 </script>
 
 <template>
-
     <Head title="Inventory Report" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="flex justify-between items-center mb-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
+            <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold">Inventory Report</h1>
-                    <p class="text-sm text-muted-foreground">Monitor stock levels and inventory value</p>
+                    <p class="text-sm text-muted-foreground">
+                        Monitor stock levels and inventory value
+                    </p>
                 </div>
-                <LinkButton :href="reportsRoutes.index().url" mode="back" label="Go back" />
+                <LinkButton
+                    :href="reportsRoutes.index().url"
+                    mode="back"
+                    label="Go back"
+                />
             </div>
 
             <!-- Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-white border rounded-lg p-6">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div class="rounded-lg border bg-white p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-muted-foreground">Total Items</p>
-                            <p class="text-2xl font-bold mt-1">{{ report.total_items }}</p>
+                            <p class="text-sm text-muted-foreground">
+                                Total Items
+                            </p>
+                            <p class="mt-1 text-2xl font-bold">
+                                {{ report.total_items }}
+                            </p>
                         </div>
-                        <div class="p-3 bg-blue-50 rounded-lg">
-                            <Package class="w-6 h-6 text-blue-600" />
+                        <div class="rounded-lg bg-blue-50 p-3">
+                            <Package class="h-6 w-6 text-blue-600" />
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white border rounded-lg p-6">
+                <div class="rounded-lg border bg-white p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-muted-foreground">Total Stock Value</p>
-                            <p class="text-2xl font-bold mt-1">
+                            <p class="text-sm text-muted-foreground">
+                                Total Stock Value
+                            </p>
+                            <p class="mt-1 text-2xl font-bold">
                                 {{ formatCurrency(report.total_stock_value) }}
                             </p>
                         </div>
-                        <div class="p-3 bg-green-50 rounded-lg">
-                            <DollarSign class="w-6 h-6 text-green-600" />
+                        <div class="rounded-lg bg-green-50 p-3">
+                            <DollarSign class="h-6 w-6 text-green-600" />
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white border rounded-lg p-6">
+                <div class="rounded-lg border bg-white p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-muted-foreground">Low Stock Items</p>
-                            <p class="text-2xl font-bold mt-1">{{ report.low_stock_items.length }}</p>
-                        </div>
-                        <div class="p-3 bg-orange-50 rounded-lg">
-                            <AlertTriangle class="w-6 h-6 text-orange-600" />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white border rounded-lg p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm text-muted-foreground">Damaged Items Loss</p>
-                            <p class="text-2xl font-bold mt-1">
-                                {{ formatCurrency(report.damaged_summary.estimated_loss) }}
+                            <p class="text-sm text-muted-foreground">
+                                Low Stock Items
+                            </p>
+                            <p class="mt-1 text-2xl font-bold">
+                                {{ report.low_stock_items.length }}
                             </p>
                         </div>
-                        <div class="p-3 bg-red-50 rounded-lg">
-                            <AlertTriangle class="w-6 h-6 text-red-600" />
+                        <div class="rounded-lg bg-orange-50 p-3">
+                            <AlertTriangle class="h-6 w-6 text-orange-600" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-lg border bg-white p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-muted-foreground">
+                                Damaged Items Loss
+                            </p>
+                            <p class="mt-1 text-2xl font-bold">
+                                {{
+                                    formatCurrency(
+                                        report.damaged_summary.estimated_loss,
+                                    )
+                                }}
+                            </p>
+                        </div>
+                        <div class="rounded-lg bg-red-50 p-3">
+                            <AlertTriangle class="h-6 w-6 text-red-600" />
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Low Stock Items -->
-            <div class="bg-white border rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <AlertTriangle class="w-5 h-5 text-warning" />
+            <div class="rounded-lg border bg-white p-6">
+                <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold">
+                    <AlertTriangle class="h-5 w-5 text-warning" />
                     Low Stock Items
                 </h2>
-                <DataTable :data="report.low_stock_items" :columns="lowStockColumns"
-                    empty-message="No low stock items found." />
+                <DataTable
+                    :data="report.low_stock_items"
+                    :columns="lowStockColumns"
+                    empty-message="No low stock items found."
+                />
             </div>
 
             <!-- Inventory by Supplier -->
-            <div class="bg-white border rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <Users class="w-5 h-5 text-primary" />
+            <div class="rounded-lg border bg-white p-6">
+                <h2 class="mb-4 flex items-center gap-2 text-lg font-semibold">
+                    <Users class="h-5 w-5 text-primary" />
                     Inventory by Supplier
                 </h2>
-                <DataTable :data="report.by_supplier" :columns="supplierColumns"
-                    empty-message="No supplier data found." />
+                <DataTable
+                    :data="report.by_supplier"
+                    :columns="supplierColumns"
+                    empty-message="No supplier data found."
+                />
             </div>
 
             <!-- Damaged Items Summary -->
-            <div class="bg-white border rounded-lg p-6">
-                <h2 class="text-lg font-semibold mb-4">Damaged Items Summary</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="border rounded-lg p-4">
-                        <p class="text-sm text-muted-foreground">Total Records</p>
-                        <p class="text-2xl font-bold mt-1">
+            <div class="rounded-lg border bg-white p-6">
+                <h2 class="mb-4 text-lg font-semibold">
+                    Damaged Items Summary
+                </h2>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div class="rounded-lg border p-4">
+                        <p class="text-sm text-muted-foreground">
+                            Total Records
+                        </p>
+                        <p class="mt-1 text-2xl font-bold">
                             {{ report.damaged_summary.total_records }}
                         </p>
                     </div>
-                    <div class="border rounded-lg p-4">
-                        <p class="text-sm text-muted-foreground">Total Damaged Quantity</p>
-                        <p class="text-2xl font-bold mt-1">
+                    <div class="rounded-lg border p-4">
+                        <p class="text-sm text-muted-foreground">
+                            Total Damaged Quantity
+                        </p>
+                        <p class="mt-1 text-2xl font-bold">
                             {{ report.damaged_summary.total_damaged_quantity }}
                         </p>
                     </div>
-                    <div class="border rounded-lg p-4">
-                        <p class="text-sm text-muted-foreground">Estimated Loss</p>
-                        <p class="text-2xl font-bold text-destructive mt-1">
-                            {{ formatCurrency(report.damaged_summary.estimated_loss) }}
+                    <div class="rounded-lg border p-4">
+                        <p class="text-sm text-muted-foreground">
+                            Estimated Loss
+                        </p>
+                        <p class="mt-1 text-2xl font-bold text-destructive">
+                            {{
+                                formatCurrency(
+                                    report.damaged_summary.estimated_loss,
+                                )
+                            }}
                         </p>
                     </div>
                 </div>

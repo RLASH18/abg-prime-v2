@@ -1,31 +1,35 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn, DataTableAction } from '@/types';
-import type { DamagedItem } from '@/types/admin';
-import { Trash2 } from 'lucide-vue-next';
+import Filters from '@/components/Filters.vue';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
-import Filters from '@/components/Filters.vue';
-import damagedItemsRoutes from '@/routes/admin/damaged-items';
 import { useFormatters } from '@/composables/useFormatters';
+import AppLayout from '@/layouts/AppLayout.vue';
+import damagedItemsRoutes from '@/routes/admin/damaged-items';
+import type { DataTableAction, DataTableColumn } from '@/types';
+import {
+    type BreadcrumbItem,
+    type FilterConfig,
+    type PaginationData,
+} from '@/types';
+import type { DamagedItem } from '@/types/admin';
+import { Head, router } from '@inertiajs/vue3';
+import { Trash2 } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Damaged Items',
-        href: damagedItemsRoutes.index().url
+        href: damagedItemsRoutes.index().url,
     },
 ];
 
 interface Props {
     damagedItems: PaginationData & {
-        data: DamagedItem[]
+        data: DamagedItem[];
     };
     filters: {
         search?: string;
-        status?: string
+        status?: string;
     };
 }
 
@@ -37,7 +41,7 @@ const { filters, updateFilter, resetFilters } = useFilters(
     {
         search: props.filters.search || '',
         status: props.filters.status || '',
-    }
+    },
 );
 
 const filterConfigs: FilterConfig[] = [
@@ -57,38 +61,38 @@ const columns: DataTableColumn<DamagedItem>[] = [
         label: 'ID',
         key: 'id',
         render: (value) => `#${value.toString().padStart(4, '0')}`,
-        class: 'text-gray-700'
+        class: 'text-gray-700',
     },
     {
         label: 'Item Code',
         key: 'item.item_code',
-        render: (_, row) => row.item.item_code
+        render: (_, row) => row.item.item_code,
     },
     {
         label: 'Item Name',
         key: 'item.item_name',
-        render: (_, row) => row.item.item_name
+        render: (_, row) => row.item.item_name,
     },
     {
         label: 'Qty Damaged',
         key: 'quantity',
-        align: 'right'
+        align: 'right',
     },
     {
         label: 'Discount',
         key: 'discount',
         align: 'right',
-        render: (value) => value ? formatCurrency(value) : '-'
+        render: (value) => (value ? formatCurrency(value) : '-'),
     },
     {
         label: 'Status',
         key: 'status',
-        render: (value) => value.charAt(0).toUpperCase() + value.slice(1)
+        render: (value) => value.charAt(0).toUpperCase() + value.slice(1),
     },
     {
         label: 'Remarks',
         key: 'remarks',
-        render: (value) => value || '-'
+        render: (value) => value || '-',
     },
 ];
 
@@ -103,31 +107,46 @@ const actions: DataTableAction<DamagedItem>[] = [
 </script>
 
 <template>
-
     <Head title="Damaged Items" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="flex justify-between items-center mb-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
+            <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold">Damaged Items</h1>
-                    <p class="text-sm text-muted-foreground">Track damaged inventory</p>
+                    <p class="text-sm text-muted-foreground">
+                        Track damaged inventory
+                    </p>
                 </div>
             </div>
 
-            <Filters :search-value="filters.search as string" :filters="filterConfigs"
-                search-placeholder="Search by remarks..." @update:search="(value) => updateFilter('search', value)"
-                @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
+            <Filters
+                :search-value="filters.search as string"
+                :filters="filterConfigs"
+                search-placeholder="Search by remarks..."
+                @update:search="(value) => updateFilter('search', value)"
+                @update:filter="(key, value) => updateFilter(key, value, true)"
+                @reset="resetFilters"
+            />
 
-            <DataTable :data="damagedItems.data" :columns="columns" :actions="actions"
+            <DataTable
+                :data="damagedItems.data"
+                :columns="columns"
+                :actions="actions"
                 empty-message="No damaged items found."
-                empty-description="Mark items as damaged from the Items page to track them here.">
-
+                empty-description="Mark items as damaged from the Items page to track them here."
+            >
                 <template #cell-status="{ value }">
-                    <span :class="[
-                        'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium',
-                        value === 'resellable' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                    ]">
+                    <span
+                        :class="[
+                            'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium',
+                            value === 'resellable'
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-red-100 text-red-700',
+                        ]"
+                    >
                         {{ value }}
                     </span>
                 </template>

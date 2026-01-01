@@ -1,19 +1,25 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem, type PaginationData } from '@/types';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { Product } from '@/types/customer';
-import { Search, ShoppingCart, Package, TrendingUp, Sparkles } from 'lucide-vue-next';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import Pagination from '@/components/Pagination.vue';
-import { useFormatters } from '@/composables/useFormatters';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { useFilters } from '@/composables/useFilters';
+import { useFormatters } from '@/composables/useFormatters';
+import AppLayout from '@/layouts/AppLayout.vue';
+import cartsRoutes from '@/routes/customer/carts';
 import homepageRoutes from '@/routes/customer/homepage';
 import productsRoutes from '@/routes/customer/homepage/products';
-import cartsRoutes from '@/routes/customer/carts';
+import { type BreadcrumbItem, type PaginationData } from '@/types';
+import { Product } from '@/types/customer';
+import { Head, Link, router } from '@inertiajs/vue3';
+import {
+    Package,
+    Search,
+    ShoppingCart,
+    Sparkles,
+    TrendingUp,
+} from 'lucide-vue-next';
 
 interface Props {
     products: PaginationData & {
@@ -40,7 +46,7 @@ const { filters, updateFilter, resetFilters } = useFilters(
     {
         search: props.filters.search || '',
         category: props.filters.category || '',
-    }
+    },
 );
 
 const categories = [
@@ -56,61 +62,91 @@ const categories = [
 ];
 
 const getStockStatus = (item: Product) => {
-    if (item.quantity <= 0) return { label: 'Out of Stock', class: 'bg-destructive/10 text-destructive border-destructive/20' };
-    if (item.quantity <= item.restock_threshold) return { label: 'Low Stock', class: 'bg-warning/10 text-warning border-warning/20' };
-    return { label: 'In Stock', class: 'bg-green-500/10 text-green-600 border-green-500/20' };
+    if (item.quantity <= 0)
+        return {
+            label: 'Out of Stock',
+            class: 'bg-destructive/10 text-destructive border-destructive/20',
+        };
+    if (item.quantity <= item.restock_threshold)
+        return {
+            label: 'Low Stock',
+            class: 'bg-warning/10 text-warning border-warning/20',
+        };
+    return {
+        label: 'In Stock',
+        class: 'bg-green-500/10 text-green-600 border-green-500/20',
+    };
 };
 
 const addToCart = (productId: number, event: Event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    router.post(cartsRoutes.store().url, {
-        item_id: productId,
-        quantity: 1,
-    }, {
-        preserveScroll: true
-    });
+    router.post(
+        cartsRoutes.store().url,
+        {
+            item_id: productId,
+            quantity: 1,
+        },
+        {
+            preserveScroll: true,
+        },
+    );
 };
 </script>
 
 <template>
-
     <Head title="Homepage" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-6 overflow-x-auto p-4 md:p-6">
-
+        <div
+            class="flex h-full flex-1 flex-col gap-6 overflow-x-auto p-4 md:p-6"
+        >
             <!-- Hero Section -->
             <div
-                class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border border-primary/20 shadow-lg">
-                <div class="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,transparent,black)]">
-                </div>
+                class="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-background shadow-lg"
+            >
+                <div
+                    class="bg-grid-white/5 absolute inset-0 [mask-image:linear-gradient(0deg,transparent,black)]"
+                ></div>
                 <div class="relative px-6 py-12 md:px-12 md:py-16">
                     <div class="max-w-3xl">
-                        <div class="flex items-center gap-2 mb-4">
-                            <Sparkles class="h-5 w-5 text-primary animate-pulse" />
-                            <span class="text-sm font-semibold text-primary uppercase tracking-wider">Premium
-                                Quality</span>
+                        <div class="mb-4 flex items-center gap-2">
+                            <Sparkles
+                                class="h-5 w-5 animate-pulse text-primary"
+                            />
+                            <span
+                                class="text-sm font-semibold tracking-wider text-primary uppercase"
+                                >Premium Quality</span
+                            >
                         </div>
                         <h1
-                            class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                            class="mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-4xl font-bold text-transparent md:text-5xl lg:text-6xl"
+                        >
                             Build Your Dreams
                         </h1>
-                        <p class="text-lg md:text-xl text-muted-foreground mb-6 max-w-2xl">
-                            Discover premium construction materials, tools, and supplies for your next project. Quality
-                            guaranteed.
+                        <p
+                            class="mb-6 max-w-2xl text-lg text-muted-foreground md:text-xl"
+                        >
+                            Discover premium construction materials, tools, and
+                            supplies for your next project. Quality guaranteed.
                         </p>
                         <div class="flex flex-wrap gap-4">
                             <div
-                                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background/50 backdrop-blur-sm border border-border">
+                                class="flex items-center gap-2 rounded-lg border border-border bg-background/50 px-4 py-2 backdrop-blur-sm"
+                            >
                                 <Package class="h-5 w-5 text-primary" />
-                                <span class="text-sm font-medium">{{ products.total }}+ Products</span>
+                                <span class="text-sm font-medium"
+                                    >{{ products.total }}+ Products</span
+                                >
                             </div>
                             <div
-                                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background/50 backdrop-blur-sm border border-border">
+                                class="flex items-center gap-2 rounded-lg border border-border bg-background/50 px-4 py-2 backdrop-blur-sm"
+                            >
                                 <TrendingUp class="h-5 w-5 text-green-500" />
-                                <span class="text-sm font-medium">Trusted Quality</span>
+                                <span class="text-sm font-medium"
+                                    >Trusted Quality</span
+                                >
                             </div>
                         </div>
                     </div>
@@ -120,89 +156,139 @@ const addToCart = (productId: number, event: Event) => {
             <!-- Search and Filters -->
             <div class="flex flex-col gap-4">
                 <div class="relative">
-                    <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input :model-value="filters.search as string"
-                        @update:model-value="(value) => updateFilter('search', value)"
+                    <Search
+                        class="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-muted-foreground"
+                    />
+                    <Input
+                        :model-value="filters.search as string"
+                        @update:model-value="
+                            (value) => updateFilter('search', value)
+                        "
                         placeholder="Search for tools, materials, or brands..."
-                        class="pl-10 h-12 text-base border-2 focus-visible:ring-2" />
+                        class="h-12 border-2 pl-10 text-base focus-visible:ring-2"
+                    />
                 </div>
 
                 <!-- Category Pills -->
-                <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">
-                    <Button v-for="cat in categories" :key="cat.value"
+                <div class="scrollbar-thin flex gap-2 overflow-x-auto pb-2">
+                    <Button
+                        v-for="cat in categories"
+                        :key="cat.value"
                         @click="updateFilter('category', cat.value, true)"
-                        :variant="filters.category === cat.value ? 'default' : 'outline'" size="sm"
-                        class="whitespace-nowrap transition-all duration-200 hover:scale-105">
+                        :variant="
+                            filters.category === cat.value
+                                ? 'default'
+                                : 'outline'
+                        "
+                        size="sm"
+                        class="whitespace-nowrap transition-all duration-200 hover:scale-105"
+                    >
                         {{ cat.label }}
                     </Button>
                 </div>
             </div>
 
             <!-- Products Grid -->
-            <div v-if="products.data.length > 0"
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-                <Link v-for="product in products.data"
+            <div
+                v-if="products.data.length > 0"
+                class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            >
+                <Link
+                    v-for="product in products.data"
                     :key="product.id"
                     :href="productsRoutes.show(product.id).url"
-                    class="flex h-full">
-
+                    class="flex h-full"
+                >
                     <Card
-                        class="group flex flex-col w-full overflow-hidden border-2 hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-
+                        class="group flex w-full flex-col overflow-hidden border-2 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-xl"
+                    >
                         <CardContent class="flex-1 p-0">
                             <!-- Product Image -->
-                            <div class="relative aspect-square overflow-hidden p-4">
-                                <img v-if="product.item_image_1" :src="`/storage/${product.item_image_1}`"
+                            <div
+                                class="relative aspect-square overflow-hidden p-4"
+                            >
+                                <img
+                                    v-if="product.item_image_1"
+                                    :src="`/storage/${product.item_image_1}`"
                                     :alt="product.item_name"
-                                    class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
-                                <div v-else
-                                    class="w-full h-full flex items-center justify-center rounded-xl bg-gradient-to-br from-muted to-muted/50">
-                                    <Package class="h-16 w-16 text-muted-foreground" />
+                                    class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
+                                />
+                                <div
+                                    v-else
+                                    class="flex h-full w-full items-center justify-center rounded-xl bg-gradient-to-br from-muted to-muted/50"
+                                >
+                                    <Package
+                                        class="h-16 w-16 text-muted-foreground"
+                                    />
                                 </div>
 
                                 <!-- Stock Badge -->
                                 <div class="absolute top-3 right-3">
-                                    <Badge :class="getStockStatus(product).class"
-                                        class="border font-semibold shadow-lg backdrop-blur-sm">
+                                    <Badge
+                                        :class="getStockStatus(product).class"
+                                        class="border font-semibold shadow-lg backdrop-blur-sm"
+                                    >
                                         {{ getStockStatus(product).label }}
                                     </Badge>
                                 </div>
 
                                 <!-- Category Badge -->
                                 <div class="absolute top-3 left-3">
-                                    <Badge variant="secondary"
-                                        class="bg-background/80 backdrop-blur-sm border shadow-lg">
+                                    <Badge
+                                        variant="secondary"
+                                        class="border bg-background/80 shadow-lg backdrop-blur-sm"
+                                    >
                                         {{ product.category }}
                                     </Badge>
                                 </div>
                             </div>
 
                             <!-- Product Info -->
-                            <div class="p-4 space-y-3">
+                            <div class="space-y-3 p-4">
                                 <div>
-                                    <p class="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+                                    <p
+                                        class="text-xs font-medium tracking-wider text-muted-foreground uppercase"
+                                    >
                                         {{ product.brand_name }}
                                     </p>
-                                    <h3 class="font-bold text-lg line-clamp-2 mt-1 group-hover:text-primary transition-colors truncate"
-                                        :title="product.item_name">
+                                    <h3
+                                        class="mt-1 line-clamp-2 truncate text-lg font-bold transition-colors group-hover:text-primary"
+                                        :title="product.item_name"
+                                    >
                                         {{ product.item_name }}
                                     </h3>
                                 </div>
 
                                 <div class="flex items-baseline gap-2">
-                                    <span class="text-2xl font-bold text-primary">{{ formatCurrency(product.unit_price)
-                                        }}</span>
-                                    <span class="text-xs text-muted-foreground">per unit</span>
+                                    <span
+                                        class="text-2xl font-bold text-primary"
+                                        >{{
+                                            formatCurrency(product.unit_price)
+                                        }}</span
+                                    >
+                                    <span class="text-xs text-muted-foreground"
+                                        >per unit</span
+                                    >
                                 </div>
 
-                                <div class="flex items-center justify-between text-xs text-muted-foreground">
+                                <div
+                                    class="flex items-center justify-between text-xs text-muted-foreground"
+                                >
                                     <span>Code: {{ product.item_code }}</span>
-                                    <span class="font-semibold" :class="{
-                                        'text-destructive': product.quantity <= 0,
-                                        'text-warning': product.quantity > 0 && product.quantity <= product.restock_threshold,
-                                        'text-green-600': product.quantity > product.restock_threshold
-                                    }">
+                                    <span
+                                        class="font-semibold"
+                                        :class="{
+                                            'text-destructive':
+                                                product.quantity <= 0,
+                                            'text-warning':
+                                                product.quantity > 0 &&
+                                                product.quantity <=
+                                                    product.restock_threshold,
+                                            'text-green-600':
+                                                product.quantity >
+                                                product.restock_threshold,
+                                        }"
+                                    >
                                         {{ product.quantity }} available
                                     </span>
                                 </div>
@@ -210,25 +296,36 @@ const addToCart = (productId: number, event: Event) => {
                         </CardContent>
 
                         <CardFooter class="p-4 pt-0">
-                            <Button :disabled="product.quantity <= 0"
+                            <Button
+                                :disabled="product.quantity <= 0"
                                 @click="(e: Event) => addToCart(product.id, e)"
-                                class="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
-                                size="lg">
-                                <ShoppingCart class="h-4 w-4 mr-2" />
-                                {{ product.quantity <= 0 ? 'Out of Stock' : 'Add to Cart' }} </Button>
+                                class="w-full transition-all duration-200 group-hover:bg-primary group-hover:text-primary-foreground"
+                                size="lg"
+                            >
+                                <ShoppingCart class="mr-2 h-4 w-4" />
+                                {{
+                                    product.quantity <= 0
+                                        ? 'Out of Stock'
+                                        : 'Add to Cart'
+                                }}
+                            </Button>
                         </CardFooter>
                     </Card>
                 </Link>
             </div>
 
             <!-- Empty State -->
-            <div v-else class="flex flex-col items-center justify-center py-16 px-4">
-                <div class="rounded-full bg-muted p-6 mb-4">
+            <div
+                v-else
+                class="flex flex-col items-center justify-center px-4 py-16"
+            >
+                <div class="mb-4 rounded-full bg-muted p-6">
                     <Package class="h-12 w-12 text-muted-foreground" />
                 </div>
-                <h3 class="text-xl font-semibold mb-2">No products found</h3>
-                <p class="text-muted-foreground text-center mb-6 max-w-md">
-                    We couldn't find any products matching your search. Try adjusting your filters or search terms.
+                <h3 class="mb-2 text-xl font-semibold">No products found</h3>
+                <p class="mb-6 max-w-md text-center text-muted-foreground">
+                    We couldn't find any products matching your search. Try
+                    adjusting your filters or search terms.
                 </p>
                 <Button @click="resetFilters" variant="outline">
                     Clear Filters

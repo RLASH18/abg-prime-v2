@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
-import LinkButton from '@/components/LinkButton.vue';
+import MarkAsDamagedModal from '@/components/admin/MarkAsDamagedModal.vue';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn, DataTableAction } from '@/types';
-import type { InventoryItem } from '@/types/admin';
-import { AlertTriangle, Eye, Pencil, Trash2 } from 'lucide-vue-next';
+import Filters from '@/components/Filters.vue';
+import LinkButton from '@/components/LinkButton.vue';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
-import Filters from '@/components/Filters.vue';
-import itemsRoutes from '@/routes/admin/items';
-import { ref } from 'vue';
 import { useFormatters } from '@/composables/useFormatters';
-import MarkAsDamagedModal from '@/components/admin/MarkAsDamagedModal.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import itemsRoutes from '@/routes/admin/items';
+import type { DataTableAction, DataTableColumn } from '@/types';
+import {
+    type BreadcrumbItem,
+    type FilterConfig,
+    type PaginationData,
+} from '@/types';
+import type { InventoryItem } from '@/types/admin';
+import { Head, router } from '@inertiajs/vue3';
+import { AlertTriangle, Eye, Pencil, Trash2 } from 'lucide-vue-next';
+import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -52,7 +56,7 @@ const { filters, updateFilter, resetFilters } = useFilters(
         search: props.filters.search || '',
         category: props.filters.category || '',
         stock_status: props.filters.stock_status || '',
-    }
+    },
 );
 
 // Filter configurations
@@ -63,7 +67,10 @@ const filterConfigs: FilterConfig[] = [
         options: [
             { label: 'Hand Tools', value: 'Hand Tools' },
             { label: 'Power Tools', value: 'Power Tools' },
-            { label: 'Construction Materials', value: 'Construction Materials' },
+            {
+                label: 'Construction Materials',
+                value: 'Construction Materials',
+            },
             { label: 'Locks and Security', value: 'Locks and Security' },
             { label: 'Plumbing', value: 'Plumbing' },
             { label: 'Electrical', value: 'Electrical' },
@@ -89,7 +96,7 @@ const columns: DataTableColumn<InventoryItem>[] = [
         label: 'ID',
         key: 'id',
         render: (value) => `#${value.toString().padStart(4, '0')}`,
-        class: 'text-gray-700'
+        class: 'text-gray-700',
     },
     {
         label: 'Item Code',
@@ -133,7 +140,7 @@ const actions: DataTableAction<InventoryItem>[] = [
         onClick: (row) => {
             router.visit(itemsRoutes.show(row.id).url);
         },
-        class: 'hover:text-blue-600 hover:bg-blue-50'
+        class: 'hover:text-blue-600 hover:bg-blue-50',
     },
     {
         label: 'Edit',
@@ -141,7 +148,7 @@ const actions: DataTableAction<InventoryItem>[] = [
         onClick: (row) => {
             router.visit(itemsRoutes.edit(row.id).url);
         },
-        class: 'hover:text-green-600 hover:bg-green-50'
+        class: 'hover:text-green-600 hover:bg-green-50',
     },
     {
         label: 'Delete',
@@ -149,50 +156,67 @@ const actions: DataTableAction<InventoryItem>[] = [
         onClick: (row) => {
             router.delete(itemsRoutes.destroy(row.id).url);
         },
-        class: 'hover:text-red-600 hover:bg-red-50'
+        class: 'hover:text-red-600 hover:bg-red-50',
     },
     {
         label: 'Mark as Damaged',
         icon: AlertTriangle,
         onClick: (row) => openDamageModal(row),
-        class: 'hover:text-orange-600 hover:bg-orange-50'
-    }
+        class: 'hover:text-orange-600 hover:bg-orange-50',
+    },
 ];
 </script>
 
 <template>
-
     <Head title="Items" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="flex justify-between items-center mb-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
+            <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold">Items</h1>
-                    <p class="text-sm text-muted-foreground">Manage your inventory items</p>
+                    <p class="text-sm text-muted-foreground">
+                        Manage your inventory items
+                    </p>
                 </div>
-                <LinkButton :href="itemsRoutes.create().url" label="Add an Item" />
+                <LinkButton
+                    :href="itemsRoutes.create().url"
+                    label="Add an Item"
+                />
             </div>
 
             <!-- Filters -->
-            <Filters :search-value="filters.search as string" :filters="filterConfigs"
+            <Filters
+                :search-value="filters.search as string"
+                :filters="filterConfigs"
                 search-placeholder="Search by name, code, or brand..."
                 @update:search="(value) => updateFilter('search', value)"
-                @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
+                @update:filter="(key, value) => updateFilter(key, value, true)"
+                @reset="resetFilters"
+            />
 
             <!-- items Table -->
-            <DataTable :data="items.data" :columns="columns" :actions="actions" empty-message="No items items found.">
-
+            <DataTable
+                :data="items.data"
+                :columns="columns"
+                :actions="actions"
+                empty-message="No items items found."
+            >
                 <!-- Item name -->
                 <template #cell-item_name="{ value }">
-                    <span class="max-w-[100px] truncate block font-medium" :title="value">
+                    <span
+                        class="block max-w-[100px] truncate font-medium"
+                        :title="value"
+                    >
                         {{ value }}
                     </span>
                 </template>
 
                 <!-- Brand Name -->
                 <template #cell-brand_name="{ value }">
-                    <span class="max-w-[100px] truncate block" :title="value">
+                    <span class="block max-w-[100px] truncate" :title="value">
                         {{ value }}
                     </span>
                 </template>
@@ -200,21 +224,33 @@ const actions: DataTableAction<InventoryItem>[] = [
                 <!-- Custom slot for category with badge -->
                 <template #cell-category="{ value }">
                     <span
-                        class="inline-flex items-center rounded-full border border-primary/10 bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                        class="inline-flex items-center rounded-full border border-primary/10 bg-primary/10 px-2 py-1 text-xs font-medium text-primary"
+                    >
                         {{ value }}
                     </span>
                 </template>
 
                 <!-- Custom slot for quantity with low stock warning -->
                 <template #cell-quantity="{ value, row }">
-                    <span v-if="value <= 0" class="text-destructive font-semibold" title="Out of Stock">
+                    <span
+                        v-if="value <= 0"
+                        class="font-semibold text-destructive"
+                        title="Out of Stock"
+                    >
                         {{ value }}
                     </span>
-                    <span v-else-if="value <= row.restock_threshold" class="text-warning font-semibold"
-                        title="Low Stock">
+                    <span
+                        v-else-if="value <= row.restock_threshold"
+                        class="font-semibold text-warning"
+                        title="Low Stock"
+                    >
                         {{ value }}
                     </span>
-                    <span v-else class="text-primary font-semibold" title="In Stock">
+                    <span
+                        v-else
+                        class="font-semibold text-primary"
+                        title="In Stock"
+                    >
                         {{ value }}
                     </span>
                 </template>

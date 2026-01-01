@@ -6,11 +6,11 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import { useSettingsRoutes } from '@/composables/useSettingsRoutes';
 import { logout } from '@/routes';
 import type { User } from '@/types';
 import { Link, router } from '@inertiajs/vue3';
 import { LogOut, Settings } from 'lucide-vue-next';
-import { useSettingsRoutes } from '@/composables/useSettingsRoutes';
 
 interface Props {
     user: User;
@@ -34,17 +34,28 @@ const settingsRoutes = useSettingsRoutes(props.user);
     <DropdownMenuSeparator />
     <DropdownMenuGroup>
         <DropdownMenuItem :as-child="true">
-            <Link class="block w-full" :href="settingsRoutes.profile.edit()" prefetch as="button">
-            <Settings class="mr-2 h-4 w-4" />
-            Settings
+            <Link
+                class="block w-full"
+                :href="settingsRoutes.profile.edit()"
+                prefetch
+                as="button"
+            >
+                <Settings class="mr-2 h-4 w-4" />
+                Settings
             </Link>
         </DropdownMenuItem>
     </DropdownMenuGroup>
     <DropdownMenuSeparator />
     <DropdownMenuItem :as-child="true">
-        <Link class="block w-full" :href="logout()" @click="handleLogout" as="button" data-test="logout-button">
-        <LogOut class="mr-2 h-4 w-4" />
-        Log out
+        <Link
+            class="block w-full"
+            :href="logout()"
+            @click="handleLogout"
+            as="button"
+            data-test="logout-button"
+        >
+            <LogOut class="mr-2 h-4 w-4" />
+            Log out
         </Link>
     </DropdownMenuItem>
 </template>

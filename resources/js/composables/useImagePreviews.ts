@@ -33,7 +33,7 @@ export function useImagePreviews(imageCount: number = 3) {
     };
 
     const hasAnyImage = (): boolean => {
-        return imagePreviews.value.some(preview => preview !== null);
+        return imagePreviews.value.some((preview) => preview !== null);
     };
 
     return {

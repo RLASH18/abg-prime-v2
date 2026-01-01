@@ -70,8 +70,8 @@ const mainNavItems: NavItem[] = [
     {
         title: 'My Cart',
         href: cartsRoutes.index(),
-        icon: ShoppingBag
-    }
+        icon: ShoppingBag,
+    },
 ];
 
 const rightNavItems: NavItem[] = [
@@ -145,7 +145,10 @@ const rightNavItems: NavItem[] = [
                     </Sheet>
                 </div>
 
-                <Link :href="homepageRoutes.index()" class="flex items-center gap-x-2">
+                <Link
+                    :href="homepageRoutes.index()"
+                    class="flex items-center gap-x-2"
+                >
                     <AppLogo />
                 </Link>
 

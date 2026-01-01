@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
-import suppliersRoutes from '@/routes/admin/suppliers';
-import LinkButton from '@/components/LinkButton.vue';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn, DataTableAction } from '@/types';
-import type { Supplier } from '@/types/admin';
-import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
+import Filters from '@/components/Filters.vue';
+import LinkButton from '@/components/LinkButton.vue';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
-import Filters from '@/components/Filters.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import suppliersRoutes from '@/routes/admin/suppliers';
+import type { DataTableAction, DataTableColumn } from '@/types';
+import { type BreadcrumbItem, type PaginationData } from '@/types';
+import type { Supplier } from '@/types/admin';
+import { Head, router } from '@inertiajs/vue3';
+import { Eye, Pencil, Trash2 } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -35,7 +35,7 @@ const { filters, updateFilter, resetFilters } = useFilters(
     suppliersRoutes.index().url,
     {
         search: props.filters.search || '',
-    }
+    },
 );
 
 // Filter configurations
@@ -74,7 +74,7 @@ const actions: DataTableAction<Supplier>[] = [
         onClick: (row) => {
             router.visit(suppliersRoutes.show(row.id).url);
         },
-        class: 'hover:text-blue-600 hover:bg-blue-50'
+        class: 'hover:text-blue-600 hover:bg-blue-50',
     },
     {
         label: 'Edit',
@@ -82,7 +82,7 @@ const actions: DataTableAction<Supplier>[] = [
         onClick: (row) => {
             router.visit(suppliersRoutes.edit(row.id).url);
         },
-        class: 'hover:text-green-600 hover:bg-green-50'
+        class: 'hover:text-green-600 hover:bg-green-50',
     },
     {
         label: 'Delete',
@@ -90,70 +90,90 @@ const actions: DataTableAction<Supplier>[] = [
         onClick: (row) => {
             router.delete(suppliersRoutes.destroy(row.id).url);
         },
-        class: 'hover:text-red-600 hover:bg-red-50'
+        class: 'hover:text-red-600 hover:bg-red-50',
     },
 ];
 </script>
 
 <template>
-
     <Head title="Suppliers" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="flex justify-between items-center mb-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
+            <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold">Suppliers</h1>
-                    <p class="text-sm text-muted-foreground">Manage your suppliers information</p>
+                    <p class="text-sm text-muted-foreground">
+                        Manage your suppliers information
+                    </p>
                 </div>
-                <LinkButton :href="suppliersRoutes.create().url" label="Add a supplier" />
+                <LinkButton
+                    :href="suppliersRoutes.create().url"
+                    label="Add a supplier"
+                />
             </div>
 
             <!-- Filters -->
-            <Filters :search-value="filters.search as string"
+            <Filters
+                :search-value="filters.search as string"
                 search-placeholder="Search by name, contact person, email, or phone..."
                 @update:search="(value) => updateFilter('search', value)"
-                @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
+                @update:filter="(key, value) => updateFilter(key, value, true)"
+                @reset="resetFilters"
+            />
 
             <!-- Suppliers Table -->
-            <DataTable :data="suppliers.data" :columns="columns" :actions="actions" empty-message="No suppliers found.">
-
+            <DataTable
+                :data="suppliers.data"
+                :columns="columns"
+                :actions="actions"
+                empty-message="No suppliers found."
+            >
                 <!-- Suppliers Name -->
                 <template #cell-supplier_name="{ value }">
-                    <span class="max-w-[150px] truncate block font-medium" :title="value">
+                    <span
+                        class="block max-w-[150px] truncate font-medium"
+                        :title="value"
+                    >
                         {{ value }}
                     </span>
                 </template>
 
                 <!-- Contact Person -->
                 <template #cell-contact_person="{ value }">
-                    <span class="max-w-[120px] truncate block" :title="value">
+                    <span class="block max-w-[120px] truncate" :title="value">
                         {{ value || 'N/A' }}
                     </span>
                 </template>
 
                 <!-- Email -->
                 <template #cell-email="{ value }">
-                    <span class="max-w-[150px] truncate block" :title="value">
+                    <span class="block max-w-[150px] truncate" :title="value">
                         {{ value || 'N/A' }}
                     </span>
                 </template>
 
                 <!-- Phone -->
                 <template #cell-phone="{ value }">
-                    <span class="max-w-[120px] truncate block" :title="value">
+                    <span class="block max-w-[120px] truncate" :title="value">
                         {{ value || 'N/A' }}
                     </span>
                 </template>
 
                 <!-- Status Badge -->
                 <template #cell-status="{ value }">
-                    <span v-if="value === 'active'"
-                        class="inline-flex items-center rounded-full border border-green-500/10 bg-green-500/10 px-2 py-1 text-xs font-medium text-green-600">
+                    <span
+                        v-if="value === 'active'"
+                        class="inline-flex items-center rounded-full border border-green-500/10 bg-green-500/10 px-2 py-1 text-xs font-medium text-green-600"
+                    >
                         Active
                     </span>
-                    <span v-else
-                        class="inline-flex items-center rounded-full border border-red-500/10 bg-red-500/10 px-2 py-1 text-xs font-medium text-red-600">
+                    <span
+                        v-else
+                        class="inline-flex items-center rounded-full border border-red-500/10 bg-red-500/10 px-2 py-1 text-xs font-medium text-red-600"
+                    >
                         Inactive
                     </span>
                 </template>

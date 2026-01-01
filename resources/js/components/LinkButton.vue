@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import Button from './ui/button/Button.vue';
-import { Plus, ArrowLeft } from 'lucide-vue-next';
+import { ArrowLeft, Plus } from 'lucide-vue-next';
 import { computed } from 'vue';
+import Button from './ui/button/Button.vue';
 
 type ButtonMode = 'create' | 'back';
 
@@ -21,7 +21,7 @@ const config = computed(() => {
         return {
             icon: ArrowLeft,
             variant: 'outline' as const,
-            defaultLabel: 'Back'
+            defaultLabel: 'Back',
         };
     }
 
@@ -34,11 +34,7 @@ const config = computed(() => {
 </script>
 
 <template>
-    <Button
-        :variant="config.variant"
-        asChild
-        size="lg"
-    >
+    <Button :variant="config.variant" asChild size="lg">
         <Link :href="href">
             <component :is="config.icon" class="h-4 w-4" />
             <span>{{ label || config.defaultLabel }}</span>

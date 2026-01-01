@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type FilterConfig, type PaginationData, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
+import EditDeliveryModal from '@/components/admin/EditDeliveryModal.vue';
 import DataTable from '@/components/DataTable.vue';
-import type { DataTableColumn, DataTableAction } from '@/types';
-import type { Delivery } from '@/types/admin';
-import { Eye, Pencil } from 'lucide-vue-next';
+import Filters from '@/components/Filters.vue';
 import Pagination from '@/components/Pagination.vue';
 import { useFilters } from '@/composables/useFilters';
-import Filters from '@/components/Filters.vue';
-import deliveriesRoutes from '@/routes/admin/deliveries';
 import { useFormatters } from '@/composables/useFormatters';
-import EditDeliveryModal from '@/components/admin/EditDeliveryModal.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import deliveriesRoutes from '@/routes/admin/deliveries';
+import type { DataTableAction, DataTableColumn } from '@/types';
+import {
+    type BreadcrumbItem,
+    type FilterConfig,
+    type PaginationData,
+} from '@/types';
+import type { Delivery } from '@/types/admin';
+import { Head, router } from '@inertiajs/vue3';
+import { Eye, Pencil } from 'lucide-vue-next';
 import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -49,7 +53,7 @@ const { filters, updateFilter, resetFilters } = useFilters(
     {
         search: props.filters.search || '',
         status: props.filters.status || '',
-    }
+    },
 );
 
 // Filter configurations
@@ -73,7 +77,7 @@ const columns: DataTableColumn<Delivery>[] = [
         label: 'ID',
         key: 'id',
         render: (value) => `#${value.toString().padStart(4, '0')}`,
-        class: 'text-gray-700'
+        class: 'text-gray-700',
     },
     {
         label: 'Order ID',
@@ -97,7 +101,7 @@ const columns: DataTableColumn<Delivery>[] = [
     {
         label: 'Actual Delivery',
         key: 'actual_delivery_date',
-        render: (value) => value ? formatDate(value) : '-',
+        render: (value) => (value ? formatDate(value) : '-'),
     },
     {
         label: 'Status',
@@ -120,38 +124,50 @@ const actions: DataTableAction<Delivery>[] = [
         onClick: (row) => {
             openEditModal(row);
         },
-        class: 'hover:text-blue-600 hover:bg-blue-50'
+        class: 'hover:text-blue-600 hover:bg-blue-50',
     },
 ];
-
 </script>
 
 <template>
-
     <Head title="Deliveries" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <div class="flex justify-between items-center mb-4">
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
+            <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold">Deliveries</h1>
-                    <p class="text-sm text-muted-foreground">Manage delivery schedules and tracking</p>
+                    <p class="text-sm text-muted-foreground">
+                        Manage delivery schedules and tracking
+                    </p>
                 </div>
             </div>
 
             <!-- Filters -->
-            <Filters :search-value="filters.search as string" :filters="filterConfigs"
+            <Filters
+                :search-value="filters.search as string"
+                :filters="filterConfigs"
                 search-placeholder="Search by driver name or customer name..."
                 @update:search="(value) => updateFilter('search', value)"
-                @update:filter="(key, value) => updateFilter(key, value, true)" @reset="resetFilters" />
+                @update:filter="(key, value) => updateFilter(key, value, true)"
+                @reset="resetFilters"
+            />
 
             <!-- Deliveries Table -->
-            <DataTable :data="deliveries.data" :columns="columns" :actions="actions"
-                empty-message="No deliveries found.">
-
+            <DataTable
+                :data="deliveries.data"
+                :columns="columns"
+                :actions="actions"
+                empty-message="No deliveries found."
+            >
                 <!-- Customer Name -->
                 <template #cell-customer_name="{ row }">
-                    <span class="max-w-[150px] truncate block" :title="row.order?.user?.name">
+                    <span
+                        class="block max-w-[150px] truncate"
+                        :title="row.order?.user?.name"
+                    >
                         {{ row.order?.user?.name || '-' }}
                     </span>
                 </template>
@@ -165,24 +181,34 @@ const actions: DataTableAction<Delivery>[] = [
 
                 <!-- Custom slot for status with badge -->
                 <template #cell-status="{ value }">
-                    <span v-if="value === 'scheduled'"
-                        class="inline-flex items-center rounded-full border border-blue-500/10 bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-700">
+                    <span
+                        v-if="value === 'scheduled'"
+                        class="inline-flex items-center rounded-full border border-blue-500/10 bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-700"
+                    >
                         Scheduled
                     </span>
-                    <span v-else-if="value === 'rescheduled'"
-                        class="inline-flex items-center rounded-full border border-orange-500/10 bg-orange-500/10 px-2 py-1 text-xs font-medium text-orange-700">
+                    <span
+                        v-else-if="value === 'rescheduled'"
+                        class="inline-flex items-center rounded-full border border-orange-500/10 bg-orange-500/10 px-2 py-1 text-xs font-medium text-orange-700"
+                    >
                         Rescheduled
                     </span>
-                    <span v-else-if="value === 'in_transit'"
-                        class="inline-flex items-center rounded-full border border-purple-500/10 bg-purple-500/10 px-2 py-1 text-xs font-medium text-purple-700">
+                    <span
+                        v-else-if="value === 'in_transit'"
+                        class="inline-flex items-center rounded-full border border-purple-500/10 bg-purple-500/10 px-2 py-1 text-xs font-medium text-purple-700"
+                    >
                         In Transit
                     </span>
-                    <span v-else-if="value === 'delivered'"
-                        class="inline-flex items-center rounded-full border border-green-500/10 bg-green-500/10 px-2 py-1 text-xs font-medium text-green-700">
+                    <span
+                        v-else-if="value === 'delivered'"
+                        class="inline-flex items-center rounded-full border border-green-500/10 bg-green-500/10 px-2 py-1 text-xs font-medium text-green-700"
+                    >
                         Delivered
                     </span>
-                    <span v-else-if="value === 'failed'"
-                        class="inline-flex items-center rounded-full border border-red-500/10 bg-red-500/10 px-2 py-1 text-xs font-medium text-red-700">
+                    <span
+                        v-else-if="value === 'failed'"
+                        class="inline-flex items-center rounded-full border border-red-500/10 bg-red-500/10 px-2 py-1 text-xs font-medium text-red-700"
+                    >
                         Failed
                     </span>
                 </template>
@@ -195,7 +221,10 @@ const actions: DataTableAction<Delivery>[] = [
         </div>
 
         <!-- Edit Delivery Modal -->
-        <EditDeliveryModal :open="isEditModalOpen" @update:open="isEditModalOpen = $event"
-            :delivery="selectedDelivery" />
+        <EditDeliveryModal
+            :open="isEditModalOpen"
+            @update:open="isEditModalOpen = $event"
+            :delivery="selectedDelivery"
+        />
     </AppLayout>
 </template>

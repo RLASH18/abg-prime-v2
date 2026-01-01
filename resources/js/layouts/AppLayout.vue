@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import AdminAppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import CustomerAppLayout from '@/layouts/app/AppHeaderLayout.vue';
+import AdminAppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
-import { usePage } from '@inertiajs/vue3';
-import { computed, watch } from 'vue';
 import flasher from '@flasher/flasher';
 import NotyfPlugin from '@flasher/flasher-notyf';
+import { usePage } from '@inertiajs/vue3';
+import { computed, watch } from 'vue';
 
 flasher.addPlugin('notyf', NotyfPlugin);
 
@@ -29,14 +29,18 @@ watch(
             flasher.render(messages);
 
             // Manually clear messages from history state to prevent persistence
-            if (window.history.state && window.history.state.page && window.history.state.page.props) {
+            if (
+                window.history.state &&
+                window.history.state.page &&
+                window.history.state.page.props
+            ) {
                 const state = { ...window.history.state };
                 state.page.props.messages = null;
                 window.history.replaceState(state, '');
             }
         }
     },
-    { immediate: true }
+    { immediate: true },
 );
 </script>
 
