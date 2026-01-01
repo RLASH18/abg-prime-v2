@@ -55,4 +55,14 @@ class Item extends Model
     {
         return $this->hasMany(OrderItem::class, 'item_id');
     }
+
+    /**
+     * Get all of the carts for the Item
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function carts(): HasMany
+    {
+        return $this->hasMany(Cart::class, 'item_id');
+    }
 }

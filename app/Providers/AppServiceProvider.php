@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\{
     DamagedItemRepositoryInterface,
     OrderRepositoryInterface,
     BillingRepositoryInterface,
+    CartRepositoryInterface,
     DeliveryRepositoryInterface
 };
 use App\Repositories\{
@@ -18,6 +19,7 @@ use App\Repositories\{
     DamagedItemRepository,
     OrderRepository,
     BillingRepository,
+    CartRepository,
     DeliveryRepository
 };
 use Illuminate\Support\ServiceProvider;
@@ -36,7 +38,8 @@ class AppServiceProvider extends ServiceProvider
         DamagedItemRepositoryInterface::class => DamagedItemRepository::class,
         OrderRepositoryInterface::class => OrderRepository::class,
         BillingRepositoryInterface::class => BillingRepository::class,
-        DeliveryRepositoryInterface::class => DeliveryRepository::class
+        DeliveryRepositoryInterface::class => DeliveryRepository::class,
+        CartRepositoryInterface::class => CartRepository::class
     ];
 
     /**
