@@ -15,7 +15,7 @@ import { Supplier } from '@/types/admin';
 import { Form, Head } from '@inertiajs/vue3';
 import { Upload, X } from 'lucide-vue-next';
 
-const props = defineProps<{
+defineProps<{
     suppliers: Supplier[];
 }>();
 

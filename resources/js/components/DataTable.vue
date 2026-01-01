@@ -21,7 +21,7 @@ interface Props {
     loading?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
     caption: '',
     emptyMessage: 'No data available',
     emptyDescription: 'No data available. Get started by adding something.',

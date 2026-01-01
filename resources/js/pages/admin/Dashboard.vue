@@ -8,7 +8,7 @@ import { type DashboardStats } from '@/types/admin';
 import { Head } from '@inertiajs/vue3';
 import { Package, PhilippinePeso, ShoppingCart, Users } from 'lucide-vue-next';
 
-const props = defineProps<DashboardStats>();
+defineProps<DashboardStats>();
 const { formatCurrency } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [

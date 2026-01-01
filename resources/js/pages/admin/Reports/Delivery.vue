@@ -24,7 +24,7 @@ interface Props {
     report: DeliveryMetrics;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const statusColumns: DataTableColumn[] = [
     {

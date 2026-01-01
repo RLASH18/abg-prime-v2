@@ -22,7 +22,7 @@ interface Props {
     item: InventoryItem | null;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
     'update:open': [value: boolean];

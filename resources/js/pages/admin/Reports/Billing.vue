@@ -30,7 +30,7 @@ interface Props {
     report: BillingMetrics;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const { formatCurrency, formatDate } = useFormatters();
 
 const outstandingColumns: DataTableColumn[] = [

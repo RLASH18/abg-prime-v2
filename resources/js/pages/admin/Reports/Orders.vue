@@ -25,7 +25,7 @@ interface Props {
     report: OrderMetrics;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const { formatCurrency } = useFormatters();
 
 const statusColumns: DataTableColumn[] = [

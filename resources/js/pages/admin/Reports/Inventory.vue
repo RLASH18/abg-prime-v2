@@ -25,7 +25,7 @@ interface Props {
     report: InventoryMetrics;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const { formatCurrency } = useFormatters();
 
 const lowStockColumns: DataTableColumn[] = [

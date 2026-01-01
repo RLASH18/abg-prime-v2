@@ -30,7 +30,7 @@ interface Props {
     report: SalesMetrics;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 const { formatCurrency } = useFormatters();
 
 const topItemsColumns: DataTableColumn[] = [
