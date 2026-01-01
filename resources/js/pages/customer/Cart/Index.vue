@@ -151,14 +151,11 @@ const clearCart = () => {
                                                 variant="outline" size="icon" class="h-8 w-8">
                                                 <Minus class="h-3 w-3" />
                                             </Button>
-                                            <Input v-model.number="cartItem.quantity"
-                                                type="number"
-                                                :min="1"
+                                            <Input v-model.number="cartItem.quantity" type="number" :min="1"
                                                 :max="cartItem.product.quantity"
                                                 @change="updateQuantity(cartItem.id, cartItem.quantity)"
                                                 :disabled="updatingItems.has(cartItem.id)"
-                                                class="text-center font-semibold w-16 h-8 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                            />
+                                                class="text-center font-semibold w-16 h-8 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
                                             <Button @click="updateQuantity(cartItem.id, cartItem.quantity + 1)"
                                                 :disabled="cartItem.quantity >= cartItem.product.quantity || updatingItems.has(cartItem.id)"
                                                 variant="outline" size="icon" class="h-8 w-8">
@@ -227,10 +224,7 @@ const clearCart = () => {
                                 Proceed to Checkout
                                 <ArrowRight class="h-5 w-5 ml-2" />
                             </Button>
-                            <Button :href="homepageRoutes.index().url" as="a" variant="outline" size="lg"
-                                class="w-full">
-                                Continue Shopping
-                            </Button>
+                            <LinkButton :href="homepageRoutes.index().url" mode="back" label="Continue Shopping" class="w-full" />
                         </CardFooter>
                     </Card>
                 </div>

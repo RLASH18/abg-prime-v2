@@ -211,7 +211,7 @@ const addToCart = (productId: number, event: Event) => {
 
                         <CardFooter class="p-4 pt-0">
                             <Button :disabled="product.quantity <= 0"
-                                @click="(e) => addToCart(product.id, e)"
+                                @click="(e: Event) => addToCart(product.id, e)"
                                 class="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
                                 size="lg">
                                 <ShoppingCart class="h-4 w-4 mr-2" />
