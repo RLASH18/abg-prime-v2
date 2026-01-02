@@ -57,6 +57,34 @@ class OrderService
     }
 
     /**
+     * Get paginated orders for a specific customer
+     *
+     * @param int $userId
+     * @param int $perPage
+     * @param array $filters
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getCustomerOrders(int $userId, int $perPage = 10, array $filters = [])
+    {
+        $query = $this->orderRepo->query()
+            ->with(['orderItems.item'])
+            ->where('user_id', $userId);
+
+        $this->applyExactFilter($query, 'status', $filters['status'] ?? null);
+        $this->applyExactFilter($query, 'payment_method', $filters['payment_method'] ?? null);
+
+        if (! empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+
+        if (! empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+    }
+
+    /**
      * Update order status
      *
      * @param int $id
