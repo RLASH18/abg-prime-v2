@@ -29,7 +29,7 @@ class BillingService
      * @param array $filters
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAllPaginated(int $perPage, array $filters)
+    public function getAllPaginated(int $perPage, array $filters = [])
     {
         $query = $this->billingRepo->query()->with(['order.user', 'order.orderItems.item']);
 
