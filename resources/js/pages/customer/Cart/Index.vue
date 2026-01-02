@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { useFormatters } from '@/composables/useFormatters';
 import AppLayout from '@/layouts/AppLayout.vue';
 import cartsRoutes from '@/routes/customer/carts';
+import checkoutRoutes from '@/routes/customer/checkout';
 import homepageRoutes from '@/routes/customer/homepage';
 import { type BreadcrumbItem } from '@/types';
 import { CartItem } from '@/types/customer';
@@ -41,7 +42,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: homepageRoutes.index().url,
     },
     {
-        title: 'Shopping Cart',
+        title: 'My Cart',
         href: '#',
     },
 ];
@@ -79,6 +80,10 @@ const clearCart = () => {
     if (confirm('Are you sure you want to clear your entire cart?')) {
         router.delete(cartsRoutes.clear().url);
     }
+};
+
+const processCheckout = () => {
+    router.visit(checkoutRoutes.index().url);
 };
 </script>
 
@@ -300,9 +305,7 @@ const clearCart = () => {
                                             class="text-xs font-medium text-destructive"
                                         >
                                             Only
-                                            {{
-                                                cartItem.product.quantity
-                                            }}
+                                            {{ cartItem.product.quantity }}
                                             units available
                                         </p>
                                     </div>
@@ -363,7 +366,11 @@ const clearCart = () => {
                             </div>
                         </CardContent>
                         <CardFooter class="flex-col gap-3">
-                            <Button size="lg" class="w-full">
+                            <Button
+                                @click="processCheckout"
+                                size="lg"
+                                class="w-full"
+                            >
                                 Proceed to Checkout
                                 <ArrowRight class="ml-2 h-5 w-5" />
                             </Button>
