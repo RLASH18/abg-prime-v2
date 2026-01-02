@@ -10,4 +10,5 @@ interface CartRepositoryInterface extends BaseRepositoryInterface
     public function getUserCart(int $userId): Collection;
     public function findByUserAndItem(int $userId, int $itemId): ?Cart;
     public function clearUserCart(int $userId): bool;
+    public function getSelectedUserCart(int $userId): Collection;
 }

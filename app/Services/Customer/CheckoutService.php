@@ -32,11 +32,11 @@ class CheckoutService
      */
     public function processCheckout(int $userId, array $checkoutData): int
     {
-        // Validate cart has items
-        $cartItems = $this->cartRepo->getUserCart($userId);
+        // Get SELECTED cart items only
+        $cartItems = $this->cartRepo->getSelectedUserCart($userId);
 
         if ($cartItems->isEmpty()) {
-            throw new \Exception('Your cart is empty');
+            throw new \Exception('Please select products to checkout');
         }
 
         // Validate stock availability
@@ -132,10 +132,10 @@ class CheckoutService
      */
     public function getCheckoutSummary(int $userId): array
     {
-        $cartItems = $this->cartRepo->getUserCart($userId);
+        $cartItems = $this->cartRepo->getSelectedUserCart($userId);
 
         if ($cartItems->isEmpty()) {
-            throw new \Exception('Your cart is empty');
+            throw new \Exception('Please select items to checkout');
         }
 
         $subTotal = $this->calculateTotal($cartItems);

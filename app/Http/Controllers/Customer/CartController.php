@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Cart\StoreCartRequest;
 use App\Http\Requests\Cart\UpdateCartRequest;
 use App\Services\Customer\CartService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -29,11 +30,15 @@ class CartController extends Controller
         $cartItems = $this->cartService->getUserCart($userId);
         $cartTotal = $this->cartService->getCartTotal($userId);
         $cartCount = $this->cartService->getCartCount($userId);
+        $selectedTotal = $this->cartService->getSelectedCartTotal($userId);
+        $selectedItems = $this->cartService->getSelectedCartItems($userId);
 
         return Inertia::render('customer/Cart/Index', [
             'cartItems' => $cartItems,
             'cartTotal' => $cartTotal,
-            'cartCount' => $cartCount
+            'cartCount' => $cartCount,
+            'selectedTotal' => $selectedTotal,
+            'selectedCount' => $selectedItems->count(),
         ]);
     }
 
@@ -94,5 +99,33 @@ class CartController extends Controller
     {
         $this->cartService->clearCart(Auth::id());
         return $this->flashSuccess('Cart cleared successfully', 'customer.carts.index');
+    }
+
+    /**
+     * Toggle cart item selection
+     */
+    public function toggleSelection(int $id)
+    {
+        $cart = $this->cartService->getUserCart(Auth::id())
+            ->firstWhere('id', $id);
+
+        if (! $cart) {
+            return $this->flashError('Cart item not found', 'customer.carts.index');
+        }
+
+        $this->cartService->toggleSelection($id, !$cart->selected);
+
+        return back();
+    }
+
+    /**
+     * Toggle all cart items selection
+     */
+    public function toggleAllSelection(Request $request)
+    {
+        $selected = $request->input('selected', true);
+        $this->cartService->toggleAllSelection(Auth::id(), $selected);
+
+        return back();
     }
 }

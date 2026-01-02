@@ -145,4 +145,60 @@ class CartService
     {
         return $this->getUserCart($userId)->sum('quantity');
     }
+
+    /**
+     * Toggle cart item selection
+     *
+     * @param int $cartId
+     * @param bool $selected
+     * @return bool
+     */
+    public function toggleSelection(int $cartId, bool $selected): bool
+    {
+        return $this->cartRepo->update($cartId, ['selected' => $selected]);
+    }
+
+    /**
+     * Select/deselect all cart items for user
+     *
+     * @param int $userId
+     * @param bool $selected
+     * @return bool
+     */
+    public function toggleAllSelection(int $userId, bool $selected): bool
+    {
+        $cartItems = $this->getUserCart($userId);
+
+        foreach ($cartItems as $item) {
+            $this->cartRepo->update($item->id, ['selected' => $selected]);
+        }
+
+        return true;
+    }
+
+    /**
+     * Get selected cart items only
+     *
+     * @param int $userId
+     * @return Collection
+     */
+    public function getSelectedCartItems(int $userId): Collection
+    {
+        return $this->cartRepo->getSelectedUserCart($userId);
+    }
+
+    /**
+     * Get cart total for selected items only
+     *
+     * @param int $userId
+     * @return float
+     */
+    public function getSelectedCartTotal(int $userId): float
+    {
+        $selectedItems = $this->getSelectedCartItems($userId);
+
+        return $selectedItems->sum(function ($cart) {
+            return $cart->quantity * $cart->price;
+        });
+    }
 }

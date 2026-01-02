@@ -19,10 +19,20 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
             });
         });
 
+        // Resource routes
         Route::resource('carts', CartController::class)
             ->only(['index', 'store', 'update', 'destroy']);
 
-        Route::delete('/carts-clear', [CartController::class, 'clear'])->name('carts.clear');
+        // Custom cart routes
+        Route::controller(CartController::class)->group(function () {
+            Route::prefix('carts')->name('carts.')->group(function () {
+                Route::delete('/clear', 'clear')->name('clear');
+
+                Route::patch('/{id}/toggle-selection', 'toggleSelection')->name('toggle-selection');
+
+                Route::post('/toggle-all-selection', 'toggleAllSelection')->name('toggle-all-selection');
+            });
+        });
 
         Route::prefix('checkout')->name('checkout.')->group(function () {
             Route::controller(CheckoutController::class)->group(function () {

@@ -59,4 +59,19 @@ class CartRepository extends BaseRepository implements CartRepositoryInterface
             ->where('user_id', $userId)
             ->delete() > 0;
     }
+
+    /**
+     * Get user's selected cart items
+     *
+     * @param int $userId
+     * @return Collection
+     */
+    public function getSelectedUserCart(int $userId): Collection
+    {
+        return $this->query()
+            ->where('user_id', $userId)
+            ->where('selected', true)
+            ->with('product')
+            ->get();
+    }
 }

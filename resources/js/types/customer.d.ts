@@ -19,6 +19,7 @@ export interface CartItem {
     item_id: number;
     quantity: number;
     price: number;
+    selected: boolean;
     created_at: string;
     updated_at: string;
     product: Product;

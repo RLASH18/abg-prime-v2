@@ -19,21 +19,24 @@ import { CartItem } from '@/types/customer';
 import { Head, router } from '@inertiajs/vue3';
 import {
     ArrowRight,
+    CheckSquare,
     Minus,
     Package,
     Plus,
     ShoppingBag,
     Trash2,
 } from 'lucide-vue-next';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 interface Props {
     cartItems: CartItem[];
     cartTotal: number;
     cartCount: number;
+    selectedTotal: number;
+    selectedCount: number;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 const { formatCurrency } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -48,6 +51,24 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const updatingItems = ref<Set<number>>(new Set());
+
+const allSelected = computed(() => {
+    return (
+        props.cartItems.length > 0 &&
+        props.cartItems.every((item) => item.selected)
+    );
+});
+
+// Computed properties for dynamic selected items calculation
+const dynamicSelectedCount = computed(() => {
+    return props.cartItems.filter((item) => item.selected).length;
+});
+
+const dynamicSelectedTotal = computed(() => {
+    return props.cartItems
+        .filter((item) => item.selected)
+        .reduce((sum, item) => sum + item.quantity * item.price, 0);
+});
 
 const updateQuantity = (cartId: number, newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -83,7 +104,21 @@ const clearCart = () => {
 };
 
 const processCheckout = () => {
+    if (dynamicSelectedCount.value === 0) {
+        alert('Please select at least one item to checkout');
+        return;
+    }
     router.visit(checkoutRoutes.index().url);
+};
+
+const toggleItemSelection = (cartId: number) => {
+    router.patch(cartsRoutes.toggleSelection(cartId).url, {});
+};
+
+const toggleAllSelection = () => {
+    router.post(cartsRoutes.toggleAllSelection().url, {
+        selected: !allSelected.value,
+    });
 };
 </script>
 
@@ -136,13 +171,61 @@ const processCheckout = () => {
             <div v-else class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <!-- Cart Items -->
                 <div class="space-y-4 lg:col-span-2">
+                    <!-- Select All Header -->
+                    <Card class="border-2 border-primary/20">
+                        <CardContent
+                            class="flex items-center justify-between p-4"
+                        >
+                            <div class="flex items-center gap-3">
+                                <input
+                                    type="checkbox"
+                                    :checked="allSelected"
+                                    @change="toggleAllSelection"
+                                    class="h-4 w-4 cursor-pointer rounded-xl border-2 border-input bg-background accent-primary transition-all duration-50 focus:rounded-xl focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+                                />
+                                <label
+                                    class="cursor-pointer text-sm font-medium"
+                                    @click="toggleAllSelection"
+                                >
+                                    Select All
+                                </label>
+                            </div>
+                            <div
+                                class="flex items-center gap-2 text-sm text-muted-foreground"
+                            >
+                                <CheckSquare class="h-4 w-4" />
+                                <span
+                                    >{{ dynamicSelectedCount }} of
+                                    {{ cartItems.length }} selected</span
+                                >
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     <Card
                         v-for="cartItem in cartItems"
                         :key="cartItem.id"
-                        class="overflow-hidden border-2 transition-all duration-200 hover:border-primary/50"
+                        :class="[
+                            'overflow-hidden border-2 transition-all duration-200',
+                            cartItem.selected
+                                ? 'border-primary/50 bg-primary/5'
+                                : 'hover:border-primary/30',
+                        ]"
                     >
                         <CardContent class="p-4">
                             <div class="flex gap-4">
+                                <!-- Checkbox -->
+                                <div class="flex items-start pt-1">
+                                    <input
+                                        type="checkbox"
+                                        :checked="cartItem.selected"
+                                        @change="
+                                            () =>
+                                                toggleItemSelection(cartItem.id)
+                                        "
+                                        class="h-4 w-4 cursor-pointer rounded-md border-2 border-input bg-background accent-primary transition-all duration-200 focus:rounded-md focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+                                    />
+                                </div>
                                 <!-- Product Image -->
                                 <div
                                     class="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border"
@@ -332,21 +415,22 @@ const processCheckout = () => {
                             <CardTitle>Order Summary</CardTitle>
                         </CardHeader>
                         <CardContent class="space-y-4">
-                            <div class="space-y-2">
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-muted-foreground"
+                            <div class="space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-muted-foreground"
+                                        >Items Selected</span
+                                    >
+                                    <span class="text-sm font-medium"
+                                        >{{ dynamicSelectedCount }} of
+                                        {{ cartCount }}</span
+                                    >
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-muted-foreground"
                                         >Subtotal</span
                                     >
-                                    <span class="font-medium">{{
-                                        formatCurrency(cartTotal)
-                                    }}</span>
-                                </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-muted-foreground"
-                                        >Items</span
-                                    >
-                                    <span class="font-medium">{{
-                                        cartCount
+                                    <span class="text-sm font-medium">{{
+                                        formatCurrency(dynamicSelectedTotal)
                                     }}</span>
                                 </div>
                             </div>
@@ -356,22 +440,33 @@ const processCheckout = () => {
                                     class="flex items-baseline justify-between"
                                 >
                                     <span class="text-lg font-semibold"
-                                        >Total</span
+                                        >Checkout Total</span
                                     >
                                     <span
                                         class="text-2xl font-bold text-primary"
-                                        >{{ formatCurrency(cartTotal) }}</span
+                                        >{{
+                                            formatCurrency(dynamicSelectedTotal)
+                                        }}</span
                                     >
                                 </div>
+                                <p class="mt-1 text-xs text-muted-foreground">
+                                    Only selected items will be checked out
+                                </p>
                             </div>
                         </CardContent>
                         <CardFooter class="flex-col gap-3">
                             <Button
                                 @click="processCheckout"
+                                :disabled="dynamicSelectedCount === 0"
                                 size="lg"
                                 class="w-full"
                             >
-                                Proceed to Checkout
+                                Checkout {{ dynamicSelectedCount }}
+                                {{
+                                    dynamicSelectedCount === 1
+                                        ? 'Item'
+                                        : 'Items'
+                                }}
                                 <ArrowRight class="ml-2 h-5 w-5" />
                             </Button>
                             <LinkButton
