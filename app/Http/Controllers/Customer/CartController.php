@@ -33,7 +33,7 @@ class CartController extends Controller
         $selectedTotal = $this->cartService->getSelectedCartTotal($userId);
         $selectedItems = $this->cartService->getSelectedCartItems($userId);
 
-        return Inertia::render('customer/Cart/Index', [
+        return Inertia::render('customer/Cart', [
             'cartItems' => $cartItems,
             'cartTotal' => $cartTotal,
             'cartCount' => $cartCount,
