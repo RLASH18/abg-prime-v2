@@ -201,4 +201,15 @@ class CartService
             return $cart->quantity * $cart->price;
         });
     }
+
+    /**
+     * Remove selected items from cart
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function removeSelectedItems(int $userId): bool
+    {
+        return $this->cartRepo->removeSelectedCartItems($userId);
+    }
 }

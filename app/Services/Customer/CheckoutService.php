@@ -76,8 +76,8 @@ class CheckoutService
                 ]);
             }
 
-            // Clear cart after successful order
-            $this->cartRepo->clearUserCart($userId);
+            // Clear selected items from cart after successful order
+            $this->cartRepo->removeSelectedCartItems($userId);
 
             DB::commit();
 
