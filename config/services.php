@@ -46,4 +46,14 @@ return [
         'client_secret' => env('FB_CLIENT_SECRET'),
         'redirect' => env('FB_CALLBACK_REDIRECT')
     ],
+
+    'paymongo' => [
+        'secret_key' => env('PAYMONGO_SECRET_KEY'),
+        'public_key' => env('PAYMONGO_PUBLIC_KEY'),
+        'livemode' => env('PAYMONGO_LIVEMODE', false),
+        'webhook_secret' => env('PAYMONGO_WEBHOOK_SIG'),
+        'success_url' => env('PAYMONGO_SUCCESS_URL', env('APP_URL') . '/checkout/success'),
+        'failed_url' => env('PAYMONGO_FAILED_URL', env('APP_URL') . '/checkout/failed'),
+        'api_version' => env('PAYMONGO_API_VERSION', '2022-05-17'),
+    ],
 ];

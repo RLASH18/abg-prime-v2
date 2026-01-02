@@ -16,6 +16,8 @@ class Order extends Model
         'total_amount',
         'delivery_method',
         'delivery_address',
+        'paymongo_session_id',
+        'paymongo_payment_id',
     ];
 
     /**

@@ -2,9 +2,12 @@
 
 namespace App\Services\Customer;
 
+use App\Models\Order;
+use App\Notifications\OrderConfirmationNotification;
 use App\Repositories\Interfaces\CartRepositoryInterface;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Services\Payment\PaymongoService;
 use Illuminate\Support\Facades\DB;
 
 class CheckoutService
@@ -15,11 +18,13 @@ class CheckoutService
      * @param CartRepositoryInterface $cartRepo
      * @param OrderRepositoryInterface $orderRepo
      * @param ItemRepositoryInterface $itemRepo
+     * @param PaymongoService $paymongoService
      */
     public function __construct(
         protected CartRepositoryInterface $cartRepo,
         protected OrderRepositoryInterface $orderRepo,
-        protected ItemRepositoryInterface $itemRepo
+        protected ItemRepositoryInterface $itemRepo,
+        protected PaymongoService $paymongoService
     ) {}
 
     /**
@@ -27,10 +32,10 @@ class CheckoutService
      *
      * @param int $userId
      * @param array $checkoutData
-     * @return int Order ID
+     * @return int|array Order ID or array with checkout_url
      * @throws \Exception
      */
-    public function processCheckout(int $userId, array $checkoutData): int
+    public function processCheckout(int $userId, array $checkoutData): int|array
     {
         // Get SELECTED cart items only
         $cartItems = $this->cartRepo->getSelectedUserCart($userId);
@@ -78,6 +83,25 @@ class CheckoutService
 
             // Clear selected items from cart after successful order
             $this->cartRepo->removeSelectedCartItems($userId);
+
+            // Handle payment method
+            if (in_array($checkoutData['payment_method'], ['gcash', 'bank_transfer'])) {
+                // Create PayMongo checkout session
+                $session = $this->paymongoService->createCheckoutSession($order);
+
+                // Save session id to order
+                $this->orderRepo->update($order->id, [
+                    'paymongo_session_id' => $session['session_id'],
+                ]);
+
+                DB::commit();
+
+                // Return checkout URL for redirect
+                return [
+                    'checkout_url' => $session['checkout_url'],
+                    'order_id' => $order->id,
+                ];
+            }
 
             DB::commit();
 
@@ -146,5 +170,34 @@ class CheckoutService
             'total' => $subTotal,
             'item_count' => $cartItems->sum('quantity')
         ];
+    }
+
+    /**
+     * Confirm payment and send notification
+     *
+     * @param Order $order
+     * @return void
+     */
+    public function confirmPayment(Order $order): void
+    {
+        $this->orderRepo->update($order->id, [
+            'status' => 'confirmed'
+        ]);
+
+        // Send order confirmation email
+        $order->user->notify(new OrderConfirmationNotification($order->fresh()));
+    }
+
+    /**
+     * Cancel payment
+     *
+     * @param Order $order
+     * @return void
+     */
+    public function cancelPayment(Order $order): void
+    {
+        $this->orderRepo->update($order->id, [
+            'status' => 'cancelled'
+        ]);
     }
 }

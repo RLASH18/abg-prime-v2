@@ -27,6 +27,8 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2);
             $table->enum('delivery_method', ['pickup', 'delivery'])->default('pickup');
             $table->text('delivery_address')->nullable();
+            $table->string('paymongo_session_id')->nullable();
+            $table->string('paymongo_payment_id')->nullable();
             $table->timestamps();
         });
     }

@@ -36,15 +36,21 @@ class CheckoutController extends Controller
     public function process(ProcessCheckoutRequest $request)
     {
         try {
-            $orderId = $this->checkoutService->processCheckout(
+            $result = $this->checkoutService->processCheckout(
                 Auth::id(),
                 $request->validated()
             );
 
+            // If PayMongo payment, redirect to checkout URL
+            if (isset($result['checkout_url'])) {
+                return Inertia::location($result['checkout_url']);
+            }
+
+            // Cash payment - redirect to order page
             return $this->flashSuccess(
                 'Order placed successfully!',
                 'customer.orders.show',
-                ['id' => $orderId]
+                ['id' => $result]
             );
         } catch (\Exception $e) {
             return $this->flashError($e->getMessage(), 'customer.checkout.index');
