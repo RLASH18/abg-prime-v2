@@ -33,7 +33,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: homepageRoutes.index().url,
     },
     {
-        title: 'My Orders',
+        title: 'Orders',
         href: '#',
     },
 ];
@@ -78,7 +78,7 @@ const viewOrder = (orderId: number) => {
 </script>
 
 <template>
-    <Head title="My Orders" />
+    <Head title="Orders" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

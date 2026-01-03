@@ -123,7 +123,7 @@ const toggleAllSelection = () => {
 </script>
 
 <template>
-    <Head title="Shopping Cart" />
+    <Head title="My Cart" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
