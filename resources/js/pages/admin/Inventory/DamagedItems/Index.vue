@@ -79,8 +79,8 @@ const columns: DataTableColumn<DamagedItem>[] = [
         align: 'right',
     },
     {
-        label: 'Discount',
-        key: 'discount',
+        label: 'Discount Price',
+        key: 'discounted_price',
         align: 'right',
         render: (value) => (value ? formatCurrency(value) : '-'),
     },

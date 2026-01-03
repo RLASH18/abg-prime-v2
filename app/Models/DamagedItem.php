@@ -10,7 +10,8 @@ class DamagedItem extends Model
     protected $fillable = [
         'item_id',
         'quantity',
-        'discount',
+        'discounted_price',
+        'discount_percentage',
         'status',
         'remarks',
     ];

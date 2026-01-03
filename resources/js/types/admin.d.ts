@@ -40,7 +40,7 @@ export interface DamagedItem {
     id: number;
     item_id: number;
     quantity: number;
-    discount: number | null;
+    discounted_price: number | null;
     status: 'damaged' | 'resellable' | 'disposed';
     remarks: string | null;
     created_at: string;

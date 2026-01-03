@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity')->default(1); // How many units are damaged
-            $table->decimal('discount', 10, 2)->nullable();
+            $table->decimal('discounted_price', 10, 2)->nullable();
+            $table->decimal('discount_percentage', 5, 2)->nullable();
             $table->enum('status', ['damaged', 'resellable', 'disposed'])->default('damaged');
             $table->text('remarks')->nullable();
             $table->timestamps();

@@ -17,6 +17,9 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
                 Route::get('/', 'index')->name('index');
 
                 Route::get('/products/{product}', 'show')->name('products.show');
+
+                Route::get('/products/{product}/damaged/{damagedItemId}', 'show')
+                    ->name('products.show.damaged');
             });
         });
 

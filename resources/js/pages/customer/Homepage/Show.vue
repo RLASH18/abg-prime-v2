@@ -17,6 +17,7 @@ import {
     Info,
     Minus,
     Package,
+    Percent,
     Plus,
     ShoppingCart,
 } from 'lucide-vue-next';
@@ -106,12 +107,20 @@ const addToCart = () => {
         {
             item_id: props.product.id,
             quantity: quantity.value,
+            damaged_item_id: props.product.damaged_item_id || null,
         },
         {
             preserveScroll: true,
         },
     );
 };
+
+const displayPrice = computed((): number => {
+    if (props.product.is_damaged && props.product.discounted_price != null) {
+        return props.product.discounted_price;
+    }
+    return props.product.unit_price;
+});
 </script>
 
 <template>
@@ -203,6 +212,17 @@ const addToCart = () => {
                                             >{{ product.category }}</Badge
                                         >
                                         <Badge
+                                            v-if="
+                                                product.is_damaged &&
+                                                product.discount_percentage
+                                            "
+                                            class="border bg-red-500 text-white"
+                                        >
+                                            <Percent class="mr-1 h-3 w-3" />
+                                            {{ product.discount_percentage }}%
+                                            OFF
+                                        </Badge>
+                                        <Badge
                                             :class="stockStatus.class"
                                             class="border"
                                         >
@@ -214,10 +234,24 @@ const addToCart = () => {
                                         </Badge>
                                     </div>
                                     <CardTitle
-                                        class="text-4xl font-bold text-primary"
+                                        class="text-4xl font-bold"
+                                        :class="
+                                            product.is_damaged
+                                                ? 'text-red-500'
+                                                : 'text-primary'
+                                        "
+                                    >
+                                        {{ formatCurrency(displayPrice) }}
+                                    </CardTitle>
+                                    <p
+                                        v-if="
+                                            product.is_damaged &&
+                                            product.discounted_price !== null
+                                        "
+                                        class="mt-1 text-lg text-muted-foreground line-through"
                                     >
                                         {{ formatCurrency(product.unit_price) }}
-                                    </CardTitle>
+                                    </p>
                                     <p
                                         class="mt-1 text-sm text-muted-foreground"
                                     >
@@ -243,6 +277,23 @@ const addToCart = () => {
                                 </p>
                                 <p class="text-base leading-relaxed">
                                     {{ product.description }}
+                                </p>
+                            </div>
+
+                            <!-- Damage Remarks (for damaged items) -->
+                            <div
+                                v-if="product.is_damaged && product.remarks"
+                                class="rounded-lg border border-orange-200 bg-orange-50 p-3 dark:border-orange-900 dark:bg-orange-950"
+                            >
+                                <p
+                                    class="mb-1 text-sm font-medium text-orange-700 dark:text-orange-400"
+                                >
+                                    Damage Information
+                                </p>
+                                <p
+                                    class="text-sm text-orange-600 dark:text-orange-300"
+                                >
+                                    {{ product.remarks }}
                                 </p>
                             </div>
 
@@ -338,12 +389,16 @@ const addToCart = () => {
                                             Subtotal
                                         </p>
                                         <p
-                                            class="text-xl font-bold text-primary"
+                                            class="text-xl font-bold"
+                                            :class="
+                                                product.is_damaged
+                                                    ? 'text-red-500'
+                                                    : 'text-primary'
+                                            "
                                         >
                                             {{
                                                 formatCurrency(
-                                                    product.unit_price *
-                                                        quantity,
+                                                    displayPrice * quantity,
                                                 )
                                             }}
                                         </p>

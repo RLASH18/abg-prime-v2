@@ -35,9 +35,9 @@ class HomepageController extends Controller
     /**
      * Display the specified product.
      */
-    public function show(int $id)
+    public function show(int $id, ?int $damagedItemId = null)
     {
-        $product = $this->homepageService->find($id);
+        $product = $this->homepageService->find($id, $damagedItemId);
 
         if (! $product) {
             return $this->flashError('Product not found', 'customer.homepage.index');

@@ -72,7 +72,9 @@ const getStatusIcon = (status: string) => {
 </script>
 
 <template>
-    <Head :title="`Admin - Delivery #${delivery.id.toString().padStart(4, '0')}`" />
+    <Head
+        :title="`Admin - Delivery #${delivery.id.toString().padStart(4, '0')}`"
+    />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

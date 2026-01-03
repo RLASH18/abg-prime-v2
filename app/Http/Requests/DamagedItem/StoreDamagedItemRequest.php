@@ -27,7 +27,7 @@ class StoreDamagedItemRequest extends FormRequest
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
             'remarks' => 'nullable|string|max:500',
-            'discount' => 'nullable|numeric|min:0',
+            'discount_amount' => 'nullable|numeric|min:0',
             'status' => 'required|in:resellable,disposed',
         ];
     }
@@ -46,8 +46,8 @@ class StoreDamagedItemRequest extends FormRequest
             'quantity.integer' => 'Quantity must be a whole number.',
             'quantity.min' => 'Quantity must be at least 1.',
             'remarks.max' => 'Remarks cannot exceed 500 characters.',
-            'discount.numeric' => 'Discount must be a valid number.',
-            'discount.min' => 'Discount cannot be negative.',
+            'discount_amount.numeric' => 'Discount amount must be a valid number.',
+            'discount_amount.min' => 'Discount amount cannot be negative.',
             'status.required' => 'Please select a status.',
             'status.in' => 'Status must be either resellable or disposed.',
         ];

@@ -16,13 +16,14 @@ import { Textarea } from '@/components/ui/textarea';
 import damagedItemsRoutes from '@/routes/admin/damaged-items';
 import type { InventoryItem } from '@/types/admin';
 import { Form } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 interface Props {
     open: boolean;
     item: InventoryItem | null;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
     'update:open': [value: boolean];
@@ -33,7 +34,18 @@ const statusOptions = [
     { value: 'disposed', label: 'Disposed' },
 ];
 
+const discountAmount = ref(0);
+
+const discountPercentage = computed(() => {
+    if (!props.item?.unit_price || props.item.unit_price <= 0) return 0;
+    return Math.min(
+        100,
+        Math.round((discountAmount.value / props.item.unit_price) * 100),
+    );
+});
+
 const close = () => {
+    discountAmount.value = 0;
     emit('update:open', false);
 };
 </script>
@@ -89,19 +101,35 @@ const close = () => {
                     <InputError :message="errors.remarks" />
                 </div>
 
-                <!-- Discount -->
+                <!-- Discount Amount -->
                 <div class="space-y-2">
-                    <Label for="discount">Discount (if reselling)</Label>
+                    <Label for="discount_amount"
+                        >Discount Amount (if reselling)</Label
+                    >
                     <Input
-                        id="discount"
-                        name="discount"
+                        id="discount_amount"
+                        name="discount_amount"
                         type="number"
                         step="0.01"
                         min="0"
+                        :max="props.item?.unit_price"
                         placeholder="0.00"
+                        v-model.number="discountAmount"
                         class="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     />
-                    <InputError :message="errors.discount" />
+                    <InputError :message="errors.discount_amount" />
+                </div>
+
+                <!-- Discount Percentage (Calculated) -->
+                <div class="space-y-2">
+                    <Label for="discount_percentage">Discount Percentage</Label>
+                    <Input
+                        id="discount_percentage"
+                        type="text"
+                        :value="`${discountPercentage}%`"
+                        disabled
+                        class="cursor-not-allowed bg-muted"
+                    />
                 </div>
 
                 <!-- Status -->

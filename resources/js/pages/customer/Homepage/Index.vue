@@ -15,6 +15,7 @@ import { Product } from '@/types/customer';
 import { Head, Link, router } from '@inertiajs/vue3';
 import {
     Package,
+    Percent,
     Search,
     ShoppingCart,
     Sparkles,
@@ -78,20 +79,31 @@ const getStockStatus = (item: Product) => {
     };
 };
 
-const addToCart = (productId: number, event: Event) => {
+const addToCart = (product: Product, event: Event) => {
     event.preventDefault();
     event.stopPropagation();
 
     router.post(
         cartsRoutes.store().url,
         {
-            item_id: productId,
+            item_id: product.id,
             quantity: 1,
+            damaged_item_id: product.damaged_item_id || null,
         },
         {
             preserveScroll: true,
         },
     );
+};
+
+const getProductUrl = (product: Product) => {
+    if (product.is_damaged === true && product.damaged_item_id != null) {
+        return productsRoutes.show.damaged({
+            product: product.id,
+            damagedItemId: product.damaged_item_id,
+        }).url;
+    }
+    return productsRoutes.show(product.id).url;
 };
 </script>
 
@@ -195,8 +207,12 @@ const addToCart = (productId: number, event: Event) => {
             >
                 <Link
                     v-for="product in products.data"
-                    :key="product.id"
-                    :href="productsRoutes.show(product.id).url"
+                    :key="
+                        product.is_damaged
+                            ? `damaged-${product.damaged_item_id}`
+                            : product.id
+                    "
+                    :href="getProductUrl(product)"
                     class="flex h-full"
                 >
                     <Card
@@ -233,12 +249,25 @@ const addToCart = (productId: number, event: Event) => {
                                 </div>
 
                                 <!-- Category Badge -->
-                                <div class="absolute top-3 left-3">
+                                <div
+                                    class="absolute top-3 left-3 flex flex-col gap-1"
+                                >
                                     <Badge
                                         variant="secondary"
                                         class="border bg-background/80 shadow-lg backdrop-blur-sm"
                                     >
                                         {{ product.category }}
+                                    </Badge>
+                                    <!-- Discount Badge for Damaged Items -->
+                                    <Badge
+                                        v-if="
+                                            product.is_damaged &&
+                                            product.discount_percentage
+                                        "
+                                        class="border bg-red-500 text-white shadow-lg"
+                                    >
+                                        <Percent class="mr-1 h-3 w-3" />
+                                        {{ product.discount_percentage }}% OFF
                                     </Badge>
                                 </div>
                             </div>
@@ -260,15 +289,46 @@ const addToCart = (productId: number, event: Event) => {
                                 </div>
 
                                 <div class="flex items-baseline gap-2">
-                                    <span
-                                        class="text-2xl font-bold text-primary"
-                                        >{{
-                                            formatCurrency(product.unit_price)
-                                        }}</span
+                                    <template
+                                        v-if="
+                                            product.is_damaged &&
+                                            product.discounted_price !== null
+                                        "
                                     >
-                                    <span class="text-xs text-muted-foreground"
-                                        >per unit</span
-                                    >
+                                        <span
+                                            class="text-2xl font-bold text-red-500"
+                                        >
+                                            {{
+                                                formatCurrency(
+                                                    product.discounted_price!,
+                                                )
+                                            }}
+                                        </span>
+                                        <span
+                                            class="text-sm text-muted-foreground line-through"
+                                        >
+                                            {{
+                                                formatCurrency(
+                                                    product.unit_price,
+                                                )
+                                            }}
+                                        </span>
+                                    </template>
+                                    <template v-else>
+                                        <span
+                                            class="text-2xl font-bold text-primary"
+                                        >
+                                            {{
+                                                formatCurrency(
+                                                    product.unit_price,
+                                                )
+                                            }}
+                                        </span>
+                                        <span
+                                            class="text-xs text-muted-foreground"
+                                            >per unit</span
+                                        >
+                                    </template>
                                 </div>
 
                                 <div
@@ -298,7 +358,7 @@ const addToCart = (productId: number, event: Event) => {
                         <CardFooter class="p-4 pt-0">
                             <Button
                                 :disabled="product.quantity <= 0"
-                                @click="(e: Event) => addToCart(product.id, e)"
+                                @click="(e: Event) => addToCart(product, e)"
                                 class="w-full transition-all duration-200 group-hover:bg-primary group-hover:text-primary-foreground"
                                 size="lg"
                             >

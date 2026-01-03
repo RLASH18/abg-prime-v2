@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\DamagedItem;
 use App\Models\Item;
 use App\Repositories\Interfaces\DamagedItemRepositoryInterface;
+use App\Repositories\ItemRepository;
 use App\Traits\Filterable;
 
 class DamagedItemService
@@ -12,12 +13,14 @@ class DamagedItemService
     use Filterable;
 
     /**
-     * Inject the damaged item repository
+     * Inject the damaged item repository and item repository
      *
      * @param DamagedItemRepositoryInterface $damagedItemRepo
+     * @param ItemRepository $itemRepo
      */
     public function __construct(
-        protected DamagedItemRepositoryInterface $damagedItemRepo
+        protected DamagedItemRepositoryInterface $damagedItemRepo,
+        protected ItemRepository $itemRepo,
     ) {}
 
     /**
@@ -54,14 +57,34 @@ class DamagedItemService
      * @param array $data
      * @return DamagedItem
      */
-    public function markAsDamaged(array $data): DamagedItem
+    public function markAsDamaged(array $data): ?DamagedItem
     {
-        $item = Item::findOrFail($data['item_id']);
+        $item = $this->itemRepo->find($data['item_id']);
+
+        if (! $item) {
+            return null;
+        }
+
+        // Calculate from discount amount
+        $discountAmount = $data['discount_amount'] ?? 0;
+        $discountedPrice = max(0, $item->unit_price - $discountAmount);
+        $discountPercentage = $item->unit_price > 0
+            ? round(($discountAmount / $item->unit_price) * 100, 2)
+            : 0;
+
+        $damagedItemData = [
+            'item_id' => $data['item_id'],
+            'quantity' => $data['quantity'],
+            'discounted_price' => $discountedPrice,
+            'discount_percentage' => $discountPercentage,
+            'status' => $data['status'],
+            'remarks' => $data['remarks'] ?? null
+        ];
 
         // Reduced item quantity
         $item->decrement('quantity', $data['quantity']);
 
-        return $this->damagedItemRepo->create($data);
+        return $this->damagedItemRepo->create($damagedItemData);
     }
 
     /**
