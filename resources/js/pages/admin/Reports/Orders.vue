@@ -69,7 +69,7 @@ const deliveryMethodColumns: DataTableColumn[] = [
 </script>
 
 <template>
-    <Head title="Order Report" />
+    <Head title="Admin - Order Report" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

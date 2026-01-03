@@ -63,7 +63,7 @@ const outstandingColumns: DataTableColumn[] = [
 </script>
 
 <template>
-    <Head title="Billing Report" />
+    <Head title="Admin - Billing Report" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

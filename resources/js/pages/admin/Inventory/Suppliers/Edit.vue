@@ -40,7 +40,7 @@ const form = useForm({
 </script>
 
 <template>
-    <Head title="Suppliers - Edit suppliers" />
+    <Head title="Admin - Edit suppliers" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

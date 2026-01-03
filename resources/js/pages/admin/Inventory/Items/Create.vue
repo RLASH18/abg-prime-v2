@@ -45,7 +45,7 @@ const { imagePreviews, handleImageSelect, removeImage } = useImagePreviews(3);
 </script>
 
 <template>
-    <Head title="Items - Add item" />
+    <Head title="Admin - Add item" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

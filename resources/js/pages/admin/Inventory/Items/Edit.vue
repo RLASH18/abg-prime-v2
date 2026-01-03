@@ -67,7 +67,7 @@ const form = useForm({
 </script>
 
 <template>
-    <Head title="Items - Edit item" />
+    <Head title="Admin - Edit item" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

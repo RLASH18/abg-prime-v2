@@ -130,7 +130,7 @@ const actions: DataTableAction<Delivery>[] = [
 </script>
 
 <template>
-    <Head title="Deliveries" />
+    <Head title="Admin - Deliveries" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

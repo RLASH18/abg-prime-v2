@@ -179,7 +179,7 @@ const getColorClasses = (color: string) => {
 </script>
 
 <template>
-    <Head title="Reports" />
+    <Head title="Admin - Reports" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

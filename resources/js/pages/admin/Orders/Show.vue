@@ -67,7 +67,7 @@ const subtotal = computed(() => {
 </script>
 
 <template>
-    <Head :title="`Order #${order.id.toString().padStart(4, '0')}`" />
+    <Head :title="`Admin - Order #${order.id.toString().padStart(4, '0')}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

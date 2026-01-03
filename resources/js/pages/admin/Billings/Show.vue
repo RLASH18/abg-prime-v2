@@ -78,7 +78,7 @@ const subtotal = computed(() => {
 </script>
 
 <template>
-    <Head :title="`Billing - ${billing.billing_number}`" />
+    <Head :title="`Admin - Billing #${billing.billing_number}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

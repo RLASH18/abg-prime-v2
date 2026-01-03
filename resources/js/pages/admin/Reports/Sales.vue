@@ -58,7 +58,7 @@ const topItemsColumns: DataTableColumn[] = [
 </script>
 
 <template>
-    <Head title="Sales Report" />
+    <Head title="Admin - Sales Report" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

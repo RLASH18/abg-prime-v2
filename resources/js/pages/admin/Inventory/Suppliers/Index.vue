@@ -96,7 +96,7 @@ const actions: DataTableAction<Supplier>[] = [
 </script>
 
 <template>
-    <Head title="Suppliers" />
+    <Head title="Admin - Suppliers" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

@@ -27,7 +27,7 @@ const statusOptions = ['active', 'inactive'];
 </script>
 
 <template>
-    <Head title="Suppliers - Add supplier" />
+    <Head title="Admin - Add supplier" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

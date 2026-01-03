@@ -77,7 +77,7 @@ const supplierColumns: DataTableColumn[] = [
 </script>
 
 <template>
-    <Head title="Inventory Report" />
+    <Head title="Admin - Inventory Report" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

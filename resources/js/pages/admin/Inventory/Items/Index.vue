@@ -168,7 +168,7 @@ const actions: DataTableAction<InventoryItem>[] = [
 </script>
 
 <template>
-    <Head title="Items" />
+    <Head title="Admin - Items" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

@@ -20,7 +20,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Admin - Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

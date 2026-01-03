@@ -72,7 +72,7 @@ const images = computed(() => {
 </script>
 
 <template>
-    <Head :title="`Items - ${item.item_name}`" />
+    <Head :title="`Admin - Item: ${item.item_name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

@@ -107,7 +107,7 @@ const actions: DataTableAction<DamagedItem>[] = [
 </script>
 
 <template>
-    <Head title="Damaged Items" />
+    <Head title="Admin - Damaged Items" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

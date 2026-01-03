@@ -55,7 +55,7 @@ const { formatDate } = useFormatters();
 </script>
 
 <template>
-    <Head :title="`Suppliers - ${props.supplier.supplier_name}`" />
+    <Head :title="`Admin - Supplier: ${props.supplier.supplier_name}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

@@ -118,7 +118,7 @@ const getStatusColor = (status: string) => {
 </script>
 
 <template>
-    <Head title="Orders" />
+    <Head title="Admin - Orders" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

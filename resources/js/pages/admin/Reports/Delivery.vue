@@ -42,7 +42,7 @@ const statusColumns: DataTableColumn[] = [
 </script>
 
 <template>
-    <Head title="Delivery Report" />
+    <Head title="Admin - Delivery Report" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div

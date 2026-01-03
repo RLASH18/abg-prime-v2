@@ -126,7 +126,7 @@ const actions: DataTableAction<Billing>[] = [
 </script>
 
 <template>
-    <Head title="Billings" />
+    <Head title="Admin - Billings" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
