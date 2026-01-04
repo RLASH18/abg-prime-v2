@@ -54,6 +54,16 @@ class ItemService
     }
 
     /**
+     * Get all items that are low or out of stock
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getLowStockItems()
+    {
+        return $this->itemRepo->getLowStockItems();
+    }
+
+    /**
      * Find an item by ID
      *
      * @param int $id

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LowStockAlert from '@/components/admin/LowStockAlert.vue';
 import MarkAsDamagedModal from '@/components/admin/MarkAsDamagedModal.vue';
 import DataTable from '@/components/DataTable.vue';
 import Filters from '@/components/Filters.vue';
@@ -35,6 +36,7 @@ interface Props {
         category?: string;
         stock_status?: string;
     };
+    lowStockItems: InventoryItem[];
 }
 
 const props = defineProps<Props>();
@@ -186,6 +188,9 @@ const actions: DataTableAction<InventoryItem>[] = [
                     label="Add an Item"
                 />
             </div>
+
+            <!-- Low Stock Alert -->
+            <LowStockAlert :items="lowStockItems" />
 
             <!-- Filters -->
             <Filters

@@ -28,10 +28,12 @@ class ItemController extends Controller
     {
         $filters = $request->only(['search', 'category', 'stock_status']);
         $items = $this->itemService->getAllPaginated(10, $filters);
+        $lowStockItems = $this->itemService->getLowStockItems();
 
         return Inertia::render('admin/Inventory/Items/Index', [
             'items' => $items,
-            'filters' => $filters
+            'filters' => $filters,
+            'lowStockItems' => $lowStockItems
         ]);
     }
 
