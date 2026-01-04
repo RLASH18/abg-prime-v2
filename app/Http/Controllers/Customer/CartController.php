@@ -51,7 +51,8 @@ class CartController extends Controller
             $this->cartService->addToCart(
                 Auth::id(),
                 $request->validated()['item_id'],
-                $request->validated()['quantity']
+                $request->validated()['quantity'],
+                $request->validated()['damaged_item_id'] ?? null
             );
 
             return $this->flashSuccess('Item added to cart', 'customer.carts.index');

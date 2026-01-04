@@ -5,6 +5,7 @@ namespace App\Services\Customer;
 use App\Models\Order;
 use App\Notifications\OrderConfirmationNotification;
 use App\Repositories\Interfaces\CartRepositoryInterface;
+use App\Repositories\Interfaces\DamagedItemRepositoryInterface;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Services\Payment\PaymongoService;
@@ -18,12 +19,14 @@ class CheckoutService
      * @param CartRepositoryInterface $cartRepo
      * @param OrderRepositoryInterface $orderRepo
      * @param ItemRepositoryInterface $itemRepo
+     * @param DamagedItemRepositoryInterface $damagedItemRepo
      * @param PaymongoService $paymongoService
      */
     public function __construct(
         protected CartRepositoryInterface $cartRepo,
         protected OrderRepositoryInterface $orderRepo,
         protected ItemRepositoryInterface $itemRepo,
+        protected DamagedItemRepositoryInterface $damagedItemRepo,
         protected PaymongoService $paymongoService
     ) {}
 
@@ -75,10 +78,17 @@ class CheckoutService
                     ]);
 
                 // Deduct stock from product
-                $product = $this->itemRepo->find($cartItem->item_id);
-                $this->itemRepo->update($product->id, [
-                    'quantity' => $product->quantity - $cartItem->quantity
-                ]);
+                if ($cartItem->damaged_item_id) {
+                    $damagedItem = $this->damagedItemRepo->find($cartItem->damaged_item_id);
+
+                    $damagedItem->decrement('quantity', $cartItem->quantity);
+                } else {
+                    $product = $this->itemRepo->find($cartItem->item_id);
+
+                    $this->itemRepo->update($product->id, [
+                        'quantity' => $product->quantity - $cartItem->quantity
+                    ]);
+                }
             }
 
             // Clear selected items from cart after successful order
@@ -122,14 +132,22 @@ class CheckoutService
     protected function validateStock($cartItems): void
     {
         foreach ($cartItems as $cartItem) {
-            $product = $this->itemRepo->find($cartItem->item_id);
+            if ($cartItem->damaged_item_id) {
+                $damagedItem = $this->damagedItemRepo->find($cartItem->damaged_item_id);
 
-            if (! $product) {
-                throw new \Exception('Product not found');
-            }
+                if (! $damagedItem || $damagedItem->quantity < $cartItem->quantity) {
+                    throw new \Exception('Insufficient stock');
+                }
+            } else {
+                $product = $this->itemRepo->find($cartItem->item_id);
 
-            if ($product->quantity < $cartItem->quantity) {
-                throw new \Exception('Insufficient stock');
+                if (! $product) {
+                    throw new \Exception('Product not found');
+                }
+
+                if ($product->quantity < $cartItem->quantity) {
+                    throw new \Exception('Insufficient stock');
+                }
             }
         }
     }

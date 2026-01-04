@@ -27,23 +27,25 @@ class CartRepository extends BaseRepository implements CartRepositoryInterface
     public function getUserCart(int $userId): Collection
     {
         return $this->query()
-            ->with('product')
+            ->with(['product', 'damagedItem'])
             ->where('user_id', $userId)
             ->get();
     }
 
     /**
-     * Find cart item by user and item
+    * Find cart item by user, item, and damaged item
      *
      * @param int $userId
      * @param int $itemId
+     * @param int|null $damagedItemId
      * @return Cart|null
      */
-    public function findByUserAndItem(int $userId, int $itemId): ?Cart
+    public function findByUserAndItem(int $userId, int $itemId, ?int $damagedItemId = null): ?Cart
     {
         return $this->query()
             ->where('user_id', $userId)
             ->where('item_id', $itemId)
+            ->where('damaged_item_id', $damagedItemId)
             ->first();
     }
 
@@ -71,7 +73,7 @@ class CartRepository extends BaseRepository implements CartRepositoryInterface
         return $this->query()
             ->where('user_id', $userId)
             ->where('selected', true)
-            ->with('product')
+            ->with(['product', 'damagedItem'])
             ->get();
     }
 

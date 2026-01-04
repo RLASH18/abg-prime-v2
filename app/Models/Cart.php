@@ -10,6 +10,7 @@ class Cart extends Model
     protected $fillable = [
         'user_id',
         'item_id',
+        'damaged_item_id',
         'quantity',
         'price',
         'selected'
@@ -33,5 +34,15 @@ class Cart extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Item::class, 'item_id');
+    }
+
+    /**
+     * Get the damaged item record if this is a damaged product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function damagedItem(): BelongsTo
+    {
+        return $this->belongsTo(DamagedItem::class, 'damaged_item_id');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Services\Customer;
 
 use App\Models\Cart;
 use App\Repositories\Interfaces\CartRepositoryInterface;
+use App\Repositories\Interfaces\DamagedItemRepositoryInterface;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -13,11 +14,13 @@ class CartService
      * Inject repositories
      *
      * @param CartRepositoryInterface $cartRepo
-     * @param ItemRepositoryInterface $itemRepo
+     * @param ItemRepositoryInterface $itemRepo,
+     * @param DamagedItemRepositoryInterface $damagedItemRepo
      */
     public function __construct(
         protected CartRepositoryInterface $cartRepo,
-        protected ItemRepositoryInterface $itemRepo
+        protected ItemRepositoryInterface $itemRepo,
+        protected DamagedItemRepositoryInterface $damagedItemRepo
     ) {}
 
     /**
@@ -37,9 +40,10 @@ class CartService
      * @param int $userId
      * @param int $itemId
      * @param int $quantity
+     * @param int|null $damagedItemId
      * @return Cart
      */
-    public function addToCart(int $userId, int $itemId, int $quantity = 1): Cart
+    public function addToCart(int $userId, int $itemId, int $quantity = 1, ?int $damagedItemId = null): Cart
     {
         $item = $this->itemRepo->find($itemId);
 
@@ -47,22 +51,41 @@ class CartService
             throw new \Exception('Item not found');
         }
 
-        if ($item->quantity < $quantity) {
+        // Determine price and available stock based on damaged status
+        $price = $item->unit_price;
+        $availableStock = $item->quantity;
+
+        if ($damagedItemId) {
+            $damagedItem = $this->damagedItemRepo->query()
+                ->where('id', $damagedItemId)
+                ->where('item_id', $itemId)
+                ->where('status', 'resellable')
+                ->first();
+
+            if (! $damagedItem) {
+                throw new \Exception('Damaged item not found or not available');
+            }
+
+            $price = $damagedItem->discounted_price;
+            $availableStock = $damagedItem->quantity;
+        }
+
+        if ($availableStock < $quantity) {
             throw new \Exception('Insufficient stock');
         }
 
-        $existingCart = $this->cartRepo->findByUserAndItem($userId, $itemId);
+        $existingCart = $this->cartRepo->findByUserAndItem($userId, $itemId, $damagedItemId);
 
         if ($existingCart) {
             $newQuantity = $existingCart->quantity + $quantity;
 
-            if ($item->quantity < $newQuantity) {
+            if ($availableStock < $newQuantity) {
                 throw new \Exception('Insufficient stock');
             }
 
             $this->cartRepo->update($existingCart->id, [
                 'quantity' => $newQuantity,
-                'price' => $item->unit_price,
+                'price' => $price,
             ]);
 
             return $this->cartRepo->find($existingCart->id);
@@ -71,8 +94,9 @@ class CartService
         return $this->cartRepo->create([
             'user_id' => $userId,
             'item_id' => $itemId,
+            'damaged_item_id' => $damagedItemId,
             'quantity' => $quantity,
-            'price' => $item->unit_price
+            'price' => $price,
         ]);
     }
 
@@ -91,8 +115,17 @@ class CartService
             return false;
         }
 
-        if ($cart->product->quantity < $quantity) {
-            throw new \Exception('Insufficient stock');
+        // Check correct stock source
+        if ($cart->damaged_item_id) {
+            $damagedItem = $this->damagedItemRepo->find($cart->damaged_item_id);
+
+            if ($damagedItem->quantity < $quantity) {
+                throw new \Exception('Insufficient stock');
+            }
+        } else {
+            if ($cart->product->quantity < $quantity) {
+                throw new \Exception('Insufficient stock');
+            }
         }
 
         return $this->cartRepo->update($cartId, ['quantity' => $quantity]);

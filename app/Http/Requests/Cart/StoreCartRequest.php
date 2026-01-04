@@ -26,6 +26,7 @@ class StoreCartRequest extends FormRequest
         return [
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
+            'damaged_item_id' => 'nullable|exists:damaged_items,id',
         ];
     }
 
@@ -42,6 +43,7 @@ class StoreCartRequest extends FormRequest
             'quantity.required' => 'Please enter the quantity.',
             'quantity.integer' => 'Quantity must be a whole number.',
             'quantity.min' => 'Quantity must be at least 1.',
+            'damaged_item_id.exists' => 'The selected damaged item does not exist or is no longer available'
         ];
     }
 }

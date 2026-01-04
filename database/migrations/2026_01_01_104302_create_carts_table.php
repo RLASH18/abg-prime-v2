@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('damaged_item_id')->nullable()->constrained()->nullOnDelete();
             $table->unique(['user_id', 'item_id']);
             $table->unsignedInteger('quantity')->default(1);
             $table->decimal('price', 10, 2);
