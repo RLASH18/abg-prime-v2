@@ -2,6 +2,7 @@
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\Customer\ChatController;
 use App\Http\Controllers\Customer\CheckoutController;
 use App\Http\Controllers\Customer\HomepageController;
 use App\Http\Controllers\Customer\OrderController;
@@ -55,6 +56,16 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
             Route::controller(OrderController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/{id}', 'show')->name('show');
+            });
+        });
+
+        // Chats
+        Route::prefix('chats')->name('chats.')->group(function () {
+            Route::controller(ChatController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::post('/', 'store')->name('store');
+                Route::post('/read', 'markAsRead')->name('read');
+                Route::get('/unread/count', 'unreadCount')->name('unread.count');
             });
         });
 

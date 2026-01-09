@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ChatsWidget from '@/components/customer/ChatsWidget.vue';
 import LinkButton from '@/components/LinkButton.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ import {
     AlertCircle,
     Check,
     Info,
+    MessageCircle,
     Minus,
     Package,
     Percent,
@@ -121,6 +123,13 @@ const displayPrice = computed((): number => {
     }
     return props.product.unit_price;
 });
+
+// Contact product
+const chatItem = ref<typeof props.product | null>(null);
+
+const openChatWithItem = () => {
+    chatItem.value = props.product;
+};
 </script>
 
 <template>
@@ -421,6 +430,17 @@ const displayPrice = computed((): number => {
                                 }}
                             </Button>
 
+                            <!-- Contact Us Button -->
+                            <Button
+                                @click="openChatWithItem"
+                                variant="outline"
+                                size="lg"
+                                class="h-12 w-full text-lg"
+                            >
+                                <MessageCircle class="mr-2 h-5 w-5" />
+                                Contact Us About This Item
+                            </Button>
+
                             <!-- Stock Warning -->
                             <div
                                 v-if="
@@ -524,5 +544,7 @@ const displayPrice = computed((): number => {
                 </div>
             </div>
         </div>
+
+        <ChatsWidget :attached-item="chatItem" />
     </AppLayout>
 </template>

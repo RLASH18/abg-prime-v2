@@ -97,3 +97,29 @@ export interface FilterConfig {
     placeholder?: string;
     value?: string;
 }
+
+export interface Message {
+    id: number;
+    conversation_id: number;
+    sender_id: number;
+    sender_type: 'admin' | 'customer';
+    message: string;
+    item_id: number | null;
+    read_at: string | null;
+    created_at: string;
+    updated_at: string;
+    user?: User;
+    item?: any;
+}
+
+export interface Conversation {
+    id: number;
+    customer_id: number;
+    admin_id: number | null;
+    last_message_at: string;
+    created_at: string;
+    updated_at: string;
+    user_customer?: User;
+    user_admin?: User;
+    messages?: Message[];
+}
