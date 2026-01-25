@@ -12,6 +12,8 @@
         Instrument Sans, ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+    --font-display: 'Placard Next', 'Bebas Neue', sans-serif;
+    --font-body: 'TT Firs Neue', 'Inter', sans-serif;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -128,6 +130,12 @@
     --sidebar-border: hsl(0 0% 91%);
     --sidebar-ring: hsl(217.2 91.2% 59.8%);
     --sidebar: hsl(0 0% 98%);
+
+    /* ABG Prime Brand Colors */
+    --abg-primary: #815331;
+    --abg-secondary: #ece5df;
+    --abg-primary-light: #a16b42;
+    --abg-primary-dark: #5a3a22;
 }
 
 .dark {
