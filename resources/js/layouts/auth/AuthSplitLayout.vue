@@ -65,7 +65,7 @@ defineProps<{
                     class="relative aspect-square w-full max-w-sm overflow-hidden rounded-[2.5rem] bg-[var(--abg-secondary)]/10 shadow-xl lg:max-w-md"
                 >
                     <img
-                        src="https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?q=80&w=1974&auto=format&fit=crop"
+                        src="/img/auth.jpg"
                         alt="Tools on pegboard"
                         class="h-full w-full object-cover"
                     />
