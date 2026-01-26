@@ -7,7 +7,6 @@ const heroTitle = ref<HTMLElement | null>(null);
 const heroSubtitle = ref<HTMLElement | null>(null);
 const heroButton = ref<HTMLElement | null>(null);
 const heroBadges = ref<HTMLElement | null>(null);
-const heroImage = ref<HTMLElement | null>(null);
 
 onMounted(() => {
     const heroTimeline = gsap.timeline({
@@ -48,23 +47,13 @@ onMounted(() => {
                 duration: 0.5,
             },
             '-=0.3',
-        )
-        .from(
-            heroImage.value,
-            {
-                x: 100,
-                opacity: 0,
-                duration: 1,
-                ease: 'power2.out',
-            },
-            '-=1',
         );
 });
 </script>
 
 <template>
     <section
-        class="relative flex min-h-[90vh] w-full items-center justify-center overflow-hidden px-6 py-24 md:px-12 md:py-32"
+        class="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-6 py-24 md:px-12 md:py-32"
     >
         <!-- Background Image -->
         <div class="absolute inset-0 z-0">
