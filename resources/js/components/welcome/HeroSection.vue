@@ -64,16 +64,27 @@ onMounted(() => {
 
 <template>
     <section
-        class="relative flex min-h-[90vh] w-full items-center justify-center overflow-hidden bg-[var(--abg-primary)] px-6 py-24 md:px-12 md:py-32"
+        class="relative flex min-h-[90vh] w-full items-center justify-center overflow-hidden px-6 py-24 md:px-12 md:py-32"
     >
-        <div
-            class="grid w-full max-w-7xl grid-cols-1 items-center gap-16 md:grid-cols-2"
-        >
-            <!-- Left Content -->
-            <div class="z-10 flex flex-col items-start space-y-8">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img
+                src="/img/welcome/hero-img.jpg"
+                alt="Hero background"
+                class="h-full w-full object-cover brightness-[0.3]"
+            />
+            <!-- Gradient Overlay for extra readability -->
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-[var(--abg-primary-dark)]/80 to-transparent"
+            ></div>
+        </div>
+
+        <div class="z-10 w-full max-w-7xl">
+            <!-- Content -->
+            <div class="flex max-w-2xl flex-col items-start space-y-8">
                 <div ref="heroTitle" class="flex flex-col text-white">
                     <h1
-                        class="font-display text-[5rem] leading-none tracking-tight uppercase md:text-[7rem] lg:text-[8rem]"
+                        class="font-display text-[5rem] leading-[0.85] tracking-tight uppercase md:text-[7rem] lg:text-[8rem]"
                     >
                         ABG Prime <br />
                         Builders
@@ -82,7 +93,7 @@ onMounted(() => {
 
                 <p
                     ref="heroSubtitle"
-                    class="max-w-md font-body text-lg leading-relaxed font-light text-white/90 md:text-xl"
+                    class="max-w-md font-body text-lg leading-relaxed font-semibold text-white md:text-xl"
                 >
                     Shop high-quality tools and materials at unbeatable prices
                     and at your door service.
@@ -98,7 +109,7 @@ onMounted(() => {
 
                 <div
                     ref="heroBadges"
-                    class="mt-6 flex items-center gap-8 pt-4 text-white/80"
+                    class="mt-8 flex items-center gap-8 pt-4 text-white"
                 >
                     <div class="flex items-center gap-2">
                         <!-- Package Icon -->
@@ -108,7 +119,7 @@ onMounted(() => {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
+                            stroke-width="2.5"
                             stroke-linecap="round"
                             stroke-linejoin="round"
                         >
@@ -119,8 +130,7 @@ onMounted(() => {
                             <polyline points="3.29 7 12 12 20.71 7" />
                             <line x1="12" x2="12" y1="22" y2="12" />
                         </svg>
-                        <span
-                            class="font-body text-sm font-medium tracking-wide"
+                        <span class="font-body text-sm font-bold tracking-wide"
                             >Free Shipping</span
                         >
                     </div>
@@ -132,7 +142,7 @@ onMounted(() => {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
+                            stroke-width="2.5"
                             stroke-linecap="round"
                             stroke-linejoin="round"
                         >
@@ -141,25 +151,10 @@ onMounted(() => {
                             />
                             <path d="M3 3v5h5" />
                         </svg>
-                        <span
-                            class="font-body text-sm font-medium tracking-wide"
+                        <span class="font-body text-sm font-bold tracking-wide"
                             >Easy Returns</span
                         >
                     </div>
-                </div>
-            </div>
-
-            <!-- Right Content - Image -->
-            <div
-                ref="heroImage"
-                class="relative z-10 flex h-full items-center justify-center md:justify-end"
-            >
-                <div class="relative aspect-square w-full max-w-xl">
-                    <img
-                        src="/img/welcome/hero-img.jpg"
-                        alt="Pegboard with tools"
-                        class="h-full w-full rounded-3xl border-4 border-white/10 object-cover shadow-2xl grayscale-[0.2]"
-                    />
                 </div>
             </div>
         </div>
