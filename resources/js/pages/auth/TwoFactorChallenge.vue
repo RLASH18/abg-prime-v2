@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
     PinInput,
     PinInputGroup,
     PinInputSlot,
 } from '@/components/ui/pin-input';
-import AuthLayout from '@/layouts/AuthLayout.vue';
+import { Spinner } from '@/components/ui/spinner';
+import AuthBase from '@/layouts/AuthLayout.vue';
 import { store } from '@/routes/two-factor/login';
 import { Form, Head } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
@@ -24,15 +23,15 @@ const authConfigContent = computed<AuthConfigContent>(() => {
             title: 'Recovery Code',
             description:
                 'Please confirm access to your account by entering one of your emergency recovery codes.',
-            toggleText: 'login using an authentication code',
+            toggleText: 'Use an authentication code',
         };
     }
 
     return {
-        title: 'Authentication Code',
+        title: '2FA Code',
         description:
             'Enter the authentication code provided by your authenticator application.',
-        toggleText: 'login using a recovery code',
+        toggleText: 'Use a recovery code',
     };
 });
 
@@ -49,8 +48,8 @@ const codeValue = computed<string>(() => code.value.join(''));
 </script>
 
 <template>
-    <AuthLayout
-        :title="authConfigContent.title"
+    <AuthBase
+        :header="authConfigContent.title"
         :description="authConfigContent.description"
     >
         <Head title="Two-Factor Authentication" />
@@ -59,12 +58,13 @@ const codeValue = computed<string>(() => code.value.join(''));
             <template v-if="!showRecoveryInput">
                 <Form
                     v-bind="store.form()"
-                    class="space-y-4"
+                    class="flex flex-col gap-5"
                     reset-on-error
                     @error="code = []"
                     #default="{ errors, processing, clearErrors }"
                 >
                     <input type="hidden" name="code" :value="codeValue" />
+
                     <div
                         class="flex flex-col items-center justify-center space-y-3 text-center"
                     >
@@ -76,12 +76,13 @@ const codeValue = computed<string>(() => code.value.join(''));
                                 type="number"
                                 otp
                             >
-                                <PinInputGroup>
+                                <PinInputGroup class="gap-2">
                                     <PinInputSlot
                                         v-for="(id, index) in 6"
                                         :key="id"
                                         :index="index"
                                         :disabled="processing"
+                                        class="size-12 rounded-xl border-2 border-[var(--abg-primary)] bg-transparent text-xl font-bold text-[var(--abg-primary)] shadow-sm focus:ring-2 focus:ring-[var(--abg-primary)]/20"
                                         autofocus
                                     />
                                 </PinInputGroup>
@@ -89,53 +90,92 @@ const codeValue = computed<string>(() => code.value.join(''));
                         </div>
                         <InputError :message="errors.code" />
                     </div>
-                    <Button type="submit" class="w-full" :disabled="processing"
-                        >Continue</Button
+
+                    <button
+                        type="submit"
+                        class="mt-2 flex w-full items-center justify-center rounded-full bg-[var(--abg-primary)] py-4 font-display text-xl font-bold text-[var(--abg-secondary)] shadow-lg transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:brightness-100"
+                        :disabled="processing"
                     >
-                    <div class="text-center text-sm text-muted-foreground">
-                        <span>or you can </span>
-                        <button
-                            type="button"
-                            class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                            @click="() => toggleRecoveryMode(clearErrors)"
+                        <Spinner v-if="processing" class="mr-2" />
+                        Continue
+                    </button>
+
+                    <div class="relative my-2 flex items-center justify-center">
+                        <div class="absolute inset-0 flex items-center">
+                            <div
+                                class="w-full border-t-[3px] border-[var(--abg-primary)]/40"
+                            ></div>
+                        </div>
+                        <div
+                            class="relative bg-[var(--abg-secondary)] px-4 font-display text-xl text-[var(--abg-primary)]/60"
                         >
-                            {{ authConfigContent.toggleText }}
-                        </button>
+                            OR
+                        </div>
                     </div>
+
+                    <button
+                        type="button"
+                        class="flex w-full items-center justify-center rounded-full border-[2px] border-[var(--abg-primary)] bg-transparent py-3.5 font-display text-xl font-medium text-[var(--abg-primary)] transition-colors hover:bg-[var(--abg-primary)]/5"
+                        @click="() => toggleRecoveryMode(clearErrors)"
+                    >
+                        {{ authConfigContent.toggleText }}
+                    </button>
                 </Form>
             </template>
 
             <template v-else>
                 <Form
                     v-bind="store.form()"
-                    class="space-y-4"
+                    class="flex flex-col gap-5"
                     reset-on-error
                     #default="{ errors, processing, clearErrors }"
                 >
-                    <Input
-                        name="recovery_code"
-                        type="text"
-                        placeholder="Enter recovery code"
-                        :autofocus="showRecoveryInput"
-                        required
-                    />
-                    <InputError :message="errors.recovery_code" />
-                    <Button type="submit" class="w-full" :disabled="processing"
-                        >Continue</Button
-                    >
-
-                    <div class="text-center text-sm text-muted-foreground">
-                        <span>or you can </span>
-                        <button
-                            type="button"
-                            class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                            @click="() => toggleRecoveryMode(clearErrors)"
-                        >
-                            {{ authConfigContent.toggleText }}
-                        </button>
+                    <div class="relative">
+                        <input
+                            name="recovery_code"
+                            type="text"
+                            placeholder="Recovery Code"
+                            :autofocus="showRecoveryInput"
+                            required
+                            class="w-full rounded-full border-[1.5px] border-[var(--abg-primary)] bg-transparent px-6 py-4 font-body text-[var(--abg-primary)] placeholder-[var(--abg-primary)]/60 shadow-sm outline-none focus:ring-2 focus:ring-[var(--abg-primary)]/20"
+                        />
+                        <InputError
+                            :message="errors.recovery_code"
+                            class="mt-1 ml-4"
+                        />
                     </div>
+
+                    <button
+                        type="submit"
+                        class="mt-2 flex w-full items-center justify-center rounded-full bg-[var(--abg-primary)] py-4 font-display text-xl font-bold text-[var(--abg-secondary)] shadow-lg transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:hover:brightness-100"
+                        :disabled="processing"
+                    >
+                        <Spinner v-if="processing" class="mr-2" />
+                        Continue
+                    </button>
+
+                    <div class="relative my-2 flex items-center justify-center">
+                        <div class="absolute inset-0 flex items-center">
+                            <div
+                                class="w-full border-t-[3px] border-[var(--abg-primary)]/40"
+                            ></div>
+                        </div>
+                        <div
+                            class="relative bg-[var(--abg-secondary)] px-4 font-display text-xl text-[var(--abg-primary)]/60"
+                        >
+                            OR
+                        </div>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="flex w-full items-center justify-center rounded-full border-[2px] border-[var(--abg-primary)] bg-transparent py-3.5 font-display text-xl font-medium text-[var(--abg-primary)] transition-colors hover:bg-[var(--abg-primary)]/5"
+                        @click="() => toggleRecoveryMode(clearErrors)"
+                    >
+                        {{ authConfigContent.toggleText }}
+                    </button>
                 </Form>
             </template>
         </div>
-    </AuthLayout>
+    </AuthBase>
 </template>

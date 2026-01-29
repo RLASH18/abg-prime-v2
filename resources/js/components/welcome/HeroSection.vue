@@ -1,0 +1,151 @@
+<script setup lang="ts">
+import gsap from 'gsap';
+import { onMounted, ref } from 'vue';
+
+// Template refs for animations
+const heroTitle = ref<HTMLElement | null>(null);
+const heroSubtitle = ref<HTMLElement | null>(null);
+const heroButton = ref<HTMLElement | null>(null);
+const heroBadges = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+    const heroTimeline = gsap.timeline({
+        defaults: { ease: 'power3.out' },
+        delay: 0.3,
+    });
+
+    heroTimeline
+        .from(heroTitle.value, {
+            y: 80,
+            opacity: 0,
+            duration: 1,
+        })
+        .from(
+            heroSubtitle.value,
+            {
+                y: 40,
+                opacity: 0,
+                duration: 0.8,
+            },
+            '-=0.6',
+        )
+        .from(
+            heroButton.value,
+            {
+                y: 30,
+                opacity: 0,
+                duration: 0.6,
+                immediateRender: false,
+            },
+            '-=0.4',
+        )
+        .from(
+            heroBadges.value,
+            {
+                y: 20,
+                opacity: 0,
+                duration: 0.5,
+            },
+            '-=0.3',
+        );
+});
+</script>
+
+<template>
+    <section
+        class="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-6 py-24 md:px-12 md:py-32"
+    >
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <img
+                src="/img/welcome/hero-img.jpg"
+                alt="Hero background"
+                class="h-full w-full object-cover brightness-[0.3]"
+            />
+            <!-- Gradient Overlay for extra readability -->
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-[var(--abg-primary-dark)]/80 to-transparent"
+            ></div>
+        </div>
+
+        <div class="z-10 w-full max-w-7xl">
+            <!-- Content -->
+            <div class="flex max-w-2xl flex-col items-start space-y-8">
+                <div ref="heroTitle" class="flex flex-col text-white">
+                    <h1
+                        class="font-display text-[5rem] leading-[0.85] tracking-tight uppercase md:text-[7rem] lg:text-[8rem]"
+                    >
+                        ABG Prime <br />
+                        Builders
+                    </h1>
+                </div>
+
+                <p
+                    ref="heroSubtitle"
+                    class="max-w-md font-body text-lg leading-relaxed font-semibold text-white md:text-xl"
+                >
+                    Shop high-quality tools and materials at unbeatable prices
+                    and at your door service.
+                </p>
+
+                <a
+                    ref="heroButton"
+                    href="#products"
+                    class="mt-6 inline-block border-[3px] border-[var(--abg-secondary)] bg-[var(--abg-secondary)] px-10 py-4 font-display text-2xl tracking-wide text-[var(--abg-primary)] uppercase shadow-lg transition-all duration-300 hover:bg-transparent hover:text-[var(--abg-secondary)] hover:shadow-xl md:text-3xl"
+                >
+                    Start Shopping
+                </a>
+
+                <div
+                    ref="heroBadges"
+                    class="mt-8 flex items-center gap-8 pt-4 text-white"
+                >
+                    <div class="flex items-center gap-2">
+                        <!-- Package Icon -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M16.5 9.4 7.55 4.24" />
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                            />
+                            <polyline points="3.29 7 12 12 20.71 7" />
+                            <line x1="12" x2="12" y1="22" y2="12" />
+                        </svg>
+                        <span class="font-body text-sm font-bold tracking-wide"
+                            >Free Shipping</span
+                        >
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <!-- RotateCcw Icon -->
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+                            />
+                            <path d="M3 3v5h5" />
+                        </svg>
+                        <span class="font-body text-sm font-bold tracking-wide"
+                            >Easy Returns</span
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>
