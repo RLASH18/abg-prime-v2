@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes/admin';
 import billingsRoutes from '@/routes/admin/billings';
+import chatsRoutes from '@/routes/admin/chats';
 import damagedItemsRoutes from '@/routes/admin/damaged-items';
 import deliveriesRoutes from '@/routes/admin/deliveries';
 import itemsRoutes from '@/routes/admin/items';
@@ -26,6 +27,7 @@ import {
     Boxes,
     ClipboardList,
     LayoutGrid,
+    MessageCircleMore,
     ReceiptText,
     Truck,
 } from 'lucide-vue-next';
@@ -74,6 +76,11 @@ const mainNavItems: NavItem[] = [
         title: 'Reports',
         href: reportsRoutes.index().url,
         icon: BarChart3,
+    },
+    {
+        title: 'Chats',
+        href: chatsRoutes.index().url,
+        icon: MessageCircleMore,
     },
 ];
 

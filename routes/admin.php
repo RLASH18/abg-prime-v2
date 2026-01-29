@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\{
     DashboardController,
     OrderController,
     BillingController,
+    ChatController,
     DeliveryController,
     ReportController,
 };
@@ -70,6 +71,17 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
                 Route::get('/orders', 'orders')->name('orders');
                 Route::get('/billing', 'billing')->name('billing');
                 Route::get('/delivery', 'delivery')->name('delivery');
+            });
+        });
+
+        // Chats
+        Route::prefix('chats')->name('chats.')->group(function () {
+            Route::controller(ChatController::class)->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/unread/count', 'unreadCount')->name('unread.count');
+                Route::get('/{conversation}', 'show')->name('show');
+                Route::post('/{conversation}', 'store')->name('store');
+                Route::post('/{conversation}/read', 'markAsRead')->name('read');
             });
         });
 

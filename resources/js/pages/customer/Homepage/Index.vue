@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ChatsWidget from '@/components/customer/ChatsWidget.vue';
 import Pagination from '@/components/Pagination.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -395,5 +396,7 @@ const getProductUrl = (product: Product) => {
             <!-- Pagination -->
             <Pagination :pagination="products" />
         </div>
+
+        <ChatsWidget />
     </AppLayout>
 </template>
