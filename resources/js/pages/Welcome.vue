@@ -60,29 +60,4 @@ html {
     scroll-behavior: smooth;
     scrollbar-gutter: stable;
 }
-
-/* Custom Scrollbar Styling */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--abg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--abg-primary);
-    border: 2px solid var(--abg-secondary);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--abg-primary-dark);
-}
-
-/* Firefox support */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--abg-primary) var(--abg-secondary);
-}
 </style>
