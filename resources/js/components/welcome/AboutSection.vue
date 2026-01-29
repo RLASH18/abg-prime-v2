@@ -17,7 +17,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: aboutTitle.value,
             start: 'top 85%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         x: -100,
         opacity: 0,
@@ -30,7 +30,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: aboutDescription.value,
             start: 'top 85%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         y: 30,
         opacity: 0,
@@ -44,7 +44,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: aboutImage.value,
             start: 'top 85%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         scale: 0.9,
         opacity: 0,
@@ -57,7 +57,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: aboutTagline.value,
             start: 'top 85%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         x: 50,
         opacity: 0,
@@ -70,7 +70,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: '.feature-item',
             start: 'top 85%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         y: 40,
         opacity: 0,

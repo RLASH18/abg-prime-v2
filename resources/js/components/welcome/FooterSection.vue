@@ -17,7 +17,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: footerBanner.value,
             start: 'top 90%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         y: 50,
         opacity: 0,
@@ -30,7 +30,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: '.footer-col',
             start: 'top 90%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         y: 40,
         opacity: 0,
@@ -44,7 +44,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: massiveText.value,
             start: 'top 95%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         scale: 0.8,
         opacity: 0,
@@ -57,7 +57,7 @@ onMounted(() => {
         scrollTrigger: {
             trigger: copyright.value,
             start: 'top 98%',
-            toggleActions: 'play none none none',
+            toggleActions: 'play none none reverse',
         },
         opacity: 0,
         duration: 1,

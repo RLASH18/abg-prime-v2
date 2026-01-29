@@ -24,7 +24,7 @@ onMounted(() => {
                 scrollTrigger: {
                     trigger: sectionHeader.value,
                     start: 'top 90%',
-                    toggleActions: 'play none none none',
+                    toggleActions: 'play none none reverse',
                 },
                 y: 30,
                 opacity: 0,
@@ -38,7 +38,7 @@ onMounted(() => {
             scrollTrigger: {
                 trigger: sectionHeader.value,
                 start: 'top 85%',
-                toggleActions: 'play none none none',
+                toggleActions: 'play none none reverse',
             },
             y: 40,
             opacity: 0,

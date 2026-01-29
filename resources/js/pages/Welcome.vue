@@ -4,8 +4,13 @@ import FooterSection from '@/components/welcome/FooterSection.vue';
 import HeroSection from '@/components/welcome/HeroSection.vue';
 import NavbarSection from '@/components/welcome/NavbarSection.vue';
 import ProductSection from '@/components/welcome/ProductSection.vue';
-
 import { Head } from '@inertiajs/vue3';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { onMounted } from 'vue';
+
+// Register GSAP Plugin
+gsap.registerPlugin(ScrollTrigger);
 
 withDefaults(
     defineProps<{
@@ -15,6 +20,11 @@ withDefaults(
         canRegister: true,
     },
 );
+
+onMounted(() => {
+    // Refresh ScrollTrigger after all components are mounted
+    ScrollTrigger.refresh();
+});
 </script>
 
 <template>
