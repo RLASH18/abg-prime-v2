@@ -2,18 +2,119 @@
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/dist/ScrollTrigger';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-vue-next';
-import { nextTick, onMounted, ref } from 'vue';
+import { nextTick, onMounted, onUnmounted, ref } from 'vue';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const scrollRef = ref<HTMLDivElement | null>(null);
 const sectionHeader = ref<HTMLElement | null>(null);
+const isHovering = ref(false);
+let autoScrollInterval: number | null = null;
+let countdownInterval: number | null = null;
+
+// Countdown timer state
+const countdown = ref({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+});
+
+// Carousel configuration
+const CARD_WIDTH = 300; // Width of each card
+const GAP = 32; // Gap between cards (gap-8 = 2rem = 32px)
+const SCROLL_AMOUNT = CARD_WIDTH + GAP;
+const AUTO_SCROLL_INTERVAL = 5000; // 5 seconds
+
+// Set sale end date (7 days from now as example)
+const saleEndDate = new Date();
+saleEndDate.setDate(saleEndDate.getDate() + 7);
+
+const updateCountdown = () => {
+    const now = new Date().getTime();
+    const distance = saleEndDate.getTime() - now;
+
+    if (distance < 0) {
+        countdown.value = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+        return;
+    }
+
+    countdown.value = {
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor(
+            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        ),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000),
+    };
+};
+
+const startCountdown = () => {
+    updateCountdown();
+    countdownInterval = window.setInterval(updateCountdown, 1000);
+};
 
 const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.value) {
-        const scrollAmount = direction === 'left' ? -300 : 300;
-        scrollRef.value.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    if (!scrollRef.value) return;
+
+    const container = scrollRef.value;
+    const scrollAmount = direction === 'left' ? -SCROLL_AMOUNT : SCROLL_AMOUNT;
+
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+
+    // Handle infinite loop
+    setTimeout(() => {
+        if (!container) return;
+
+        const maxScroll = container.scrollWidth - container.clientWidth;
+
+        // If scrolled to the end, jump back to start
+        if (direction === 'right' && container.scrollLeft >= maxScroll - 10) {
+            setTimeout(() => {
+                container.scrollTo({ left: 0, behavior: 'smooth' });
+            }, 300);
+        }
+
+        // If scrolled to the start, jump to end
+        if (direction === 'left' && container.scrollLeft <= 10) {
+            setTimeout(() => {
+                container.scrollTo({ left: maxScroll, behavior: 'smooth' });
+            }, 300);
+        }
+    }, 500);
+};
+
+const startAutoScroll = () => {
+    if (autoScrollInterval) return;
+
+    autoScrollInterval = window.setInterval(() => {
+        if (!isHovering.value) {
+            scroll('right');
+        }
+    }, AUTO_SCROLL_INTERVAL);
+};
+
+const stopAutoScroll = () => {
+    if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
     }
+};
+
+const handleMouseEnter = () => {
+    isHovering.value = true;
+};
+
+const handleMouseLeave = () => {
+    isHovering.value = false;
+};
+
+// Format number with leading zero
+const formatTime = (num: number): string => {
+    return num.toString().padStart(2, '0');
 };
 
 onMounted(() => {
@@ -50,7 +151,22 @@ onMounted(() => {
 
         // Refresh ScrollTrigger
         ScrollTrigger.refresh();
+
+        // Start countdown timer
+        startCountdown();
+
+        // Start auto-scroll after animations
+        setTimeout(() => {
+            startAutoScroll();
+        }, 1000);
     });
+});
+
+onUnmounted(() => {
+    stopAutoScroll();
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
 });
 
 const products = [
@@ -148,7 +264,7 @@ const products = [
                             <div
                                 class="rounded-lg bg-[var(--abg-primary)] px-4 py-1.5 shadow-md"
                             >
-                                01
+                                {{ formatTime(countdown.days) }}
                             </div>
                             <div
                                 class="py-1.5 font-bold text-[var(--abg-primary)]"
@@ -158,7 +274,7 @@ const products = [
                             <div
                                 class="rounded-lg bg-[var(--abg-primary)] px-4 py-1.5 shadow-md"
                             >
-                                14
+                                {{ formatTime(countdown.hours) }}
                             </div>
                             <div
                                 class="py-1.5 font-bold text-[var(--abg-primary)]"
@@ -168,7 +284,17 @@ const products = [
                             <div
                                 class="rounded-lg bg-[var(--abg-primary)] px-4 py-1.5 shadow-md"
                             >
-                                08
+                                {{ formatTime(countdown.minutes) }}
+                            </div>
+                            <div
+                                class="py-1.5 font-bold text-[var(--abg-primary)]"
+                            >
+                                :
+                            </div>
+                            <div
+                                class="rounded-lg bg-[var(--abg-primary)] px-4 py-1.5 shadow-md"
+                            >
+                                {{ formatTime(countdown.seconds) }}
                             </div>
                         </div>
                     </div>
@@ -194,6 +320,8 @@ const products = [
                 <!-- Product List -->
                 <div
                     ref="scrollRef"
+                    @mouseenter="handleMouseEnter"
+                    @mouseleave="handleMouseLeave"
                     class="scrollbar-none -mx-6 flex snap-x snap-mandatory gap-8 overflow-x-auto scroll-smooth px-6 pb-12"
                     style="scrollbar-width: none; -ms-overflow-style: none"
                 >
