@@ -34,14 +34,21 @@ class ConversationRepository extends BaseRepository implements ConversationRepos
     /**
      * Get all conversations with latest message
      *
+     * @param int $adminId
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAllWithLatestMessage()
+    public function getAllWithLatestMessage(int $adminId)
     {
         return $this->query()
             ->with(['userCustomer', 'userAdmin', 'messages' => function ($query) {
                 $query->latest()->limit(1);
             }])
+            ->withCount([
+                'messages as unread_count' => function ($query) use ($adminId) {
+                    $query->where('sender_id', '!=', $adminId)
+                        ->whereNull('read_at');
+                }
+            ])
             ->orderBy('last_message_at', 'desc')
             ->get();
     }

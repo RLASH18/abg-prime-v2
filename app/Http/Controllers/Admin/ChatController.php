@@ -26,7 +26,7 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $conversations = $this->chatService->getAllConversations();
+        $conversations = $this->chatService->getAllConversations(Auth::id());
 
         return Inertia::render('admin/Chats', [
             'conversations' => $conversations,

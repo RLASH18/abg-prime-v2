@@ -77,7 +77,7 @@ const setupRealTimeSubscription = async () => {
         echoSub = null;
     }
 
-    console.log('Subscribing to conversation:', conversation.value.id);
+    // console.log('Subscribing to conversation:', conversation.value.id);
 
     echoSub = useEcho(
         `conversation.${conversation.value.id}`,
@@ -122,7 +122,7 @@ const handleSendMessage = async () => {
 const handleNewMessage = (event: Message) => {
     const message = event;
 
-    console.log('handleNewMessage called with', message);
+    // console.log('handleNewMessage called with', message);
 
     if (!message.created_at) {
         message.created_at = new Date().toISOString();
@@ -134,7 +134,7 @@ const handleNewMessage = (event: Message) => {
         return;
     }
 
-    console.log('Adding message to array');
+    // console.log('Adding message to array');
     messages.value.push(message);
 
     if (!isOpen.value) {

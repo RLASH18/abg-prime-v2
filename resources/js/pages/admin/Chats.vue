@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,7 +14,7 @@ import { type BreadcrumbItem, type Conversation, type Message } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { useEcho } from '@laravel/echo-vue';
 import { MessageSquare, Package, Send } from 'lucide-vue-next';
-import { computed, nextTick, onBeforeUnmount, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 
 interface Props {
     conversations: Conversation[];
@@ -36,6 +37,7 @@ const selectedConversationId = ref<number | null>(null);
 const messages = ref<Message[]>([]);
 const newMessage = ref('');
 const messagesEndRef = ref<HTMLElement | null>(null);
+const conversationSubscriptions = ref<{ [key: number]: any }>({});
 
 // Stored Echo subscription so it can be properly left later and avoid duplicate listeners
 let echoSub: { leave: () => void; listen: () => void } | null = null;
@@ -46,6 +48,43 @@ const selectedConversation = computed(() => {
         (c) => c.id === selectedConversationId.value,
     );
 });
+
+// Subscribe to all conversations for unread count updates
+const subscribeToAllConversations = () => {
+    // Unsubscribe from all existing subscriptions first
+    Object.values(conversationSubscriptions.value).forEach((sub) => {
+        if (sub) sub.leave();
+    });
+    conversationSubscriptions.value = {};
+
+    // Subscribe to each conversation
+    props.conversations.forEach((conversation) => {
+        const sub = useEcho(
+            `conversation.${conversation.id}`,
+            '.message.sent',
+            () => {
+                // Only increment unread count if this is NOT the currently selected conversation
+                if (selectedConversationId.value !== conversation.id) {
+                    const conv = props.conversations.find(
+                        (c) => c.id === conversation.id,
+                    );
+                    if (conv) {
+                        // Increment unread count
+                        if (conv.unread_count === undefined) {
+                            conv.unread_count = 1;
+                        } else {
+                            conv.unread_count++;
+                        }
+                    }
+                }
+            },
+            [],
+            'private',
+        );
+        sub.listen();
+        conversationSubscriptions.value[conversation.id] = sub;
+    });
+};
 
 // Select a conversation, load messages, mark them as read, and subscribe to real-time updates.
 const selectConversation = async (conversationId: number) => {
@@ -60,6 +99,14 @@ const selectConversation = async (conversationId: number) => {
     messages.value = data.messages || [];
 
     await markAsRead(conversationId);
+
+    // Reset unread count for this conversation
+    const conversation = props.conversations.find(
+        (c) => c.id === conversationId,
+    );
+    if (conversation) {
+        conversation.unread_count = 0;
+    }
 
     echoSub = useEcho(
         `conversation.${conversationId}`,
@@ -108,11 +155,21 @@ const scrollToBottom = () => {
     });
 };
 
+// Subscribe to all conversations when page loads
+onMounted(() => {
+    subscribeToAllConversations();
+});
+
 // Cleanup the Echo subscription when leaving the page.
 onBeforeUnmount(() => {
     if (echoSub) {
         echoSub.leave();
     }
+
+    // Clean up all conversation subscriptions
+    Object.values(conversationSubscriptions.value).forEach((sub) => {
+        if (sub) sub.leave();
+    });
 });
 </script>
 
@@ -145,23 +202,42 @@ onBeforeUnmount(() => {
                                 ]"
                             >
                                 <div class="flex items-start gap-3">
-                                    <Avatar class="h-10 w-10">
-                                        <AvatarImage
-                                            v-if="
-                                                conversation.user_customer
-                                                    ?.avatar
-                                            "
-                                            :src="`/storage/${conversation.user_customer.avatar}`"
-                                        />
-                                        <AvatarFallback>
-                                            {{
-                                                getInitials(
+                                    <div class="relative">
+                                        <Avatar class="h-10 w-10">
+                                            <AvatarImage
+                                                v-if="
                                                     conversation.user_customer
-                                                        ?.name || 'U',
-                                                )
+                                                        ?.avatar
+                                                "
+                                                :src="`/storage/${conversation.user_customer.avatar}`"
+                                            />
+                                            <AvatarFallback>
+                                                {{
+                                                    getInitials(
+                                                        conversation
+                                                            .user_customer
+                                                            ?.name || 'U',
+                                                    )
+                                                }}
+                                            </AvatarFallback>
+                                        </Avatar>
+
+                                        <!-- Unread badge -->
+                                        <Badge
+                                            v-if="
+                                                conversation.unread_count &&
+                                                conversation.unread_count > 0
+                                            "
+                                            class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-background p-0 text-xs"
+                                        >
+                                            {{
+                                                conversation.unread_count > 9
+                                                    ? '9+'
+                                                    : conversation.unread_count
                                             }}
-                                        </AvatarFallback>
-                                    </Avatar>
+                                        </Badge>
+                                    </div>
+
                                     <div class="flex-1 overflow-hidden">
                                         <div
                                             class="flex items-center justify-between"

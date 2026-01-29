@@ -122,4 +122,5 @@ export interface Conversation {
     user_customer?: User;
     user_admin?: User;
     messages?: Message[];
+    unread_count?: number;
 }

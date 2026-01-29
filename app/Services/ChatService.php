@@ -33,11 +33,12 @@ class ChatService
     /**
      * Get all conversations (for admin)
      *
+     * @param int $adminId
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAllConversations()
+    public function getAllConversations(int $adminId)
     {
-        return $this->conversationRepo->getAllWithLatestMessage();
+        return $this->conversationRepo->getAllWithLatestMessage($adminId);
     }
 
     /**
