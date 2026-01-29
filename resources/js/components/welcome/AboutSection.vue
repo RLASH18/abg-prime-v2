@@ -125,7 +125,7 @@ onMounted(() => {
                 <div>
                     <h3
                         ref="aboutTagline"
-                        class="text-center mb-12 font-body text-3xl leading-tight font-extrabold text-[var(--abg-primary)] md:text-4xl"
+                        class="mb-12 text-center font-body text-3xl leading-tight font-extrabold text-[var(--abg-primary)] md:text-4xl"
                     >
                         Building the future, <br />
                         managing the present.
