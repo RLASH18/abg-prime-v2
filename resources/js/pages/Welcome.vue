@@ -18,7 +18,7 @@ withDefaults(
 </script>
 
 <template>
-    <Head title="ABG Prime Builders - Quality Construction Supplies">
+    <Head title="Welcome">
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
             rel="preconnect"
