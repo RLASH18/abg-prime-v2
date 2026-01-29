@@ -9,7 +9,6 @@ gsap.registerPlugin(ScrollTrigger);
 // Template refs for animations
 const footerBanner = ref<HTMLElement | null>(null);
 const massiveText = ref<HTMLElement | null>(null);
-const copyright = ref<HTMLElement | null>(null);
 
 onMounted(() => {
     // Footer Banner animation
@@ -52,17 +51,10 @@ onMounted(() => {
         ease: 'elastic.out(1, 0.75)',
     });
 
-    // Copyright fade in
-    gsap.from(copyright.value, {
-        scrollTrigger: {
-            trigger: copyright.value,
-            start: 'top 98%',
-            toggleActions: 'play none none reverse',
-        },
-        opacity: 0,
-        duration: 1,
-        delay: 0.5,
-    });
+    // Refresh ScrollTrigger to recalculate positions
+    setTimeout(() => {
+        ScrollTrigger.refresh();
+    }, 100);
 });
 </script>
 
@@ -117,18 +109,6 @@ onMounted(() => {
                             </li>
                             <li>
                                 <a
-                                    href="#products"
-                                    class="group flex items-center gap-2 font-medium transition-colors hover:text-white"
-                                >
-                                    <span
-                                        class="text-xs font-black opacity-60 transition-opacity group-hover:opacity-100"
-                                        >></span
-                                    >
-                                    Products
-                                </a>
-                            </li>
-                            <li>
-                                <a
                                     href="#about"
                                     class="group flex items-center gap-2 font-medium transition-colors hover:text-white"
                                 >
@@ -137,6 +117,18 @@ onMounted(() => {
                                         >></span
                                     >
                                     About Us
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href="#products"
+                                    class="group flex items-center gap-2 font-medium transition-colors hover:text-white"
+                                >
+                                    <span
+                                        class="text-xs font-black opacity-60 transition-opacity group-hover:opacity-100"
+                                        >></span
+                                    >
+                                    Products
                                 </a>
                             </li>
                         </ul>
@@ -208,7 +200,6 @@ onMounted(() => {
 
                 <!-- Bottom Section: Copyright -->
                 <div
-                    ref="copyright"
                     class="border-t border-[var(--abg-secondary)]/10 pt-8 text-center"
                 >
                     <p
