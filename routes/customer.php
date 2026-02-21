@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Http\Controllers\Customer\AiController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\ChatController;
 use App\Http\Controllers\Customer\CheckoutController;
@@ -66,6 +67,13 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
                 Route::post('/', 'store')->name('store');
                 Route::post('/read', 'markAsRead')->name('read');
                 Route::get('/unread/count', 'unreadCount')->name('unread.count');
+            });
+        });
+
+        // AI Chat
+        Route::prefix('ai')->name('ai.')->group(function () {
+            Route::controller(AiController::class)->group(function () {
+                Route::post('/ask', 'ask')->name('ask');
             });
         });
 

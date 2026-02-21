@@ -124,3 +124,10 @@ export interface Conversation {
     messages?: Message[];
     unread_count?: number;
 }
+
+export interface AiMessage {
+    id: number;
+    role: 'user' | 'model';
+    content: string;
+    showStoreImage?: boolean;
+}
