@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ItemForecastPanel from '@/components/admin/ItemForecastPanel.vue';
 import LinkButton from '@/components/LinkButton.vue';
 import { Badge } from '@/components/ui/badge';
 import { useFormatters } from '@/composables/useFormatters';
@@ -366,6 +367,9 @@ const images = computed(() => {
                             </div>
                         </div>
                     </div>
+
+                    <!-- AI Forecast Panel -->
+                    <ItemForecastPanel :item-id="item.id" />
                 </div>
             </div>
         </div>

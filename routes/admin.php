@@ -12,7 +12,8 @@ use App\Http\Controllers\Admin\{
 use App\Http\Controllers\Admin\Inventory\{
     SupplierController,
     ItemController,
-    DamagedItemController
+    DamagedItemController,
+    ItemForecastController
 };
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,10 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
 
             Route::resource('damaged-items', DamagedItemController::class)
                 ->only(['index', 'store', 'destroy']);
+
+            // AI Forecast for a specific item
+            Route::post('/items/{item}/forecast', [ItemForecastController::class, 'generate'])
+                ->name('items.forecast');
         });
 
         // Orders

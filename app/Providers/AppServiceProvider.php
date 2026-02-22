@@ -12,7 +12,8 @@ use App\Repositories\Interfaces\{
     CartRepositoryInterface,
     ConversationRepositoryInterface,
     DeliveryRepositoryInterface,
-    MessageRepositoryInterface
+    MessageRepositoryInterface,
+    OrderItemRepositoryInterface
 };
 use App\Repositories\{
     BaseRepository,
@@ -24,7 +25,8 @@ use App\Repositories\{
     CartRepository,
     ConversationRepository,
     DeliveryRepository,
-    MessageRepository
+    MessageRepository,
+    OrderItemRepository
 };
 use Illuminate\Support\ServiceProvider;
 
@@ -41,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
         SupplierRepositoryInterface::class => SupplierRepository::class,
         DamagedItemRepositoryInterface::class => DamagedItemRepository::class,
         OrderRepositoryInterface::class => OrderRepository::class,
+        OrderItemRepositoryInterface::class => OrderItemRepository::class,
         BillingRepositoryInterface::class => BillingRepository::class,
         DeliveryRepositoryInterface::class => DeliveryRepository::class,
         CartRepositoryInterface::class => CartRepository::class,
