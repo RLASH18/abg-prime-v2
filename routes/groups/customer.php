@@ -14,6 +14,7 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
     ->name('customer.')
     ->group(function () {
 
+        // Homepage
         Route::prefix('homepage')->name('homepage.')->group(function () {
             Route::controller(HomepageController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
@@ -25,7 +26,7 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
             });
         });
 
-        // Resource routes
+        // Cart
         Route::resource('carts', CartController::class)
             ->only(['index', 'store', 'update', 'destroy']);
 
@@ -40,6 +41,7 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
             });
         });
 
+        // Checkout
         Route::prefix('checkout')->name('checkout.')->group(function () {
             Route::controller(CheckoutController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
@@ -47,12 +49,14 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
             });
         });
 
+        // Paymongo
         Route::get('/checkout/success', [PaymentCallbackController::class, 'success'])
             ->name('checkout.success');
 
         Route::get('/checkout/failed', [PaymentCallbackController::class, 'failed'])
             ->name('checkout.failed');
 
+        // Order
         Route::prefix('orders')->name('orders.')->group(function () {
             Route::controller(OrderController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
@@ -77,5 +81,5 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Customer->value])
             });
         });
 
-        require __DIR__ . '/settings.php';
+        require __DIR__ . '/../settings.php';
     });

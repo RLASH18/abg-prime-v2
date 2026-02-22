@@ -1,20 +1,16 @@
 <?php
 
 use App\Enums\UserRole;
-use App\Http\Controllers\Admin\{
-    DashboardController,
-    OrderController,
-    BillingController,
-    ChatController,
-    DeliveryController,
-    ReportController,
-};
-use App\Http\Controllers\Admin\Inventory\{
-    SupplierController,
-    ItemController,
-    DamagedItemController,
-    ItemForecastController
-};
+use App\Http\Controllers\Admin\BillingController;
+use App\Http\Controllers\Admin\ChatController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DeliveryController;
+use App\Http\Controllers\Admin\Inventory\DamagedItemController;
+use App\Http\Controllers\Admin\Inventory\ItemController;
+use App\Http\Controllers\Admin\Inventory\ItemForecastController;
+use App\Http\Controllers\Admin\Inventory\SupplierController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
@@ -90,5 +86,5 @@ Route::middleware(['auth', 'verified', 'role:' . UserRole::Admin->value])
             });
         });
 
-        require __DIR__ . '/settings.php';
+        require __DIR__ . '/../settings.php';
     });

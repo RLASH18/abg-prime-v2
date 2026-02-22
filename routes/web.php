@@ -16,5 +16,5 @@ Route::controller(OAuthController::class)->group(function () {
     Route::get('oauth/{provider}/callback', 'callback')->name('oauth.callback');
 });
 
-require __DIR__ . '/admin.php';
-require __DIR__ . '/customer.php';
+require __DIR__ . '/groups/admin.php';
+require __DIR__ . '/groups/customer.php';
