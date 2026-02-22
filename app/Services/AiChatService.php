@@ -7,20 +7,8 @@ use Gemini\Enums\Role;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\File;
 
-class AiService
+class AiChatService
 {
-    /**
-     * Load system prompt from the markdown file
-     *
-     * @return string
-     */
-    private function getSystemPrompt(): string
-    {
-        $path = resource_path('views/prompts/ai-assistant.md');
-
-        return File::exists($path) ? File::get($path) : '';
-    }
-
     /**
      * Send a message to Gemini with conversation history and get a response.
      *
@@ -31,7 +19,7 @@ class AiService
     public function ask(string $message, array $history = []): string
     {
         $formattedHistory = collect($history)->map(
-            fn ($item) => Content::parse(
+            fn($item) => Content::parse(
                 $item['content'],
                 $item['role'] === 'model' ? Role::MODEL : Role::USER
             )
@@ -43,5 +31,17 @@ class AiService
             ->sendMessage($message);
 
         return $response->text();
+    }
+
+    /**
+     * Load system prompt from the markdown file
+     *
+     * @return string
+     */
+    private function getSystemPrompt(): string
+    {
+        $path = resource_path('views/prompts/ai-assistant.md');
+
+        return File::exists($path) ? File::get($path) : '';
     }
 }

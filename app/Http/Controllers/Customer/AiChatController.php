@@ -4,17 +4,17 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ai\AskAiRequest;
-use App\Services\AiService;
+use App\Services\AiChatService;
 
-class AiController extends Controller
+class AiChatController extends Controller
 {
     /**
-     * Inject AiService.
+     * Inject AiChatService.
      *
-     * @param AiService $aiService
+     * @param AiChatService $aiChatService
      */
     public function __construct(
-        protected AiService $aiService
+        protected AiChatService $aiChatService
     ) {}
 
     /**
@@ -22,7 +22,7 @@ class AiController extends Controller
      */
     public function ask(AskAiRequest $request)
     {
-        $reply = $this->aiService->ask(
+        $reply = $this->aiChatService->ask(
             $request->validated()['message'],
             $request->validated()['history']
         );
