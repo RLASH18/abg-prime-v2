@@ -220,4 +220,44 @@ class ItemService
             }
         }
     }
+
+    /**
+     * Adjust item quantity via RFID scan.
+     * Use action 'add' to increase and 'deduct' to decrease.
+     *
+     * @param string $itemCode
+     * @param string $action   'add' | 'deduct'
+     * @param int    $quantity
+     * @return array{success: bool, message: string, item?: Item}
+     */
+    public function adjustQuantityByCode(string $itemCode, string $action, int $quantity): array
+    {
+        $item = $this->itemRepo->findByCode($itemCode);
+
+        if (! $item) {
+            return ['success' => false, 'message' => 'Item not found'];
+        }
+
+        if ($action === 'deduct') {
+            if ($item->quantity < $quantity) {
+                return ['success' => false, 'message' => 'Insufficient stock'];
+            }
+            $newQuantity = $item->quantity - $quantity;
+        } elseif ($action === 'add') {
+            $newQuantity = $item->quantity + $quantity;
+        } else {
+            return ['success' => false, 'message' => 'Invalid action. Use "add" or "deduct"'];
+        }
+
+        $this->itemRepo->update($item->id, ['quantity' => $newQuantity]);
+
+        // Re-fetch for fresh data
+        $item->refresh();
+
+        return [
+            'success' => true,
+            'message' => 'Quantity updated successfully',
+            'item' => $item
+        ];
+    }
 }

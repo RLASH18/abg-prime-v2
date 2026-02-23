@@ -42,4 +42,17 @@ class ItemRepository extends BaseRepository implements ItemRepositoryInterface
             ->orderBy('quantity', 'asc')
             ->get();
     }
+
+    /**
+     * Find an item by its item_code
+     *
+     * @param string $itemCode
+     * @return Item|null
+     */
+    public function findByCode(string $itemCode): ?Item
+    {
+        return $this->query()
+            ->where('item_code', $itemCode)
+            ->first();
+    }
 }
