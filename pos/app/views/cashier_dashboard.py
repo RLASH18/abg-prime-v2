@@ -7,7 +7,7 @@ from app.theme.styles import COLORS, FONTS
 from app.views.base_view import BaseView
 from app.core.api_client import LaravelApiClient
 
-TAX_RATE = 0.08
+TAX_RATE = 0.00
 
 
 class CashierDashboard(BaseView):
@@ -18,9 +18,9 @@ class CashierDashboard(BaseView):
         self._qty_var = tk.StringVar(value="1")
         self._scan_mode = "add"  # 'add' or 'deduct'
         self._total_items_var = tk.StringVar(value="0")
-        self._subtotal_var   = tk.StringVar(value="$0.00")
-        self._tax_var        = tk.StringVar(value="$0.00")
-        self._total_var      = tk.StringVar(value="$0.00")
+        self._subtotal_var   = tk.StringVar(value="₱0.00")
+        self._tax_var        = tk.StringVar(value="₱0.00")
+        self._total_var      = tk.StringVar(value="₱0.00")
         self._cart: list[dict] = []
         self._nfc  = None
         self._root = None
@@ -109,24 +109,6 @@ class CashierDashboard(BaseView):
         self._scan_btn = self.primary_button(
             inner, "⛶  Scan NFC", command=self._scan_item, padx=24, pady=10)
         self._scan_btn.pack(side=tk.RIGHT, padx=(6, 0))
-
-        # Manual item code entry
-        self._manual_code_var = tk.StringVar()
-        self._manual_entry = tk.Entry(
-            inner, textvariable=self._manual_code_var, width=12,
-            font=FONTS["label"], relief="flat", justify="center",
-            bg=COLORS["white"], fg=COLORS["text_primary"],
-            highlightbackground=COLORS["border"], highlightthickness=1)
-        self._manual_entry.pack(side=tk.RIGHT, ipady=4, padx=(0, 6))
-        self._manual_entry.bind("<Return>", lambda _: self._submit_manual_code())
-
-        tk.Label(inner, text="Item Code:", bg=COLORS["card_bg"],
-                 fg=COLORS["text_secondary"], font=FONTS["label"],
-                 padx=6).pack(side=tk.RIGHT)
-
-        self._submit_btn = self.outline_button(
-            inner, "Submit", command=self._submit_manual_code, padx=14, pady=8)
-        self._submit_btn.pack(side=tk.RIGHT, padx=(0, 10))
 
     # ── Item Table ─────────────────────────────────────────────────────────────
 
@@ -261,8 +243,6 @@ class CashierDashboard(BaseView):
 
     def _set_input_state(self, state: str):
         self._scan_btn.configure(state=state)
-        self._submit_btn.configure(state=state)
-        self._manual_entry.configure(state=state)
 
     def _get_qty(self) -> int:
         try:
@@ -271,13 +251,7 @@ class CashierDashboard(BaseView):
             self._qty_var.set("1")
             return 1
 
-    def _submit_manual_code(self):
-        """Submit the manually typed item code."""
-        code = self._manual_code_var.get().strip().upper()
-        if not code:
-            return
-        self._manual_code_var.set("")
-        self._lookup_and_add(code, self._get_qty(), self._scan_mode)
+
 
     def _scan_item(self):
         """Trigger a real NFC read."""
@@ -287,7 +261,7 @@ class CashierDashboard(BaseView):
             messagebox.showwarning(
                 "NFC Not Connected",
                 "No NFC reader detected.\n"
-                "Use the Item Code field to add items manually.")
+                "Please connect the NFC reader and try again.")
             return
 
         self._scanning = True
@@ -342,22 +316,14 @@ class CashierDashboard(BaseView):
 
         existing = next((i for i in self._cart if i["code"] == code and i["action"] == action), None)
 
-        if action == "add":
-            if existing:
-                existing["qty"]   += qty
-                existing["total"]  = existing["qty"] * existing["price"]
-            else:
-                item = {"code": code, "action": action, "name": name,
-                        "qty": qty, "price": price, "total": qty * price}
-                self._cart.append(item)
-        else:  # deduct
-            if existing:
-                existing["qty"]   += qty
-                existing["total"]  = existing["qty"] * existing["price"]
-            else:
-                item = {"code": code, "action": action, "name": name,
-                        "qty": qty, "price": price, "total": qty * price}
-                self._cart.append(item)
+        if existing:
+            existing["qty"]   += qty
+            existing["total"]  = existing["qty"] * existing["price"]
+        else:
+            self._cart.append({
+                "code": code, "action": action, "name": name,
+                "qty": qty, "price": price, "total": qty * price,
+            })
 
         self._refresh_tree()
         self._update_summary()
@@ -423,15 +389,8 @@ class CashierDashboard(BaseView):
             action_label = "➕ Add" if item["action"] == "add" else "➖ Deduct"
             self._tree.insert("", tk.END, values=(
                 item["code"], action_label, item["name"], item["qty"],
-                f"${item['price']:.2f}", f"${item['total']:.2f}",
+                f"₱{item['price']:.2f}", f"₱{item['total']:.2f}",
             ))
-
-    def _buy_now_confirm(self):
-        if not self._cart:
-            messagebox.showinfo("Cart Empty", "No items in cart.")
-            return
-        messagebox.showinfo("Purchase", "Transaction completed!")
-        self._clear_cart()
 
     def _clear_cart(self):
         for row in self._tree.get_children():
@@ -443,16 +402,14 @@ class CashierDashboard(BaseView):
         messagebox.showinfo("Receipt", "Printing receipt…")
 
     def _update_summary(self):
-        # For summary, only "add" items contribute to totals (deducts reduce stock, not revenue)
-        add_items = [i for i in self._cart if i["action"] == "add"]
-        subtotal = sum(i["total"] for i in add_items)
+        subtotal = sum(i["total"] for i in self._cart)
         tax      = subtotal * TAX_RATE
         total    = subtotal + tax
 
         self._total_items_var.set(str(len(self._cart)))
-        self._subtotal_var.set(f"${subtotal:.2f}")
-        self._tax_var.set(f"${tax:.2f}")
-        self._total_var.set(f"${total:.2f}")
+        self._subtotal_var.set(f"₱{subtotal:.2f}")
+        self._tax_var.set(f"₱{tax:.2f}")
+        self._total_var.set(f"₱{total:.2f}")
 
         if self._cart:
             self._tree.tkraise()

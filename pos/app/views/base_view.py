@@ -49,13 +49,13 @@ class BaseView(tk.Frame):
     @staticmethod
     def accent_button(parent: tk.Widget, text: str, command=None,
                        pady=12, **kw) -> tk.Button:
-        """Lighter blue button."""
+        """Accent-colored action button (uses theme accent color)."""
         btn = tk.Button(parent, text=text, command=command,
-                        bg="#60A5FA", fg=COLORS["white"],
+                        bg=COLORS["primary"], fg=COLORS["white"],
                         font=FONTS["button"], relief="flat", bd=0,
                         pady=pady, cursor="hand2", **kw)
-        btn.bind("<Enter>", lambda _: btn.configure(bg="#3B82F6"))
-        btn.bind("<Leave>", lambda _: btn.configure(bg="#60A5FA"))
+        btn.bind("<Enter>", lambda _: btn.configure(bg=COLORS["primary_hover"]))
+        btn.bind("<Leave>", lambda _: btn.configure(bg=COLORS["primary"]))
         return btn
 
     @staticmethod
