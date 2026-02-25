@@ -1,3 +1,8 @@
+# Environment
+.env
+.env.backup
+.env.production
+
 # Python cache
 __pycache__/
 *.py[cod]
