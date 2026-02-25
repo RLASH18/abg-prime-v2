@@ -21,7 +21,7 @@ class POSApp:
     HEIGHT   = 720
     MIN_W    = 960
     MIN_H    = 620
-    TITLE    = "POS System"
+    TITLE    = "ABG Prime Builders Supplies Inc - POS System"
 
     def __init__(self):
         self.root = tk.Tk()
