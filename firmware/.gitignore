@@ -1,0 +1,9 @@
+# Arduino IDE build output 
+build/
+*.elf
+*.hex
+*.bin
+*.map
+
+# Arduino IDE 2.x cache
+.vs/
