@@ -7,21 +7,21 @@ from tkinter import ttk
 # ── Color Palette ──────────────────────────────────────────────────────────────
 COLORS = {
     # Backgrounds
-    "bg":              "#F8FAFC",
+    "bg":              "#FAF7F5",      # warm off-white to complement brown
     "sidebar_bg":      "#FFFFFF",
     "card_bg":         "#FFFFFF",
-    # Brand
-    "primary":         "#2563EB",
-    "primary_hover":   "#1D4ED8",
-    "primary_light":   "#EFF6FF",
-    "primary_text":    "#2563EB",
-    "accent":          "#3B82F6",
+    # Brand  (ABG palette)
+    "primary":         "#815331",      # --abg-primary
+    "primary_hover":   "#5A3A22",      # --abg-primary-dark
+    "primary_light":   "#ECE5DF",      # --abg-secondary (used for selections/highlights)
+    "primary_text":    "#815331",
+    "accent":          "#A16B42",      # --abg-primary-light
     # Text
     "text_primary":    "#1E293B",
     "text_secondary":  "#64748B",
     "text_muted":      "#94A3B8",
     # UI
-    "border":          "#E2E8F0",
+    "border":          "#E8DDD6",      # slightly warm border to match the brown theme
     "white":           "#FFFFFF",
     # Status
     "success_text":    "#16A34A",
@@ -29,7 +29,7 @@ COLORS = {
     "error_text":      "#DC2626",
     "error_bg":        "#FEE2E2",
     # Table
-    "table_header_bg": "#F8FAFC",
+    "table_header_bg": "#FAF7F5",      # matches warm bg
 }
 
 # ── Font Definitions ───────────────────────────────────────────────────────────
