@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | RFID API Secret
+    |--------------------------------------------------------------------------
+    |
+    | This secret key is used to authenticate requests from the Python RFID
+    | scanner. It must match the X-API-Secret header sent by the scanner.
+    |
+    */
+    'rfid_api_secret' => env('RFID_API_SECRET'),
 ];

@@ -9,4 +9,5 @@ interface ItemRepositoryInterface extends BaseRepositoryInterface
 {
     public function latestByCategory(string $category): ?Item;
     public function getLowStockItems(): Collection;
+    public function findByCode(string $itemCode): ?Item;
 }
