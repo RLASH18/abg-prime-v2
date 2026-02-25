@@ -222,6 +222,17 @@ class ItemService
     }
 
     /**
+     * Find an item by its item_code
+     *
+     * @param string $itemCode
+     * @return Item|null
+     */
+    public function findByCode(string $itemCode): ?Item
+    {
+        return $this->itemRepo->findByCode($itemCode);
+    }
+
+    /**
      * Adjust item quantity via RFID scan.
      * Use action 'add' to increase and 'deduct' to decrease.
      *
@@ -232,7 +243,7 @@ class ItemService
      */
     public function adjustQuantityByCode(string $itemCode, string $action, int $quantity): array
     {
-        $item = $this->itemRepo->findByCode($itemCode);
+        $item = $this->findByCode($itemCode);
 
         if (! $item) {
             return ['success' => false, 'message' => 'Item not found'];

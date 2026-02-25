@@ -20,6 +20,26 @@ class RfidController extends Controller
     ) {}
 
     /**
+     * Look up item info by item_code (read-only, no stock change).
+     */
+    public function lookup(string $code): JsonResponse
+    {
+        $item = $this->itemService->findByCode($code);
+
+        if (! $item) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Item not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $item,
+        ], 200);
+    }
+
+    /**
      * Handle RFID scan and adjust item quantity.
      */
     public function scan(RfidScanRequest $request): JsonResponse

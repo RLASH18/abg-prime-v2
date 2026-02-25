@@ -8,7 +8,11 @@ Route::middleware(['api.secret'])
     ->name('rfid.')
     ->group(function () {
 
-        // Scan item by item_code
+        // Look up item info by item_code (read-only, no stock change)
+        Route::get('/item/{code}', [RfidController::class, 'lookup'])
+            ->name('lookup');
+
+        // Scan item by item_code (adjusts stock)
         Route::post('/scan', [RfidController::class, 'scan'])
             ->name('scan');
     });
