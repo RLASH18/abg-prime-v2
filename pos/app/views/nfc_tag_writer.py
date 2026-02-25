@@ -1,19 +1,17 @@
 """
 NFC Tag Writer view.
 """
+import json
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
+from pathlib import Path
 from app.theme.styles import COLORS, FONTS
 from app.views.base_view import BaseView
 
-PLACEHOLDER = "Enter item code (e.g. 123-ABC)"
-
-SAMPLE_HISTORY = [
-    ("8923-AB", "2023-10-24 10:30 AM", "Success"),
-    ("1122-CC", "2023-10-24 09:15 AM", "Failed"),
-    ("5544-DD", "2023-10-23 04:45 PM", "Success"),
-]
+PLACEHOLDER  = "Enter item code (e.g. HT001)"
+HISTORY_FILE = Path(__file__).resolve().parents[2] / "write_history.json"
+MAX_HISTORY  = 100
 
 
 class NFCTagWriter(BaseView):
@@ -130,10 +128,11 @@ class NFCTagWriter(BaseView):
         self._history.tag_configure("success", foreground=COLORS["success_text"])
         self._history.tag_configure("failed",  foreground=COLORS["error_text"])
 
-        for code, date, status in SAMPLE_HISTORY:
-            tag     = "success" if status == "Success" else "failed"
-            display = f"✅ {status}" if tag == "success" else f"❌ {status}"
-            self._history.insert("", tk.END, values=(code, date, display), tags=(tag,))
+        for rec in self._load_history():
+            tag = rec.get("tag", "success")
+            self._history.insert("", tk.END,
+                                 values=(rec["code"], rec["date"], rec["status"]),
+                                 tags=(tag,))
 
     # ── Entry Placeholder ──────────────────────────────────────────────────────
 
@@ -205,3 +204,30 @@ class NFCTagWriter(BaseView):
         tag     = "success" if success else "failed"
         display = "✅ Success" if success else f"❌ {reason or 'Failed'}"
         self._history.insert("", 0, values=(code, now, display), tags=(tag,))
+
+        # Persist so history survives app restarts
+        records = self._load_history()
+        records.insert(0, {"code": code, "date": now, "status": display, "tag": tag})
+        self._save_history(records)
+
+    # ── History persistence ────────────────────────────────────────────────────
+
+    @staticmethod
+    def _load_history() -> list:
+        """Load write history from JSON file; returns [] on any error."""
+        if HISTORY_FILE.exists():
+            try:
+                with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+        return []
+
+    @staticmethod
+    def _save_history(records: list) -> None:
+        """Persist write history (newest-first, capped at MAX_HISTORY entries)."""
+        try:
+            with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+                json.dump(records[:MAX_HISTORY], f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
