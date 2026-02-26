@@ -10,7 +10,7 @@ class _NavItem(tk.Frame):
 
     ICON_MAP = {
         "cashier": "▦",
-        "nfc":     "(((●)))",
+        "nfc":     "◎",
     }
     LABEL_MAP = {
         "cashier": "Cashier Dashboard",
@@ -91,16 +91,17 @@ class Sidebar(tk.Frame):
         self._build_nav()
 
     def _build_logo(self):
-        frame = tk.Frame(self, bg=COLORS["sidebar_bg"], padx=20, pady=24)
+        frame = tk.Frame(self, bg=COLORS["sidebar_bg"], padx=20, pady=20)
         frame.pack(fill=tk.X)
+        
+        tk.Label(frame, text="ABG", bg=COLORS["primary"],
+                 fg=COLORS["white"], font=("Segoe UI", 10, "bold"),
+                 padx=6, pady=4).pack(side=tk.LEFT, anchor="nw")
 
-        badge = tk.Label(frame, text="POS", bg=COLORS["primary"],
-                         fg=COLORS["white"], font=("Segoe UI", 10, "bold"),
-                         padx=6, pady=4)
-        badge.pack(side=tk.LEFT)
-
-        tk.Label(frame, text=" System", bg=COLORS["sidebar_bg"],
-                 fg=COLORS["primary"], font=FONTS["logo"]).pack(side=tk.LEFT)
+        tk.Label(frame, text=" Prime Builders\n Supplies Inc.",
+                 bg=COLORS["sidebar_bg"], fg=COLORS["primary"],
+                 font=("Segoe UI", 9, "bold"),
+                 justify="left").pack(side=tk.LEFT, anchor="w")
 
     def _build_nav(self):
         nav_frame = tk.Frame(self, bg=COLORS["sidebar_bg"], pady=12)

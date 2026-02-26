@@ -66,7 +66,26 @@ def apply_global_styles(root: tk.Tk) -> None:
         borderwidth=0,
         relief="flat",
         font=FONTS["table_body"],
+        # Suppress any border the clam theme tries to draw on the field element
+        lightcolor=COLORS["card_bg"],
+        darkcolor=COLORS["card_bg"],
+        bordercolor=COLORS["card_bg"],
     )
+
+    style.layout("POS.Treeview", [
+        ("Treeview.field", {
+            "sticky": "nswe",
+            "border": 0,
+            "children": [
+                ("Treeview.padding", {
+                    "sticky": "nswe",
+                    "children": [
+                        ("Treeview.treearea", {"sticky": "nswe"}),
+                    ],
+                }),
+            ],
+        }),
+    ])
     # Treeview column headers
     style.configure(
         "POS.Treeview.Heading",
@@ -76,6 +95,10 @@ def apply_global_styles(root: tk.Tk) -> None:
         relief="flat",
         borderwidth=0,
         padding=(16, 12),
+        bordercolor=COLORS["card_bg"],
+        lightcolor=COLORS["table_header_bg"],
+        darkcolor=COLORS["card_bg"],
+        gripcount=0,
     )
     style.map(
         "POS.Treeview",
@@ -85,14 +108,24 @@ def apply_global_styles(root: tk.Tk) -> None:
     style.map(
         "POS.Treeview.Heading",
         background=[("active", COLORS["table_header_bg"])],
+        darkcolor=[("active", COLORS["card_bg"])],
+        lightcolor=[("active", COLORS["table_header_bg"])],
     )
 
-    # Thin scrollbar
+    # Thin modern scrollbar — trough matches the card body, thumb is a soft slate
     style.configure(
         "POS.Vertical.TScrollbar",
-        background=COLORS["border"],
-        troughcolor=COLORS["bg"],
+        background=COLORS["text_muted"],   # soft slate-gray thumb (#94A3B8)
+        troughcolor=COLORS["card_bg"],     # pure white — invisible against card body
         borderwidth=0,
+        relief="flat",
         arrowsize=0,
-        width=5,
+        width=4,
+    )
+    style.map(
+        "POS.Vertical.TScrollbar",
+        background=[
+            ("active",  COLORS["text_secondary"]),  # darker on hover/drag
+            ("disabled", COLORS["border"]),
+        ],
     )

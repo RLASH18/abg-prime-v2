@@ -50,13 +50,13 @@ class NFCTagWriter(BaseView):
         inner.master.pack(fill=tk.X, pady=(0, 24))
 
         # NFC icon circle (Canvas)
-        canvas = tk.Canvas(inner, width=80, height=80,
+        canvas = tk.Canvas(inner, width=72, height=72,
                            bg=COLORS["card_bg"], highlightthickness=0)
         canvas.pack(pady=(10, 24))
-        canvas.create_oval(5, 5, 75, 75,
+        canvas.create_oval(4, 4, 68, 68,
                            fill=COLORS["primary_light"], outline="")
-        canvas.create_text(40, 41, text="(((●)))",
-                           font=("Segoe UI", 24), fill=COLORS["primary"])
+        canvas.create_text(36, 37, text="((●))",
+                           font=("Segoe UI", 22), fill=COLORS["primary"])
 
         # Centre-column container
         form = tk.Frame(inner, bg=COLORS["card_bg"])
@@ -66,15 +66,15 @@ class NFCTagWriter(BaseView):
                  fg=COLORS["text_primary"], font=FONTS["small_bold"]).pack(anchor="w",
                                                                             pady=(0, 6))
 
-        # Entry with focus border
-        entry_wrap = tk.Frame(form, bg=COLORS["primary"], padx=1, pady=1)
-        entry_wrap.pack(fill=tk.X)
-
-        self._entry = tk.Entry(entry_wrap, font=FONTS["label"], relief="flat",
+        # Entry — use the widget's own highlight border (no wrapper frame = no ring)
+        self._entry = tk.Entry(form, font=FONTS["label"], relief="flat",
                                bg=COLORS["white"], fg=COLORS["text_muted"],
                                insertbackground=COLORS["primary"], width=48,
-                               justify="center")
-        self._entry.pack(fill=tk.X, padx=12, pady=10)
+                               justify="center",
+                               highlightthickness=1,
+                               highlightbackground=COLORS["border"],
+                               highlightcolor=COLORS["primary"])
+        self._entry.pack(fill=tk.X, ipady=10)
         self._entry.insert(0, PLACEHOLDER)
 
         self._entry.bind("<FocusIn>",  self._on_focus_in)

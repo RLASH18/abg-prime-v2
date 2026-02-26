@@ -17,8 +17,6 @@ log = logging.getLogger(__name__)
 class POSApp:
     """Root application controller."""
 
-    WIDTH    = 1140
-    HEIGHT   = 720
     MIN_W    = 960
     MIN_H    = 620
     TITLE    = "ABG Prime Builders Supplies Inc - POS System"
@@ -36,9 +34,9 @@ class POSApp:
 
     def _configure_root(self):
         self.root.title(self.TITLE)
-        self.root.geometry(f"{self.WIDTH}x{self.HEIGHT}")
         self.root.minsize(self.MIN_W, self.MIN_H)
         self.root.configure(bg=COLORS["bg"])
+        self.root.state("zoomed")  # Start maximized (full screen) on Windows
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
     def _init_nfc(self):
@@ -86,16 +84,7 @@ class POSApp:
     # ── Run ────────────────────────────────────────────────────────────────────
 
     def run(self):
-        self._centre_window()
         self.root.mainloop()
-
-    def _centre_window(self):
-        self.root.update_idletasks()
-        sw = self.root.winfo_screenwidth()
-        sh = self.root.winfo_screenheight()
-        x  = (sw - self.WIDTH)  // 2
-        y  = (sh - self.HEIGHT) // 2
-        self.root.geometry(f"{self.WIDTH}x{self.HEIGHT}+{x}+{y}")
 
     def _on_close(self):
         self.nfc.disconnect()

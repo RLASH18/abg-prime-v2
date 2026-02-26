@@ -16,7 +16,7 @@ class CashierDashboard(BaseView):
     def __init__(self, parent):
         super().__init__(parent)
         self._qty_var = tk.StringVar(value="1")
-        self._scan_mode = "add"  # 'add' or 'deduct'
+        self._scan_mode = "deduct"  # 'add' or 'deduct'
         self._total_items_var = tk.StringVar(value="0")
         self._subtotal_var   = tk.StringVar(value="₱0.00")
         self._tax_var        = tk.StringVar(value="₱0.00")
@@ -40,13 +40,13 @@ class CashierDashboard(BaseView):
     def _build(self):
         self.build_header(self, "Cashier Dashboard",
                           "Manage transactions and scan items.")
-        wrap = tk.Frame(self, bg=COLORS["bg"], padx=24)
+        wrap = tk.Frame(self, bg=COLORS["bg"], padx=32)
         wrap.pack(fill=tk.BOTH, expand=True)
 
         self._build_action_bar(wrap)
 
         body = tk.Frame(wrap, bg=COLORS["bg"])
-        body.pack(fill=tk.BOTH, expand=True, pady=(12, 24))
+        body.pack(fill=tk.BOTH, expand=True, pady=(14, 32))
 
         self._build_table(body)
         self._build_order_summary(body)
@@ -60,10 +60,10 @@ class CashierDashboard(BaseView):
         left = tk.Frame(inner, bg=COLORS["card_bg"])
         left.pack(side=tk.LEFT)
 
-        # Add / Deduct mode buttons
+        # Add / Deduct mode buttons — Deduct is the default active mode
         self._add_btn = tk.Button(
             left, text="+ Add", command=self._set_mode_add,
-            bg=COLORS["primary"], fg=COLORS["white"],
+            bg=COLORS["white"], fg=COLORS["primary"],
             font=FONTS["button"], relief="flat",
             highlightbackground=COLORS["border"],
             highlightthickness=1, padx=16, pady=8, cursor="hand2")
@@ -71,7 +71,7 @@ class CashierDashboard(BaseView):
 
         self._deduct_btn = tk.Button(
             left, text="− Deduct", command=self._set_mode_deduct,
-            bg=COLORS["white"], fg=COLORS["primary"],
+            bg=COLORS["primary"], fg=COLORS["white"],
             font=FONTS["button"], relief="flat",
             highlightbackground=COLORS["border"],
             highlightthickness=1, padx=16, pady=8, cursor="hand2")
@@ -114,58 +114,84 @@ class CashierDashboard(BaseView):
 
     def _build_table(self, parent):
         card_outer = tk.Frame(parent, bg=COLORS["card_bg"],
-                              highlightbackground=COLORS["border"],
-                              highlightthickness=1)
-        card_outer.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 12))
+                               highlightbackground=COLORS["border"],
+                               highlightthickness=1)
+        card_outer.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 16))
 
         card_outer.grid_rowconfigure(0, weight=1)
         card_outer.grid_columnconfigure(0, weight=1)
 
-        columns = ("code", "action", "name", "qty", "price", "total")
+        # Only 5 columns — exactly as shown in the image (no ACTION column)
+        columns = ("code", "name", "qty", "price", "total")
         self._tree = ttk.Treeview(card_outer, columns=columns,
-                                  show="headings", style="POS.Treeview",
-                                  selectmode="browse")
+                                   show="headings", style="POS.Treeview",
+                                   selectmode="browse")
 
         col_cfg = {
-            "code":   ("ITEM CODE",  120, "w"),
-            "action": ("ACTION",      80, "center"),
-            "name":   ("ITEM NAME",    0, "w"),
-            "qty":    ("QTY",         60, "center"),
-            "price":  ("PRICE",       90, "e"),
-            "total":  ("TOTAL",       90, "e"),
+            "code":  ("ITEM CODE",  160, "w"),
+            "name":  ("ITEM NAME",    0, "w"),
+            "qty":   ("QTY",         80, "center"),
+            "price": ("PRICE",      120, "e"),
+            "total": ("TOTAL",      120, "e"),
         }
         for col, (heading, width, anchor) in col_cfg.items():
-            self._tree.heading(col, text=heading, anchor="w")
+            # Use the same anchor for heading and data so they stay aligned
+            self._tree.heading(col, text=heading, anchor=anchor)
             self._tree.column(col, width=width, anchor=anchor,
-                              stretch=(col == "name"), minwidth=50)
+                               stretch=(col == "name"), minwidth=60)
 
-        scrollbar = ttk.Scrollbar(card_outer, orient=tk.VERTICAL,
-                                  command=self._tree.yview,
-                                  style="POS.Vertical.TScrollbar")
-        self._tree.configure(yscrollcommand=scrollbar.set)
+        # Store scrollbar as instance attr so we can show/hide it
+        self._scrollbar = ttk.Scrollbar(card_outer, orient=tk.VERTICAL,
+                                        command=self._tree.yview,
+                                        style="POS.Vertical.TScrollbar")
+        self._tree.configure(yscrollcommand=self._scrollbar.set)
 
+        # Treeview occupies full cell; scrollbar hidden until items exist
         self._tree.grid(row=0, column=0, sticky="nsew")
-        scrollbar.grid(row=0, column=1, sticky="ns")
 
-        # Empty-state overlay
+        # Empty-state: use place() so it sits BELOW the heading row (not over it)
+        # This keeps the column headers visible even when the cart is empty.
         self._empty_frame = tk.Frame(card_outer, bg=COLORS["card_bg"])
-        self._empty_frame.grid(row=0, column=0, sticky="nsew")
 
-        tk.Label(self._empty_frame, text="🛒", bg=COLORS["card_bg"],
-                 fg="#E2E8F0", font=("Segoe UI", 48)).pack(expand=True, pady=(80, 4))
-        tk.Label(self._empty_frame, text="No items scanned yet",
+        # Group icon + text in a sub-frame that centres as a single unit vertically
+        _center = tk.Frame(self._empty_frame, bg=COLORS["card_bg"])
+        _center.pack(expand=True)
+        tk.Label(_center, text="🛒", bg=COLORS["card_bg"],
+                 fg="#E2E8F0", font=("Segoe UI", 52)).pack(pady=(0, 8))
+        tk.Label(_center, text="No items scanned yet",
                  bg=COLORS["card_bg"], fg=COLORS["text_secondary"],
                  font=FONTS["title"]).pack()
-        tk.Label(self._empty_frame, text="Items will appear here after scanning",
+        tk.Label(_center, text="Items will appear here after scanning",
                  bg=COLORS["card_bg"], fg=COLORS["text_muted"],
-                 font=FONTS["subtitle"]).pack(pady=(2, 80))
+                 font=FONTS["subtitle"]).pack(pady=(4, 0))
 
-        self._empty_frame.tkraise()
+        # Show empty state on startup
+        self._show_empty_state()
+
+    # ── Empty-state helpers ────────────────────────────────────────────────────
+
+    # Approximate height of the POS.Treeview heading row (px).
+    _HEADER_H: int = 38
+
+    def _show_empty_state(self) -> None:
+        """Place the empty-state overlay below the heading row and hide the scrollbar."""
+        self._empty_frame.place(
+            x=0, y=self._HEADER_H,
+            relwidth=1, relheight=1,
+            height=-self._HEADER_H,
+        )
+        self._empty_frame.lift()
+        self._scrollbar.grid_remove()  # removes the off-white stripe
+
+    def _hide_empty_state(self) -> None:
+        """Remove the empty-state overlay and restore the scrollbar."""
+        self._empty_frame.place_forget()
+        self._scrollbar.grid(row=0, column=1, sticky="ns")
 
     # ── Order Summary ──────────────────────────────────────────────────────────
 
     def _build_order_summary(self, parent):
-        right = tk.Frame(parent, bg=COLORS["bg"], width=268)
+        right = tk.Frame(parent, bg=COLORS["bg"], width=360)
         right.pack(side=tk.RIGHT, fill=tk.Y)
         right.pack_propagate(False)
 
@@ -198,9 +224,9 @@ class CashierDashboard(BaseView):
         tk.Label(total_row, textvariable=self._total_var, bg=COLORS["card_bg"],
                  fg=COLORS["primary"], font=FONTS["amount_large"]).pack(side=tk.RIGHT)
 
-        self._buy_btn = self.accent_button(
-            summary_inner, "Buy Now", command=self._buy_now, pady=14)
-        self._buy_btn.pack(fill=tk.X, pady=(20, 0))
+        self._process_btn = self.accent_button(
+            summary_inner, "Process Transaction", command=self._process_transaction, pady=14)
+        self._process_btn.pack(fill=tk.X, pady=(20, 0))
 
         qa_inner = self.card(right, padx=16, pady=14)
         qa_inner.master.pack(fill=tk.X)
@@ -331,18 +357,18 @@ class CashierDashboard(BaseView):
         if self._root:
             self._root.after(2000, lambda: self._scan_status_var.set(""))
 
-    # ── Buy Now → send all cart items to Laravel ───────────────────────────────
+    # ── Process Transaction → send all cart items to Laravel ─────────────────────
 
-    def _buy_now(self):
+    def _process_transaction(self):
         if not self._cart:
             messagebox.showinfo("Cart Empty", "No items in cart.")
             return
 
-        self._buy_btn.configure(state="disabled", text="⏳  Processing…")
+        self._process_btn.configure(state="disabled", text="⏳  Processing…")
         self._set_input_state("disabled")
         self._scan_status_var.set("Sending to server…")
 
-        # Send all cart items sequentially via a queue
+        # Send all cart items to the server sequentially via a queue
         self._pending = list(self._cart)
         self._failed: list[str] = []
         self._process_next_item()
@@ -367,7 +393,7 @@ class CashierDashboard(BaseView):
         self._process_next_item()
 
     def _on_all_done(self):
-        self._buy_btn.configure(state="normal", text="Buy Now")
+        self._process_btn.configure(state="normal", text="Process Transaction")
         self._set_input_state("normal")
         self._scan_status_var.set("")
 
@@ -386,9 +412,8 @@ class CashierDashboard(BaseView):
         for row in self._tree.get_children():
             self._tree.delete(row)
         for item in self._cart:
-            action_label = "➕ Add" if item["action"] == "add" else "➖ Deduct"
             self._tree.insert("", tk.END, values=(
-                item["code"], action_label, item["name"], item["qty"],
+                item["code"], item["name"], item["qty"],
                 f"₱{item['price']:.2f}", f"₱{item['total']:.2f}",
             ))
 
@@ -412,6 +437,6 @@ class CashierDashboard(BaseView):
         self._total_var.set(f"₱{total:.2f}")
 
         if self._cart:
-            self._tree.tkraise()
+            self._hide_empty_state()
         else:
-            self._empty_frame.tkraise()
+            self._show_empty_state()
