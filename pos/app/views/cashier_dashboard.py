@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from app.theme.styles import COLORS, FONTS
 from app.views.base_view import BaseView
-from app.core.api_client import LaravelApiClient
+from app.core.rfid_api_client import RfidApiClient
 
 TAX_RATE = 0.00
 
@@ -25,7 +25,7 @@ class CashierDashboard(BaseView):
         self._nfc  = None
         self._root = None
         self._scanning = False
-        self._api = LaravelApiClient()
+        self._api = RfidApiClient()
         self._build()
 
     # ── NFC injection ──────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 """
-LaravelApiClient — communicates with the Laravel RFID backend.
+RfidApiClient — communicates with the Laravel RFID backend.
 
 Two endpoints:
 
@@ -32,7 +32,7 @@ _HEADERS = {
 }
 
 
-class LaravelApiClient:
+class RfidApiClient:
     """Async wrapper around the Laravel RFID endpoints."""
 
     # ── Item lookup (scan → show in cart) ─────────────────────────────────────
@@ -55,7 +55,7 @@ class LaravelApiClient:
         result = self._execute(req, item_code)
         tk_root.after(0, callback, result)
 
-    # ── Stock adjustment (Buy Now) ────────────────────────────────────────────
+    # ── Stock adjustment (Process Transaction) ──────────────────────────────────
 
     def send_scan(
         self,
