@@ -56,8 +56,9 @@ onMounted(() => {
 </template>
 
 <style>
-html {
+html,
+body {
     scroll-behavior: smooth;
-    scrollbar-gutter: stable;
+    overflow-x: hidden;
 }
 </style>
