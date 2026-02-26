@@ -63,6 +63,17 @@ trait Filterable
             return $query;
         }
 
+        // Handle relationship.column dot-notation
+        if (str_contains($column, '.')) {
+            $parts = explode('.', $column);
+            $columnName = array_pop($parts);
+            $relationPath = implode('.', $parts);
+
+            return $query->whereHas($relationPath, function ($relationQuery) use ($columnName, $value) {
+                $relationQuery->where($columnName, $value);
+            });
+        }
+
         return $query->where($column, $value);
     }
 
