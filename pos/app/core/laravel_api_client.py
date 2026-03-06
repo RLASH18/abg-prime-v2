@@ -1,5 +1,5 @@
 """
-RfidApiClient — communicates with the Laravel RFID backend.
+LaravelApiClient — communicates with the Laravel backend.
 
 Endpoints:
 
@@ -33,7 +33,7 @@ _HEADERS = {
 }
 
 
-class RfidApiClient:
+class LaravelApiClient:
     """Async wrapper around the Laravel RFID endpoints."""
 
     # ── Item lookup (scan → show in cart) ─────────────────────────────────────

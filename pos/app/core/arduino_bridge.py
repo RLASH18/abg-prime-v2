@@ -1,5 +1,5 @@
 """
-NFCReader — threaded serial bridge for the RFID_IR_Monitor Arduino sketch.
+ArduinoBridge — threaded serial bridge for the RFID_IR_Monitor Arduino sketch.
 
 Arduino protocol (9600 baud, newline-terminated):
   → PING           ← PONG
@@ -36,10 +36,10 @@ RESULT_OK       = "WRITE_OK"
 RESULT_NOTAG    = "NOTAG"
 
 
-# ── NFCReader ─────────────────────────────────────────────────────────────────
+# ── ArduinoBridge ────────────────────────────────────────────────────────────
 
-class NFCReader:
-    """Serial bridge to the MFRC522_POS_v3 Arduino sketch."""
+class ArduinoBridge:
+    """Serial bridge to the RFID_IR_Monitor Arduino sketch (MFRC522 + IR sensor)."""
 
     def __init__(self):
         self._serial:    serial.Serial | None = None
@@ -78,11 +78,11 @@ class NFCReader:
             resp = self._serial.readline().decode(errors="replace").strip()
             if resp == "PONG":
                 self.connected = True
-                log.info("NFCReader connected on %s", target)
+                log.info("ArduinoBridge connected on %s", target)
                 return True
-            log.warning("NFCReader: unexpected PING response: %r", resp)
+            log.warning("ArduinoBridge: unexpected PING response: %r", resp)
         except Exception as exc:
-            log.warning("NFCReader: could not connect to %s — %s", target, exc)
+            log.warning("ArduinoBridge: could not connect to %s — %s", target, exc)
         self.connected = False
         return False
 
@@ -94,7 +94,7 @@ class NFCReader:
             except Exception:
                 pass
         self.connected = False
-        log.info("NFCReader disconnected")
+        log.info("ArduinoBridge disconnected")
 
     @staticmethod
     def _auto_detect_port() -> str:
@@ -103,9 +103,9 @@ class NFCReader:
             desc = (p.description or "").lower()
             mfr  = (p.manufacturer or "").lower()
             if any(k in desc or k in mfr for k in keywords):
-                log.info("NFCReader auto-detected port: %s (%s)", p.device, p.description)
+                log.info("ArduinoBridge auto-detected port: %s (%s)", p.device, p.description)
                 return p.device
-        log.warning("NFCReader: no Arduino port found, using default %s", DEFAULT_PORT)
+        log.warning("ArduinoBridge: no Arduino port found, using default %s", DEFAULT_PORT)
         return DEFAULT_PORT
 
     # ── Public API ────────────────────────────────────────────────────────────
@@ -182,7 +182,7 @@ class NFCReader:
         self._ir_tk_root   = tk_root
         t = threading.Thread(target=self._ir_listen_loop, daemon=True)
         t.start()
-        log.info("NFCReader: IR listener started")
+        log.info("ArduinoBridge: IR listener started")
 
     def _ir_listen_loop(self) -> None:
         """
@@ -217,7 +217,7 @@ class NFCReader:
                 raw = self._serial.readline()
                 self._serial.timeout = old_timeout
             except Exception as exc:
-                log.debug("NFCReader IR loop error: %s", exc)
+                log.debug("ArduinoBridge IR loop error: %s", exc)
                 time.sleep(0.2)
                 continue
             finally:
@@ -238,7 +238,7 @@ class NFCReader:
 
     def _check_connected(self, callback, tk_root) -> bool:
         if not self.connected or self._serial is None or not self._serial.is_open:
-            tk_root.after(0, callback, "ERROR:NFC reader not connected")
+            tk_root.after(0, callback, "ERROR:Arduino not connected")
             return False
         return True
 
@@ -285,7 +285,7 @@ class NFCReader:
             line = raw.decode(errors="replace").strip()
             if not line:
                 continue
-            log.debug("NFCReader ← %r", line)
+            log.debug("ArduinoBridge ← %r", line)
             if line.startswith("TAG_TYPE:"):
                 log.info("Tag type: %s", line[9:])
                 continue                     # informational, keep reading

@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from app.theme.styles import COLORS, FONTS
 from app.views.base_view import BaseView
-from app.core.rfid_api_client import RfidApiClient
+from app.core.laravel_api_client import LaravelApiClient
 
 log = logging.getLogger(__name__)
 
@@ -31,14 +31,14 @@ class CashierDashboard(BaseView):
         self._ir_tag_scanned    = False   # True once a tag is scanned; reset on cart clear
         self._last_scanned_code: str | None = None   # last RFID code scanned this session
         self._ir_motion_pending = False   # debounce: True while an IR alert is being processed
-        self._api = RfidApiClient()
+        self._api = LaravelApiClient()
         self._build()
 
     # ── NFC injection ──────────────────────────────────────────────────────────
 
-    def set_nfc_reader(self, nfc, root):
-        """Called by POSApp after construction to wire in the NFC service."""
-        self._nfc  = nfc
+    def set_arduino_bridge(self, arduino, root):
+        """Called by POSApp after construction to wire in the ArduinoBridge."""
+        self._nfc  = arduino
         self._root = root
 
     # ── Build ──────────────────────────────────────────────────────────────────
