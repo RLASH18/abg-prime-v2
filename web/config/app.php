@@ -125,12 +125,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | RFID API Secret
+    | POS API Secret
     |--------------------------------------------------------------------------
     |
-    | This secret key is used to authenticate requests from the Python RFID
-    | scanner. It must match the X-API-Secret header sent by the scanner.
+    | This secret key is used to authenticate requests from the POS machine
+    | (Python app). It must match the X-API-Secret header sent by the POS.
     |
     */
-    'rfid_api_secret' => env('RFID_API_SECRET'),
+
+    'pos_api_secret' => env('POS_API_SECRET'),
 ];

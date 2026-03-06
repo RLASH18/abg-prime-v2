@@ -3,9 +3,19 @@
 namespace App\Services;
 
 use App\Models\IrAlert;
+use App\Repositories\Interfaces\IrAlertRepositoryInterface;
 
 class IrAlertService
 {
+    /**
+     * Inject the IR alert repository.
+     *
+     * @param IrAlertRepositoryInterface $irAlertRepo
+     */
+    public function __construct(
+        protected IrAlertRepositoryInterface $irAlertRepo
+    ) {}
+
     /**
      * Log an IR sensor alert to the database.
      *
@@ -16,21 +26,10 @@ class IrAlertService
      */
     public function logAlert(?string $itemCode, string $alertType = 'unscanned', ?string $notes = null): IrAlert
     {
-        return IrAlert::create([
+        return $this->irAlertRepo->create([
             'item_code'  => $itemCode,
             'alert_type' => $alertType,
             'notes'      => $notes,
         ]);
-    }
-
-    /**
-     * Get paginated IR alert history, newest first.
-     *
-     * @param  int  $perPage
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getPaginated(int $perPage = 15)
-    {
-        return IrAlert::latest()->paginate($perPage);
     }
 }

@@ -8,9 +8,8 @@ use App\Http\Requests\Rfid\RfidScanRequest;
 use App\Services\IrAlertService;
 use App\Services\ItemService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
-class RfidController extends Controller
+class PosDeviceController extends Controller
 {
     /**
      * Inject Item Service and IR Alert Service.

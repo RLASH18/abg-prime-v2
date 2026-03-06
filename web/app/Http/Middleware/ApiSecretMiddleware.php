@@ -15,7 +15,7 @@ class ApiSecretMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $secret = config('app.rfid_api_secret');
+        $secret = config('app.pos_api_secret');
 
         if (! $secret || $request->header('X-API-Secret') !== $secret) {
             return response()->json([
