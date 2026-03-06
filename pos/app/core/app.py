@@ -9,7 +9,7 @@ from app.theme.styles import apply_global_styles, COLORS
 from app.components.sidebar import Sidebar
 from app.views.cashier_dashboard import CashierDashboard
 from app.views.nfc_tag_writer import NFCTagWriter
-from app.core.nfc_reader import NFCReader
+from app.core.arduino_bridge import ArduinoBridge
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class POSApp:
         self.root = tk.Tk()
         self._configure_root()
         apply_global_styles(self.root)
-        self._init_nfc()
+        self._init_arduino()
         self._build_layout()
         self._register_views()
         self.navigate("cashier")
@@ -39,11 +39,12 @@ class POSApp:
         self.root.state("zoomed")  # Start maximized (full screen) on Windows
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
-    def _init_nfc(self):
-        self.nfc = NFCReader()
-        ok = self.nfc.connect()
+    def _init_arduino(self):
+        """Initialise the ArduinoBridge (serial connection to the RFID + IR hardware)."""
+        self.arduino = ArduinoBridge()
+        ok = self.arduino.connect()
         if not ok:
-            log.warning("NFC reader not available — running without hardware.")
+            log.warning("Arduino not available — running without hardware.")
 
     def _build_layout(self):
         container = tk.Frame(self.root, bg=COLORS["bg"])
@@ -59,12 +60,20 @@ class POSApp:
         self.content.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
     def _register_views(self):
-        cashier = CashierDashboard(self.content)
+        cashier    = CashierDashboard(self.content)
         nfc_writer = NFCTagWriter(self.content)
 
-        # Inject the NFC reader into each view that needs it
-        cashier.set_nfc_reader(self.nfc, self.root)
-        nfc_writer.set_nfc_reader(self.nfc, self.root)
+        # Inject the Arduino bridge into each view that needs it
+        cashier.set_arduino_bridge(self.arduino, self.root)
+        nfc_writer.set_arduino_bridge(self.arduino, self.root)
+
+        # Wire IR sensor callbacks to the cashier view
+        if self.arduino.connected:
+            self.arduino.start_ir_listener(
+                on_motion_callback=cashier.on_ir_motion,
+                on_clear_callback=cashier.on_ir_clear,
+                tk_root=self.root,
+            )
 
         self.views: dict[str, tk.Frame] = {
             "cashier": cashier,
@@ -87,5 +96,5 @@ class POSApp:
         self.root.mainloop()
 
     def _on_close(self):
-        self.nfc.disconnect()
+        self.arduino.disconnect()
         self.root.destroy()

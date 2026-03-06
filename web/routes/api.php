@@ -9,4 +9,4 @@ Route::get('/health', function () {
     ]);
 });
 
-require __DIR__ . '/groups/rfid.php';
+require __DIR__ . '/groups/hardware.php';

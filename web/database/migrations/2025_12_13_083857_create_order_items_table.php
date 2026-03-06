@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2);
+            $table->boolean('is_scanned')->default(false);
             $table->timestamps();
         });
     }

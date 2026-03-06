@@ -12,6 +12,7 @@ use App\Repositories\Interfaces\{
     CartRepositoryInterface,
     ConversationRepositoryInterface,
     DeliveryRepositoryInterface,
+    IrAlertRepositoryInterface,
     MessageRepositoryInterface,
     OrderItemRepositoryInterface
 };
@@ -25,6 +26,7 @@ use App\Repositories\{
     CartRepository,
     ConversationRepository,
     DeliveryRepository,
+    IrAlertRepository,
     MessageRepository,
     OrderItemRepository
 };
@@ -48,7 +50,8 @@ class AppServiceProvider extends ServiceProvider
         DeliveryRepositoryInterface::class => DeliveryRepository::class,
         CartRepositoryInterface::class => CartRepository::class,
         ConversationRepositoryInterface::class => ConversationRepository::class,
-        MessageRepositoryInterface::class => MessageRepository::class
+        MessageRepositoryInterface::class => MessageRepository::class,
+        IrAlertRepositoryInterface::class => IrAlertRepository::class
     ];
 
     /**

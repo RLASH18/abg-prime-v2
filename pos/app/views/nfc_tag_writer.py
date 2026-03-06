@@ -27,9 +27,9 @@ class NFCTagWriter(BaseView):
 
     # ── NFC injection ──────────────────────────────────────────────────────────
 
-    def set_nfc_reader(self, nfc, root):
-        """Called by POSApp after construction to wire in the NFC service."""
-        self._nfc  = nfc
+    def set_arduino_bridge(self, arduino, root):
+        """Called by POSApp after construction to wire in the ArduinoBridge."""
+        self._nfc  = arduino
         self._root = root
 
     # ── Build ──────────────────────────────────────────────────────────────────

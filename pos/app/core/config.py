@@ -12,4 +12,4 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost")
 
-RFID_API_SECRET = os.getenv("RFID_API_SECRET", "")
+POS_API_SECRET = os.getenv("POS_API_SECRET", "")
