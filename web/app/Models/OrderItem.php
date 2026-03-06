@@ -12,10 +12,12 @@ class OrderItem extends Model
         'item_id',
         'quantity',
         'unit_price',
+        'is_scanned',
     ];
 
     protected $casts = [
         'unit_price' => 'decimal:2',
+        'is_scanned' => 'boolean',
     ];
 
     /**

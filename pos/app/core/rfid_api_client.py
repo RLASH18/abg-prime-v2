@@ -1,10 +1,11 @@
 """
 RfidApiClient — communicates with the Laravel RFID backend.
 
-Two endpoints:
+Endpoints:
 
   GET  /api/rfid/item/{code}     — look up item info (no stock change)
   POST /api/rfid/scan            — adjust stock (called on Buy Now)
+  POST /api/rfid/ir-alert        — log an IR sensor alert to the database
 
 All network calls run in daemon threads. Results arrive on the Tkinter
 thread via root.after(0, callback, result), where result is:
@@ -83,6 +84,49 @@ class RfidApiClient:
         url = f"{API_BASE_URL}/api/rfid/scan"
         req = urllib.request.Request(url, data=payload, method="POST", headers=_HEADERS)
         result = self._execute(req, item_code)
+        tk_root.after(0, callback, result)
+
+    # ── IR Alert logging ──────────────────────────────────────────────────────
+
+    def log_ir_alert(
+        self,
+        alert_type: str,
+        item_code: str | None,
+        callback,
+        tk_root,
+    ) -> None:
+        """
+        Non-blocking POST /api/rfid/ir-alert.
+        Logs an IR sensor event to the Laravel database.
+
+        Parameters
+        ----------
+        alert_type : str
+            'unscanned' — motion fired with no prior NFC scan.
+            'scanned'   — motion fired after a valid NFC scan.
+        item_code : str | None
+            The RFID item code if available, else None.
+        callback : callable
+            Receives {"ok": bool, "data": dict | {}}.
+        tk_root : tk.Tk
+            Tkinter root for thread-safe callback scheduling.
+        """
+        t = threading.Thread(
+            target=self._run_post_ir_alert,
+            args=(alert_type, item_code, callback, tk_root),
+            daemon=True,
+        )
+        t.start()
+
+    def _run_post_ir_alert(
+        self, alert_type: str, item_code: str | None, callback, tk_root
+    ) -> None:
+        payload = json.dumps(
+            {"alert_type": alert_type, "item_code": item_code}
+        ).encode("utf-8")
+        url = f"{API_BASE_URL}/api/rfid/ir-alert"
+        req = urllib.request.Request(url, data=payload, method="POST", headers=_HEADERS)
+        result = self._execute(req, item_code or "ir-alert")
         tk_root.after(0, callback, result)
 
     # ── Shared HTTP helper ────────────────────────────────────────────────────

@@ -1,11 +1,14 @@
 """
 Cashier Dashboard view.
 """
+import logging
 import tkinter as tk
 from tkinter import ttk, messagebox
 from app.theme.styles import COLORS, FONTS
 from app.views.base_view import BaseView
 from app.core.rfid_api_client import RfidApiClient
+
+log = logging.getLogger(__name__)
 
 TAX_RATE = 0.00
 
@@ -25,7 +28,8 @@ class CashierDashboard(BaseView):
         self._nfc  = None
         self._root = None
         self._scanning = False
-        self._ir_tag_scanned = False   # True once a tag is scanned; reset on IR motion or cart clear
+        self._ir_tag_scanned    = False   # True once a tag is scanned; reset on IR motion or cart clear
+        self._last_scanned_code: str | None = None   # last RFID code scanned this session
         self._api = RfidApiClient()
         self._build()
 
@@ -306,7 +310,8 @@ class CashierDashboard(BaseView):
 
         if result.startswith("CARD:"):
             code = result[5:].strip()
-            self._ir_tag_scanned = True   # mark that a tag was scanned before exit
+            self._ir_tag_scanned    = True   # mark that a tag was scanned before exit
+            self._last_scanned_code = code   # remember which item for IR alert logging
             self._lookup_and_add(code, self._get_qty(), self._scan_mode)
         elif result == "NOTAG":
             messagebox.showwarning("No Tag Detected",
@@ -423,7 +428,8 @@ class CashierDashboard(BaseView):
         for row in self._tree.get_children():
             self._tree.delete(row)
         self._cart.clear()
-        self._ir_tag_scanned = False   # reset for the next transaction
+        self._ir_tag_scanned    = False   # reset for the next transaction
+        self._last_scanned_code = None
         self._update_summary()
 
     def _print_receipt(self):
@@ -449,16 +455,38 @@ class CashierDashboard(BaseView):
     def on_ir_motion(self) -> None:
         """
         Called by POSApp when the Arduino sends a MOTION line.
-        Warns the cashier if no NFC tag has been scanned since the last alert.
+        Warns the cashier if no NFC tag has been scanned since the last alert,
+        and logs the event to the Laravel server non-blocking.
         """
-        if not self._ir_tag_scanned:
+        if self._ir_tag_scanned:
+            alert_type = "scanned"
+            item_code  = self._last_scanned_code
+        else:
+            alert_type = "unscanned"
+            item_code  = None
             messagebox.showwarning(
                 "⚠️ Unscanned Item Detected",
                 "Motion was detected at the exit gate but no item has been scanned.\n\n"
                 "Please scan the item or check for unpaid goods."
             )
+
+        # Log to Laravel server (fire-and-forget, no UI callback needed)
+        if self._root:
+            self._api.log_ir_alert(
+                alert_type=alert_type,
+                item_code=item_code,
+                callback=self._on_ir_alert_logged,
+                tk_root=self._root,
+            )
+
         # Reset flag — next item passing through must be scanned again
-        self._ir_tag_scanned = False
+        self._ir_tag_scanned    = False
+        self._last_scanned_code = None
+
+    def _on_ir_alert_logged(self, result: dict) -> None:
+        """Silent callback after IR alert is sent to the server."""
+        if not result["ok"]:
+            log.warning("IR alert could not be logged: %s", result.get("message"))
 
     def on_ir_clear(self) -> None:
         """Called when the IR path becomes clear — no action needed."""
