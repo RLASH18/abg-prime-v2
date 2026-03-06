@@ -1,10 +1,14 @@
 """
-NFCReader — threaded serial bridge for the MFRC522_POS_v3 Arduino sketch.
+NFCReader — threaded serial bridge for the RFID_IR_Monitor Arduino sketch.
 
 Arduino protocol (9600 baud, newline-terminated):
   → PING           ← PONG
   → READ           ← TAG_TYPE:<t>  then  CARD:<code>  |  NOTAG  |  ERROR:<msg>
   → WRITE:<code>   ← TAG_TYPE:<t>  then  WRITE_OK     |  WRITE_FAIL:<msg>  |  ERROR:<msg>
+
+Autonomous output (no command needed):
+  ← MOTION         IR obstacle detected (state-change only)
+  ← CLEAR          IR path is clear     (state-change only)
 
 All blocking serial calls run in daemon threads so the Tkinter event loop
 is never stalled.  Results are delivered via root.after(0, callback, result).
@@ -41,6 +45,11 @@ class NFCReader:
         self._serial:    serial.Serial | None = None
         self._lock       = threading.Lock()
         self.connected   = False
+
+        # IR listener callbacks (set by start_ir_listener)
+        self._ir_on_motion = None
+        self._ir_on_clear  = None
+        self._ir_tk_root   = None
 
     # ── Connection ────────────────────────────────────────────────────────────
 
@@ -151,6 +160,55 @@ class NFCReader:
             daemon=True,
         )
         t.start()
+
+    # ── IR Listener ───────────────────────────────────────────────────────────
+
+    def start_ir_listener(self, on_motion_callback, on_clear_callback, tk_root) -> None:
+        """
+        Start a background daemon thread that listens for autonomous
+        IR sensor output (MOTION / CLEAR) from the Arduino.
+
+        Parameters
+        ----------
+        on_motion_callback : callable
+            Called (via tk_root.after) when MOTION is received.
+        on_clear_callback : callable
+            Called (via tk_root.after) when CLEAR is received.
+        tk_root : tk.Tk
+            The Tkinter root, used to safely schedule callbacks on the UI thread.
+        """
+        self._ir_on_motion = on_motion_callback
+        self._ir_on_clear  = on_clear_callback
+        self._ir_tk_root   = tk_root
+        t = threading.Thread(target=self._ir_listen_loop, daemon=True)
+        t.start()
+        log.info("NFCReader: IR listener started")
+
+    def _ir_listen_loop(self) -> None:
+        """
+        Internal loop — reads serial lines in the background.
+        Only reacts to MOTION and CLEAR; all other lines (CARD:, PONG,
+        TAG_TYPE:, etc.) are ignored here — they are consumed by
+        _run_command via the serial lock.
+        """
+        import time
+        while True:
+            if not self.connected or self._serial is None or not self._serial.is_open:
+                time.sleep(0.5)
+                continue
+            try:
+                raw = self._serial.readline()
+                if not raw:
+                    continue
+                line = raw.decode(errors="replace").strip()
+                if line == "MOTION" and self._ir_on_motion:
+                    self._ir_tk_root.after(0, self._ir_on_motion)
+                elif line == "CLEAR" and self._ir_on_clear:
+                    self._ir_tk_root.after(0, self._ir_on_clear)
+                # All other lines (RFID responses) are handled by _run_command
+            except Exception as exc:
+                log.debug("NFCReader IR loop error: %s", exc)
+                time.sleep(0.2)
 
     # ── Internal helpers ──────────────────────────────────────────────────────
 

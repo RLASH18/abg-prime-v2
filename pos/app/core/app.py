@@ -59,12 +59,20 @@ class POSApp:
         self.content.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
     def _register_views(self):
-        cashier = CashierDashboard(self.content)
+        cashier    = CashierDashboard(self.content)
         nfc_writer = NFCTagWriter(self.content)
 
         # Inject the NFC reader into each view that needs it
         cashier.set_nfc_reader(self.nfc, self.root)
         nfc_writer.set_nfc_reader(self.nfc, self.root)
+
+        # Wire IR sensor callbacks to the cashier view
+        if self.nfc.connected:
+            self.nfc.start_ir_listener(
+                on_motion_callback=cashier.on_ir_motion,
+                on_clear_callback=cashier.on_ir_clear,
+                tk_root=self.root,
+            )
 
         self.views: dict[str, tk.Frame] = {
             "cashier": cashier,

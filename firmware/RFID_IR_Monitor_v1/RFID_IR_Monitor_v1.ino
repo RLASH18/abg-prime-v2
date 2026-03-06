@@ -1,20 +1,33 @@
 /*
  * ═══════════════════════════════════════════════════════════════
- *  ABG Prime Builders Supplies - NFC POS System  (UNIVERSAL v3)
- *  Arduino Uno R3 + MFRC522
+ *  ABG Prime Builders Supplies - RFID + IR Sensor System
+ *  Arduino Uno R3 + MFRC522 + IR Obstacle Sensor
+ *
+ *  FEATURES:
+ *   • RFID tag read / write via MFRC522 (command-driven)
+ *   • IR obstacle detection (non-blocking, state-change output)
  *
  *  SUPPORTED TAG TYPES (auto-detected):
  *   • MIFARE Classic 1K / 4K  — uses key-based sector auth
  *   • MIFARE Ultralight        — page-based, no auth
  *   • NTAG213 / NTAG215 / NTAG216 — page-based, no auth
  *
- *  HOW TO IDENTIFY YOUR TAG:
- *   Open Serial Monitor at 9600 baud, send PING.
- *   Then tap your tag — the sketch will print the PICC type.
+ *  SERIAL COMMANDS (9600 baud):
+ *   PING          → responds PONG
+ *   READ          → waits for tag, responds CARD:<item_code>
+ *   WRITE:<code>  → waits for tag, writes item code (max 16 chars)
+ *
+ *  SERIAL OUTPUT (autonomous):
+ *   MOTION        → IR obstacle detected
+ *   CLEAR         → IR path is clear (on state change)
+ *   TAG_TYPE:<t>  → tag type printed after card is detected
  *
  *  WIRING (MFRC522 → Arduino Uno R3):
  *   SDA  → 10  |  SCK  → 13  |  MOSI → 11  |  MISO → 12
  *   RST  →  9  |  3.3V → 3.3V (NOT 5V!)     |  GND  → GND
+ *
+ *  IR SENSOR → Arduino Uno R3:
+ *   OUT  →  2  (active-low: LOW = obstacle detected)
  *
  *  LIBRARY: MFRC522 by GithubCommunity (Arduino Library Manager)
  * ═══════════════════════════════════════════════════════════════
@@ -25,6 +38,7 @@
 
 #define SS_PIN  10
 #define RST_PIN  9
+#define IR_PIN   2   // active-low: LOW = obstacle detected
 
 MFRC522 rfid(SS_PIN, RST_PIN);
 MFRC522::MIFARE_Key key;
@@ -40,7 +54,8 @@ const byte NTAG_PAGES      = 4;   // 4 pages × 4 bytes = 16 bytes max
 const unsigned long CARD_TIMEOUT_MS = 7000;
 const byte          MAX_AUTH_TRIES  = 3;
 
-String inputBuffer = "";
+String inputBuffer  = "";
+bool   lastIrMotion = false;   // tracks previous IR state to avoid serial flooding
 
 // ════════════════════════════════════════════════════════════════
 void setup() {
@@ -48,10 +63,12 @@ void setup() {
   SPI.begin();
   reInitReader();
   delay(100);
+  pinMode(IR_PIN, INPUT);   // IR obstacle sensor
   Serial.println("READY");
 }
 
 void loop() {
+  // ── Serial command reader ────────────────────────────────────
   while (Serial.available()) {
     char c = (char)Serial.read();
     if (c == '\n') {
@@ -64,6 +81,15 @@ void loop() {
       // This prevents partial/garbage fragments from contaminating the next cmd.
       if (inputBuffer.length() > 24) inputBuffer = "";
     }
+  }
+
+  // ── IR Sensor (non-blocking, state-change only) ───────────────
+  // Only prints when the state changes to avoid flooding the serial
+  // buffer and delaying RFID command responses.
+  bool motionNow = (digitalRead(IR_PIN) == LOW);
+  if (motionNow != lastIrMotion) {
+    lastIrMotion = motionNow;
+    Serial.println(motionNow ? "MOTION" : "CLEAR");
   }
 }
 

@@ -25,6 +25,7 @@ class CashierDashboard(BaseView):
         self._nfc  = None
         self._root = None
         self._scanning = False
+        self._ir_tag_scanned = False   # True once a tag is scanned; reset on IR motion or cart clear
         self._api = RfidApiClient()
         self._build()
 
@@ -305,6 +306,7 @@ class CashierDashboard(BaseView):
 
         if result.startswith("CARD:"):
             code = result[5:].strip()
+            self._ir_tag_scanned = True   # mark that a tag was scanned before exit
             self._lookup_and_add(code, self._get_qty(), self._scan_mode)
         elif result == "NOTAG":
             messagebox.showwarning("No Tag Detected",
@@ -421,6 +423,7 @@ class CashierDashboard(BaseView):
         for row in self._tree.get_children():
             self._tree.delete(row)
         self._cart.clear()
+        self._ir_tag_scanned = False   # reset for the next transaction
         self._update_summary()
 
     def _print_receipt(self):
@@ -440,3 +443,23 @@ class CashierDashboard(BaseView):
             self._hide_empty_state()
         else:
             self._show_empty_state()
+
+    # ── IR Sensor Callbacks ──────────────────────────────────────────────
+
+    def on_ir_motion(self) -> None:
+        """
+        Called by POSApp when the Arduino sends a MOTION line.
+        Warns the cashier if no NFC tag has been scanned since the last alert.
+        """
+        if not self._ir_tag_scanned:
+            messagebox.showwarning(
+                "⚠️ Unscanned Item Detected",
+                "Motion was detected at the exit gate but no item has been scanned.\n\n"
+                "Please scan the item or check for unpaid goods."
+            )
+        # Reset flag — next item passing through must be scanned again
+        self._ir_tag_scanned = False
+
+    def on_ir_clear(self) -> None:
+        """Called when the IR path becomes clear — no action needed."""
+        pass
