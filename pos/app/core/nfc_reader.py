@@ -190,25 +190,49 @@ class NFCReader:
         Only reacts to MOTION and CLEAR; all other lines (CARD:, PONG,
         TAG_TYPE:, etc.) are ignored here — they are consumed by
         _run_command via the serial lock.
+
+        IMPORTANT: we must acquire _lock before touching the serial port so
+        that _run_command (which also holds _lock while reading its response)
+        cannot have its bytes stolen by this loop.
         """
         import time
         while True:
             if not self.connected or self._serial is None or not self._serial.is_open:
                 time.sleep(0.5)
                 continue
+
+            # Try to acquire the lock without blocking indefinitely.
+            # If _run_command is mid-flight we back off and retry shortly.
+            if not self._lock.acquire(timeout=0.1):
+                time.sleep(0.05)
+                continue
+
             try:
-                raw = self._serial.readline()
-                if not raw:
+                if self._serial is None or not self._serial.is_open:
                     continue
-                line = raw.decode(errors="replace").strip()
-                if line == "MOTION" and self._ir_on_motion:
-                    self._ir_tk_root.after(0, self._ir_on_motion)
-                elif line == "CLEAR" and self._ir_on_clear:
-                    self._ir_tk_root.after(0, self._ir_on_clear)
-                # All other lines (RFID responses) are handled by _run_command
+                # Short readline timeout so we release the lock quickly and
+                # never block _run_command for more than ~300 ms.
+                old_timeout = self._serial.timeout
+                self._serial.timeout = 0.3
+                raw = self._serial.readline()
+                self._serial.timeout = old_timeout
             except Exception as exc:
                 log.debug("NFCReader IR loop error: %s", exc)
                 time.sleep(0.2)
+                continue
+            finally:
+                self._lock.release()
+
+            if not raw:
+                continue
+            line = raw.decode(errors="replace").strip()
+            if not line:
+                continue
+            if line == "MOTION" and self._ir_on_motion:
+                self._ir_tk_root.after(0, self._ir_on_motion)
+            elif line == "CLEAR" and self._ir_on_clear:
+                self._ir_tk_root.after(0, self._ir_on_clear)
+            # All other lines (RFID responses) are owned by _run_command
 
     # ── Internal helpers ──────────────────────────────────────────────────────
 
@@ -227,15 +251,14 @@ class NFCReader:
             try:
                 import time
 
-                # ── Step 1: flush any partial/stale bytes in both directions ─────
-                # Sending an empty line makes the Arduino discard whatever is in
-                # its inputBuffer (the sketch does `inputBuffer.trim()` then checks
-                # `length() > 0`, so an empty line is a safe no-op).
-                self._serial.reset_input_buffer()   # drop unsolicited output first
-                self._serial.write(b"\n")            # flush Arduino's RX buffer
-                self._serial.flush()                 # ensure bytes hit the wire
-                time.sleep(0.15)                     # give sketch time to process it
-                self._serial.reset_input_buffer()    # drop any echo/READY noise
+                # ── Step 1: flush stale bytes ─────────────────────────────────────
+                # Do NOT send a bare \n — the Arduino can have a partial fragment
+                # in inputBuffer (e.g. "MOTIO") and the \n would make it call
+                # handleCommand() on that garbage, printing "ERROR:Unknown command"
+                # which _read_terminal_line() would then return as our write result.
+                self._serial.reset_input_buffer()    # drop any unsolicited output
+                time.sleep(0.05)                     # let in-flight bytes land
+                self._serial.reset_input_buffer()    # drop anything that just arrived
 
                 # ── Step 2: set timeout BEFORE sending the real command ───────────
                 self._serial.timeout = timeout

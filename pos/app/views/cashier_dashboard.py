@@ -28,8 +28,9 @@ class CashierDashboard(BaseView):
         self._nfc  = None
         self._root = None
         self._scanning = False
-        self._ir_tag_scanned    = False   # True once a tag is scanned; reset on IR motion or cart clear
+        self._ir_tag_scanned    = False   # True once a tag is scanned; reset on cart clear
         self._last_scanned_code: str | None = None   # last RFID code scanned this session
+        self._ir_motion_pending = False   # debounce: True while an IR alert is being processed
         self._api = RfidApiClient()
         self._build()
 
@@ -455,9 +456,19 @@ class CashierDashboard(BaseView):
     def on_ir_motion(self) -> None:
         """
         Called by POSApp when the Arduino sends a MOTION line.
-        Warns the cashier if no NFC tag has been scanned since the last alert,
+        Warns the cashier if no NFC tag has been scanned since the last cart clear,
         and logs the event to the Laravel server non-blocking.
         """
+        # Debounce: ignore rapid follow-up MOTION signals for the same item pass.
+        # The Arduino can fire MOTION multiple times if the sensor flickers
+        # (e.g. item partially breaks the beam twice in quick succession).
+        if self._ir_motion_pending:
+            return
+        self._ir_motion_pending = True
+        # Release the debounce after 2 s — enough to cover a full item pass
+        if self._root:
+            self._root.after(2000, lambda: setattr(self, '_ir_motion_pending', False))
+
         if self._ir_tag_scanned:
             alert_type = "scanned"
             item_code  = self._last_scanned_code
@@ -479,9 +490,10 @@ class CashierDashboard(BaseView):
                 tk_root=self._root,
             )
 
-        # Reset flag — next item passing through must be scanned again
-        self._ir_tag_scanned    = False
-        self._last_scanned_code = None
+        # NOTE: Do NOT reset _ir_tag_scanned here.
+        # It stays True until _clear_cart() is called so that additional
+        # IR flickers on the same item (sensor bounce) are still logged as
+        # 'scanned' rather than falsely becoming 'unscanned'.
 
     def _on_ir_alert_logged(self, result: dict) -> None:
         """Silent callback after IR alert is sent to the server."""

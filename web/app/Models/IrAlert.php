@@ -8,7 +8,7 @@ class IrAlert extends Model
 {
     protected $fillable = [
         'item_code',
-        'alert_types',
+        'alert_type',
         'notes'
     ];
 
