@@ -1,11 +1,12 @@
 /*
  * ═══════════════════════════════════════════════════════════════
- *  ABG Prime Builders Supplies - RFID + IR Sensor System
- *  Arduino Uno R3 + MFRC522 + IR Obstacle Sensor
+ *  ABG Prime Builders Supplies - RFID + IR Sensor + Buzzer System
+ *  Arduino Uno R3 + MFRC522 + IR Obstacle Sensor + Passive Buzzer
  *
  *  FEATURES:
  *   • RFID tag read / write via MFRC522 (command-driven)
  *   • IR obstacle detection (non-blocking, state-change output)
+ *   • Audible buzzer alarm on IR motion detection
  *
  *  SUPPORTED TAG TYPES (auto-detected):
  *   • MIFARE Classic 1K / 4K  — uses key-based sector auth
@@ -16,9 +17,10 @@
  *   PING          → responds PONG
  *   READ          → waits for tag, responds CARD:<item_code>
  *   WRITE:<code>  → waits for tag, writes item code (max 16 chars)
+ *   BUZZ_TEST     → sounds the buzzer for testing
  *
  *  SERIAL OUTPUT (autonomous):
- *   MOTION        → IR obstacle detected
+ *   MOTION        → IR obstacle detected (buzzer sounds)
  *   CLEAR         → IR path is clear (on state change)
  *   TAG_TYPE:<t>  → tag type printed after card is detected
  *
@@ -29,6 +31,10 @@
  *  IR SENSOR → Arduino Uno R3:
  *   OUT  →  2  (active-low: LOW = obstacle detected)
  *
+ *  BUZZER → Arduino Uno R3:
+ *   SIG  →  3  (passive buzzer, driven via tone())
+ *   VCC  →  5V  |  GND → GND
+ *
  *  LIBRARY: MFRC522 by GithubCommunity (Arduino Library Manager)
  * ═══════════════════════════════════════════════════════════════
  */
@@ -36,9 +42,17 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-#define SS_PIN  10
-#define RST_PIN  9
-#define IR_PIN   2   // active-low: LOW = obstacle detected
+#define SS_PIN     10
+#define RST_PIN     9
+#define IR_PIN      2   // active-low: LOW = obstacle detected
+#define BUZZER_PIN  3   // passive buzzer signal pin
+
+// ── Buzzer configuration ────────────────────────────────────────
+#define BUZZ_FREQ_HI   1500   // Hz — high tone
+#define BUZZ_FREQ_LO   1000   // Hz — low tone
+#define BUZZ_DURATION   150   // ms — duration of each tone burst
+#define BUZZ_PAUSE       80   // ms — pause between bursts
+#define BUZZ_REPEATS      3   // number of hi-lo cycles
 
 MFRC522 rfid(SS_PIN, RST_PIN);
 MFRC522::MIFARE_Key key;
@@ -63,7 +77,9 @@ void setup() {
   SPI.begin();
   reInitReader();
   delay(100);
-  pinMode(IR_PIN, INPUT);   // IR obstacle sensor
+  pinMode(IR_PIN, INPUT);      // IR obstacle sensor
+  pinMode(BUZZER_PIN, OUTPUT); // passive buzzer
+  digitalWrite(BUZZER_PIN, LOW);
   Serial.println("READY");
 }
 
@@ -90,6 +106,10 @@ void loop() {
   if (motionNow != lastIrMotion) {
     lastIrMotion = motionNow;
     Serial.println(motionNow ? "MOTION" : "CLEAR");
+    // Sound the buzzer when an obstacle is detected
+    if (motionNow) {
+      soundBuzzer();
+    }
   }
 }
 
@@ -121,6 +141,10 @@ void handleCommand(const String& cmd) {
     if (payload.length() == 0)   { Serial.println("ERROR:Empty item code"); return; }
     if (payload.length() > 16)   { Serial.println("ERROR:Max 16 characters"); return; }
     doWrite(payload);
+
+  } else if (cmd == "BUZZ_TEST") {
+    soundBuzzer();
+    Serial.println("BUZZ_OK");
 
   } else {
     Serial.println("ERROR:Unknown command");
@@ -332,4 +356,20 @@ void haltCard() {
   rfid.PCD_StopCrypto1();
   rfid.PCD_Init();
   rfid.PCD_SetAntennaGain(rfid.RxGain_max);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  Buzzer alert — two-tone alarm pattern
+//  Plays a hi-lo alternating tone to grab cashier attention.
+//  Total duration ≈ BUZZ_REPEATS × (2 × BUZZ_DURATION + 2 × BUZZ_PAUSE)
+// ════════════════════════════════════════════════════════════════
+void soundBuzzer() {
+  for (byte i = 0; i < BUZZ_REPEATS; i++) {
+    tone(BUZZER_PIN, BUZZ_FREQ_HI, BUZZ_DURATION);
+    delay(BUZZ_DURATION + BUZZ_PAUSE);
+    tone(BUZZER_PIN, BUZZ_FREQ_LO, BUZZ_DURATION);
+    delay(BUZZ_DURATION + BUZZ_PAUSE);
+  }
+  noTone(BUZZER_PIN);
+  digitalWrite(BUZZER_PIN, LOW);   // ensure pin is low when idle
 }
