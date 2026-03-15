@@ -6,7 +6,7 @@
  *  FEATURES:
  *   • RFID tag read / write via MFRC522 (command-driven)
  *   • IR obstacle detection (non-blocking, state-change output)
- *   • Audible buzzer alarm on IR motion detection
+ *   • Audible buzzer alarm on IR motion detection (Hardware switch controlled)
  *
  *  SUPPORTED TAG TYPES (auto-detected):
  *   • MIFARE Classic 1K / 4K  — uses key-based sector auth

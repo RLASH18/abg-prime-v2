@@ -15,8 +15,4 @@ Route::middleware(['api.secret'])
         // Scan item by item_code (adjusts stock)
         Route::post('/scan', [PosDeviceController::class, 'scan'])
             ->name('scan');
-
-        // Log an IR sensor alert (motion detected, item may be unscanned)
-        Route::post('/ir-alert', [PosDeviceController::class, 'logIrAlert'])
-            ->name('ir-alert');
     });

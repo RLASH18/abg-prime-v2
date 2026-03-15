@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Ir\IrAlertRequest;
 use App\Http\Requests\Rfid\RfidScanRequest;
 use App\Services\IrAlertService;
 use App\Services\ItemService;
@@ -14,12 +13,11 @@ class PosDeviceController extends Controller
     /**
      * Inject Item Service and IR Alert Service.
      *
-     * @param ItemService    $itemService
+     * @param ItemService $itemService
      * @param IrAlertService $irAlertService
      */
     public function __construct(
-        protected ItemService    $itemService,
-        protected IrAlertService $irAlertService,
+        protected ItemService $itemService,
     ) {}
 
     /**
@@ -65,26 +63,5 @@ class PosDeviceController extends Controller
             'message' => $result['message'],
             'data' => $result['item'],
         ], 200);
-    }
-
-    /**
-     * Log an IR sensor alert from the POS machine.
-     *
-     * @param IrAlertRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function logIrAlert(IrAlertRequest $request): JsonResponse
-    {
-        $alert = $this->irAlertService->logAlert(
-            $request->validated()['item_code'] ?? null,
-            $request->validated()['alert_type'],
-            $request->validated()['notes'] ?? null,
-        );
-
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'IR alert logged',
-            'data'    => $alert,
-        ], 201);
     }
 }

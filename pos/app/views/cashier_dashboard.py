@@ -28,8 +28,6 @@ class CashierDashboard(BaseView):
         self._nfc  = None
         self._root = None
         self._scanning = False
-        self._ir_tag_scanned    = False   # True once a tag is scanned; reset on cart clear
-        self._last_scanned_code: str | None = None   # last RFID code scanned this session
         self._ir_motion_pending = False   # debounce: True while an IR alert is being processed
         self._api = LaravelApiClient()
         self._build()
@@ -311,8 +309,6 @@ class CashierDashboard(BaseView):
 
         if result.startswith("CARD:"):
             code = result[5:].strip()
-            self._ir_tag_scanned    = True   # mark that a tag was scanned before exit
-            self._last_scanned_code = code   # remember which item for IR alert logging
             self._lookup_and_add(code, self._get_qty(), self._scan_mode)
         elif result == "NOTAG":
             messagebox.showwarning("No Tag Detected",
@@ -429,8 +425,6 @@ class CashierDashboard(BaseView):
         for row in self._tree.get_children():
             self._tree.delete(row)
         self._cart.clear()
-        self._ir_tag_scanned    = False   # reset for the next transaction
-        self._last_scanned_code = None
         self._update_summary()
 
     def _print_receipt(self):
@@ -456,49 +450,23 @@ class CashierDashboard(BaseView):
     def on_ir_motion(self) -> None:
         """
         Called by POSApp when the Arduino sends a MOTION line.
-        Warns the cashier if no NFC tag has been scanned since the last cart clear,
-        and logs the event to the Laravel server non-blocking.
+        Shows a security alert on the dashboard.
         """
-        # Debounce: ignore rapid follow-up MOTION signals for the same item pass.
-        # The Arduino can fire MOTION multiple times if the sensor flickers
-        # (e.g. item partially breaks the beam twice in quick succession).
+        # Debounce: ignore rapid follow-up MOTION signals
         if self._ir_motion_pending:
             return
         self._ir_motion_pending = True
-        # Release the debounce after 2 s — enough to cover a full item pass
+        
+        # Release the debounce after 3 seconds
         if self._root:
-            self._root.after(2000, lambda: setattr(self, '_ir_motion_pending', False))
+            self._root.after(3000, lambda: setattr(self, '_ir_motion_pending', False))
 
-        if self._ir_tag_scanned:
-            alert_type = "scanned"
-            item_code  = self._last_scanned_code
-        else:
-            alert_type = "unscanned"
-            item_code  = None
-            messagebox.showwarning(
-                "⚠️ Unscanned Item Detected",
-                "Motion was detected at the exit gate but no item has been scanned.\n\n"
-                "Please scan the item or check for unpaid goods."
-            )
-
-        # Log to Laravel server (fire-and-forget, no UI callback needed)
-        if self._root:
-            self._api.log_ir_alert(
-                alert_type=alert_type,
-                item_code=item_code,
-                callback=self._on_ir_alert_logged,
-                tk_root=self._root,
-            )
-
-        # NOTE: Do NOT reset _ir_tag_scanned here.
-        # It stays True until _clear_cart() is called so that additional
-        # IR flickers on the same item (sensor bounce) are still logged as
-        # 'scanned' rather than falsely becoming 'unscanned'.
-
-    def _on_ir_alert_logged(self, result: dict) -> None:
-        """Silent callback after IR alert is sent to the server."""
-        if not result["ok"]:
-            log.warning("IR alert could not be logged: %s", result.get("message"))
+        # Show the alert (This is the 'notif' you wanted to keep)
+        messagebox.showwarning(
+            "⚠️ STORAGE SECURITY ALERT",
+            "Motion detected at the storage room entrance!\n\n"
+            "If this access was unauthorized, please check the storage area immediately."
+        )
 
     def on_ir_clear(self) -> None:
         """Called when the IR path becomes clear — no action needed."""
