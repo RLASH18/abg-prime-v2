@@ -9,6 +9,7 @@ from app.theme.styles import apply_global_styles, COLORS
 from app.components.sidebar import Sidebar
 from app.views.cashier_dashboard import CashierDashboard
 from app.views.nfc_tag_writer import NFCTagWriter
+from app.views.security_logs import SecurityLogs
 from app.core.arduino_bridge import ArduinoBridge
 
 log = logging.getLogger(__name__)
@@ -62,6 +63,7 @@ class POSApp:
     def _register_views(self):
         cashier    = CashierDashboard(self.content)
         nfc_writer = NFCTagWriter(self.content)
+        security_logs = SecurityLogs(self.content)
 
         # Inject the Arduino bridge into each view that needs it
         cashier.set_arduino_bridge(self.arduino, self.root)
@@ -78,6 +80,7 @@ class POSApp:
         self.views: dict[str, tk.Frame] = {
             "cashier": cashier,
             "nfc":     nfc_writer,
+            "logs":    security_logs,
         }
         for view in self.views.values():
             view.place(relx=0, rely=0, relwidth=1, relheight=1)

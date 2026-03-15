@@ -18,11 +18,14 @@ import serial
 import serial.tools.list_ports
 import threading
 import logging
+from datetime import datetime
+from pathlib import Path
 
 log = logging.getLogger(__name__)
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
+LOG_FILE = Path(__file__).resolve().parents[2] / "security_log.txt"
 BAUD_RATE       = 9600
 CONNECT_TIMEOUT = 3       # seconds to wait for PONG on connect
 # Arduino blocks for up to 7 s waiting for a card; give Python a comfortable margin
@@ -228,6 +231,10 @@ class ArduinoBridge:
             line = raw.decode(errors="replace").strip()
             if not line:
                 continue
+            
+            # Log to local security file
+            self._log_security_event(line)
+
             if line == "MOTION" and self._ir_on_motion:
                 self._ir_tk_root.after(0, self._ir_on_motion)
             elif line == "CLEAR" and self._ir_on_clear:
@@ -290,3 +297,17 @@ class ArduinoBridge:
                 log.info("Tag type: %s", line[9:])
                 continue                     # informational, keep reading
             return line                      # CARD:…  NOTAG  WRITE_OK  ERROR:…  etc.
+
+    def _log_security_event(self, event: str):
+        """Write MOTION/CLEAR events to a local text file with timestamps."""
+        if event not in ["MOTION", "CLEAR"]:
+            return
+            
+        timestamp = datetime.now().strftime("%Y-%m-%d %I:%M:%S %p")
+        status = "⚠️ SENSOR TRIGGERED (MOTION)" if event == "MOTION" else "✅ SENSOR RESET (CLEAR)"
+        
+        try:
+            with open(LOG_FILE, "a", encoding="utf-8") as f:
+                f.write(f"[{timestamp}] {status}\n")
+        except Exception as exc:
+            log.error("Failed to write to security log: %s", exc)

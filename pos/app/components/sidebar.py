@@ -11,10 +11,12 @@ class _NavItem(tk.Frame):
     ICON_MAP = {
         "cashier": "▦",
         "nfc":     "◎",
+        "logs":    "🛡",
     }
     LABEL_MAP = {
         "cashier": "Cashier Dashboard",
         "nfc":     "NFC Tag Writer",
+        "logs":    "Security Logs",
     }
 
     def __init__(self, parent, view_name: str, on_click):
@@ -107,7 +109,7 @@ class Sidebar(tk.Frame):
         nav_frame = tk.Frame(self, bg=COLORS["sidebar_bg"], pady=12)
         nav_frame.pack(fill=tk.X)
 
-        for view_name in ("cashier", "nfc"):
+        for view_name in ("cashier", "nfc", "logs"):
             item = _NavItem(nav_frame, view_name, self.navigate_callback)
             item.pack(fill=tk.X)
             self._nav_items[view_name] = item

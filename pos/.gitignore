@@ -21,3 +21,6 @@ build/
 
 # Runtime data (auto-generated)
 write_history.json
+
+# IR Sensor Security logs
+security_log.txt
