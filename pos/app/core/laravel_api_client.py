@@ -35,6 +35,26 @@ _HEADERS = {
 class LaravelApiClient:
     """Async wrapper around the Laravel POS endpoints."""
 
+    # ── Item List (for datalist/dropdown) ─────────────────────────────────────
+
+    def fetch_items(self, callback, tk_root) -> None:
+        """
+        Non-blocking GET /api/pos/items.
+        Returns a list of all item codes and names.
+        """
+        t = threading.Thread(
+            target=self._run_get_items,
+            args=(callback, tk_root),
+            daemon=True,
+        )
+        t.start()
+
+    def _run_get_items(self, callback, tk_root) -> None:
+        url = f"{API_BASE_URL}/api/pos/items"
+        req = urllib.request.Request(url, headers=_HEADERS)
+        result = self._execute(req, "all_items")
+        tk_root.after(0, callback, result)
+
     # ── Item lookup (scan → show in cart) ─────────────────────────────────────
 
     def fetch_item(self, item_code: str, callback, tk_root) -> None:

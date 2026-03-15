@@ -8,8 +8,9 @@ from datetime import datetime
 from pathlib import Path
 from app.theme.styles import COLORS, FONTS
 from app.views.base_view import BaseView
+from app.core.laravel_api_client import LaravelApiClient
 
-PLACEHOLDER  = "Enter item code (e.g. HT001)"
+PLACEHOLDER  = "Search or select item code..."
 HISTORY_FILE = Path(__file__).resolve().parents[2] / "write_history.json"
 MAX_HISTORY  = 100
 
@@ -23,6 +24,8 @@ class NFCTagWriter(BaseView):
         self._nfc    = None
         self._root   = None
         self._writing = False
+        self._api = LaravelApiClient()
+        self._all_items: list[dict] = []  # Store fetched items
         self._build()
 
     # ── NFC injection ──────────────────────────────────────────────────────────
@@ -31,6 +34,8 @@ class NFCTagWriter(BaseView):
         """Called by POSApp after construction to wire in the ArduinoBridge."""
         self._nfc  = arduino
         self._root = root
+        # Fetch items from backend after root is available
+        self._fetch_items_list()
 
     # ── Build ──────────────────────────────────────────────────────────────────
 
@@ -66,19 +71,35 @@ class NFCTagWriter(BaseView):
                  fg=COLORS["text_primary"], font=FONTS["small_bold"]).pack(anchor="w",
                                                                             pady=(0, 6))
 
-        # Entry — use the widget's own highlight border (no wrapper frame = no ring)
+        # Searchable Entry
         self._entry = tk.Entry(form, font=FONTS["label"], relief="flat",
-                               bg=COLORS["white"], fg=COLORS["text_muted"],
+                               textvariable=self._item_code_var,
+                               bg=COLORS["white"], fg=COLORS["text_primary"],
                                insertbackground=COLORS["primary"], width=48,
                                justify="center",
                                highlightthickness=1,
                                highlightbackground=COLORS["border"],
                                highlightcolor=COLORS["primary"])
         self._entry.pack(fill=tk.X, ipady=10)
-        self._entry.insert(0, PLACEHOLDER)
+        self._item_code_var.set(PLACEHOLDER)
 
         self._entry.bind("<FocusIn>",  self._on_focus_in)
         self._entry.bind("<FocusOut>", self._on_focus_out)
+        self._entry.bind("<KeyRelease>", self._on_key_release)
+
+        # Suggestions Listbox (Datalist)
+        self._list_frame = tk.Frame(form, bg=COLORS["border"], pady=1)
+        self._listbox = tk.Listbox(self._list_frame, font=FONTS["small"],
+                                   relief="flat", bg=COLORS["white"],
+                                   fg=COLORS["text_secondary"],
+                                   highlightthickness=0, height=5,
+                                   selectbackground=COLORS["primary_light"],
+                                   selectforeground=COLORS["primary"])
+        self._listbox.pack(fill=tk.X)
+        self._listbox.bind("<<ListboxSelect>>", self._on_list_select)
+        
+        # Initially hide the list
+        self._list_frame.pack_forget()
 
         # Write status label
         self._write_status_var = tk.StringVar(value="")
@@ -137,25 +158,81 @@ class NFCTagWriter(BaseView):
     # ── Entry Placeholder ──────────────────────────────────────────────────────
 
     def _on_focus_in(self, _event=None):
-        if self._entry.get() == PLACEHOLDER:
-            self._entry.delete(0, tk.END)
-            self._entry.configure(fg=COLORS["text_primary"])
+        if self._item_code_var.get() == PLACEHOLDER:
+            self._item_code_var.set("")
 
     def _on_focus_out(self, _event=None):
-        if not self._entry.get().strip():
-            self._entry.insert(0, PLACEHOLDER)
-            self._entry.configure(fg=COLORS["text_muted"])
+        if not self._item_code_var.get().strip():
+            self._item_code_var.set(PLACEHOLDER)
 
     # ── Logic ──────────────────────────────────────────────────────────────────
+
+    def _fetch_items_list(self):
+        """Fetch all item codes and names from the backend."""
+        self._api.fetch_items(self._on_items_fetched, self._root)
+
+    def _on_items_fetched(self, result: dict):
+        if result["ok"]:
+            self._all_items = result["data"]
+            self._update_combo_values()
+
+    def _update_combo_values(self, filter_text: str = ""):
+        """Update the listbox values based on the search filter."""
+        search = filter_text.lower().strip()
+        self._listbox.delete(0, tk.END)
+        
+        if not search or search == PLACEHOLDER.lower():
+            values = [f"{i['item_code']} - {i['item_name']}" for i in self._all_items]
+        else:
+            values = [
+                f"{i['item_code']} - {i['item_name']}"
+                for i in self._all_items
+                if search in i['item_code'].lower() or search in i['item_name'].lower()
+            ]
+        
+        for val in values:
+            self._listbox.insert(tk.END, val)
+            
+        # Show/Hide list based on results and focus
+        if values and search != "":
+            self._list_frame.pack(fill=tk.X, pady=(6, 0))
+        else:
+            self._list_frame.pack_forget()
+
+    def _on_key_release(self, event):
+        """Filter the datalist as the user types."""
+        if event.keysym in ("Up", "Down", "Return", "Escape", "Tab"):
+            # Allow keyboard navigation of the listbox
+            if event.keysym == "Down":
+                self._listbox.focus_set()
+                if self._listbox.size() > 0:
+                    self._listbox.selection_set(0)
+            return
+        
+        val = self._item_code_var.get()
+        self._update_combo_values(val)
+
+    def _on_list_select(self, event):
+        """Handle selection from the suggestion list."""
+        selection = self._listbox.curselection()
+        if selection:
+            val = self._listbox.get(selection[0])
+            self._item_code_var.set(val)
+            self._list_frame.pack_forget()
+            self._entry.focus_set()
+            self._entry.icursor(tk.END)
 
     def _rewrite_tag(self):
         if self._writing:
             return
 
-        code = self._entry.get().strip()
-        if not code or code == PLACEHOLDER:
-            messagebox.showwarning("Input Required", "Please enter an item code.")
+        full_val = self._item_code_var.get().strip()
+        if not full_val or full_val == PLACEHOLDER:
+            messagebox.showwarning("Input Required", "Please select an item code.")
             return
+
+        # Extract code if format is "CODE - NAME"
+        code = full_val.split(" - ")[0].strip()
 
         # No NFC reader — demo mode
         if self._nfc is None or not self._nfc.connected:
@@ -176,15 +253,14 @@ class NFCTagWriter(BaseView):
         self._rewrite_btn.configure(state="normal", text="↻  Rewrite Tag")
         self._write_status_var.set("")
 
-        code = self._entry.get().strip()
+        full_val = self._item_code_var.get().strip()
+        code = full_val.split(" - ")[0].strip()
         if code == PLACEHOLDER:
             code = "?"
 
         if result == "WRITE_OK":
             self._record_write(code, success=True)
-            self._entry.delete(0, tk.END)
-            self._entry.configure(fg=COLORS["text_muted"])
-            self._entry.insert(0, PLACEHOLDER)
+            self._item_code_var.set(PLACEHOLDER)
             messagebox.showinfo("NFC Tag Writer", f"Tag successfully written for: {code}")
 
         elif result == "NOTAG":

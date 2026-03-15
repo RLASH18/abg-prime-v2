@@ -19,6 +19,19 @@ class PosDeviceController extends Controller
     ) {}
 
     /**
+     * Get all item codes and names for the datalist.
+     */
+    public function listItems(): JsonResponse
+    {
+        $items = $this->itemService->getAllCodesAndNames();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $items,
+        ], 200);
+    }
+
+    /**
      * Look up item info by item_code (read-only, no stock change).
      */
     public function lookup(string $code): JsonResponse

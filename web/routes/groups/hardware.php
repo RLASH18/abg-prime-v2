@@ -8,6 +8,10 @@ Route::middleware(['api.secret'])
     ->name('pos.')
     ->group(function () {
 
+        // List all item codes and names (for datalist)
+        Route::get('/items', [PosDeviceController::class, 'listItems'])
+            ->name('items');
+
         // Look up item info by item_code (read-only, no stock change)
         Route::get('/item/{code}', [PosDeviceController::class, 'lookup'])
             ->name('lookup');

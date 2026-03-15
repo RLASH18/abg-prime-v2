@@ -55,4 +55,17 @@ class ItemRepository extends BaseRepository implements ItemRepositoryInterface
             ->where('item_code', $itemCode)
             ->first();
     }
+
+    /**
+     * Get all item codes and names.
+     *
+     * @return Collection
+     */
+    public function allCodesAndNames(): Collection
+    {
+        return $this->model
+            ->select('item_code', 'item_name')
+            ->orderBy('item_code', 'asc')
+            ->get();
+    }
 }

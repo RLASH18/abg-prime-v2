@@ -222,6 +222,16 @@ class ItemService
     }
 
     /**
+     * Get all item codes and names for dropdown/datalist.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAllCodesAndNames()
+    {
+        return $this->itemRepo->allCodesAndNames();
+    }
+
+    /**
      * Find an item by its item_code
      *
      * @param string $itemCode
