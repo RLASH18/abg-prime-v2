@@ -26,7 +26,10 @@ class ItemRepository extends BaseRepository implements ItemRepositoryInterface
      */
     public function latestByCategory(string $category): ?Item
     {
-        return $this->model->where('category', $category)->latest('id')->first();
+        return $this->query()
+            ->where('category', $category)
+            ->latest('id')
+            ->first();
     }
 
     /**
@@ -63,7 +66,7 @@ class ItemRepository extends BaseRepository implements ItemRepositoryInterface
      */
     public function allCodesAndNames(): Collection
     {
-        return $this->model
+        return $this->query()
             ->select('item_code', 'item_name')
             ->orderBy('item_code', 'asc')
             ->get();
