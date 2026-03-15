@@ -3,6 +3,7 @@ Cashier Dashboard view.
 """
 import logging
 import tkinter as tk
+import winsound  # For fallback PC beep
 from tkinter import ttk, messagebox
 from app.theme.styles import COLORS, FONTS
 from app.views.base_view import BaseView
@@ -358,6 +359,14 @@ class CashierDashboard(BaseView):
         self._refresh_tree()
         self._update_summary()
         self._scan_status_var.set("✓ Item added")
+        
+        # ── SUCCESS SOUND (PC) ───────────────────────────────────────────────
+        # Use frequency 1500Hz for 150ms duration
+        try:
+            winsound.Beep(1500, 150)
+        except Exception:
+            pass # Ignore errors if sound is not available
+            
         if self._root:
             self._root.after(2000, lambda: self._scan_status_var.set(""))
 
