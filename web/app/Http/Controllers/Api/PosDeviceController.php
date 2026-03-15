@@ -4,17 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Rfid\RfidScanRequest;
-use App\Services\IrAlertService;
 use App\Services\ItemService;
 use Illuminate\Http\JsonResponse;
 
 class PosDeviceController extends Controller
 {
     /**
-     * Inject Item Service and IR Alert Service.
+     * Inject Item Service.
      *
      * @param ItemService $itemService
-     * @param IrAlertService $irAlertService
      */
     public function __construct(
         protected ItemService $itemService,
