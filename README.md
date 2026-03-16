@@ -34,7 +34,7 @@ Version 2 expands the scope into a full-stack **Distributed IoT and E-Commerce E
 *   **Architecture**: Transitioned to an **N-Tier Distributed Architecture** using **Inertia.js** for a Single Page Application (SPA) feel.
 *   **Integration**: Added a **Python-based POS Bridge** to handle physical hardware.
 *   **IoT**: Integrated **RFID** for item identification and **IR Sensors** for anti-theft security.
-*   **AI**: Integrated **Google Gemini** for automated customer support.
+*   **AI**: Integrated **Google Gemini** for automated customer support and AI-driven **item forecasting** for administrative insights.
 
 ---
 

@@ -54,7 +54,7 @@ A specialized dashboard for business owners to manage the entire lifecycle of th
 
 ### 📊 Demand Forecasting
 ![Forecast Panel Preview](public/img/forecast_panel.png)
-*   **Item Forecast Panel**: Visualizes predicted stock demand based on historical data to help admins make informed restocking decisions.
+*   **Item Forecast Panel**: Visualizes **AI-driven** stock demand predictions based on historical data to help admins make informed restocking decisions.
 
 ---
 
@@ -157,7 +157,7 @@ The application will be accessible at: **`http://localhost:8000`**
 
 ---
 <p align="center">
-  <b>Software Engineering Project | 2026</b><br>
+  <b>Software Engineering 1 Project | 2026</b><br>
   Developed for <b>ABG Prime Builders Supplies Inc.</b><br>
   <i>A Full-Stack Implementation of Inventory Monitoring and IoT Integration.</i>
 </p>
