@@ -8,7 +8,7 @@ A Python-based desktop application developed with **Tkinter** that serves as the
 ![Cashier Dashboard Preview](./img/dashboard.png)
 This is the main operational interface for cashiers.
 *   **Item Lookup**: When an RFID tag is scanned or an item code is entered manually, the app sends a `GET /api/pos/item/{code}` request to the Laravel backend to fetch price and product details.
-*   **Inventory Adjustment**: Clicking "Buy Now" triggers a `POST /api/pos/scan` request with `action='decrement'`, which instantly updates the stock in the centralized database.
+*   **Inventory Adjustment**: Clicking "Process Transaction" triggers a `POST /api/pos/scan` request with `action='decrement'`, which instantly updates the stock in the centralized database.
 *   **Security Integration**: Displays the current status of the IR sensor (MOTION/CLEAR). It receives real-time callbacks from the hardware bridge to alert the cashier if unauthorized movement is detected.
 
 ### 2. NFC Tag Writer (`app/views/nfc_tag_writer.py`)
