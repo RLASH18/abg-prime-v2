@@ -12,6 +12,7 @@ import {
     AlertCircle,
     Boxes,
     Building2,
+    Calendar,
     Hash,
     Package,
     PhilippinePeso,
@@ -25,7 +26,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatCurrency } = useFormatters();
+const { formatCurrency, formatDateOnly } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -318,6 +319,36 @@ const images = computed(() => {
                                     </p>
                                     <p class="font-medium">
                                         {{ supplier.supplier_name }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Created At -->
+                            <div class="flex items-start gap-3">
+                                <div class="rounded-lg bg-primary/10 p-2">
+                                    <Calendar :size="20" class="text-primary" />
+                                </div>
+                                <div>
+                                    <p class="text-sm text-muted-foreground">
+                                        Created At
+                                    </p>
+                                    <p class="font-medium">
+                                        {{ formatDateOnly(item.created_at) }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Updated At -->
+                            <div class="flex items-start gap-3">
+                                <div class="rounded-lg bg-primary/10 p-2">
+                                    <Calendar :size="20" class="text-primary" />
+                                </div>
+                                <div>
+                                    <p class="text-sm text-muted-foreground">
+                                        Updated At
+                                    </p>
+                                    <p class="font-medium">
+                                        {{ formatDateOnly(item.updated_at) }}
                                     </p>
                                 </div>
                             </div>
