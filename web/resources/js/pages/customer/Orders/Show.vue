@@ -23,7 +23,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatCurrency, formatDate } = useFormatters();
+const { formatCurrency, formatDateTime } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -85,7 +85,7 @@ const getStatusBadge = (status: Order['status']) => {
                         Order #{{ order.id.toString().padStart(4, '0') }}
                     </h1>
                     <p class="mt-1 text-muted-foreground">
-                        Placed on {{ formatDate(order.created_at) }}
+                        Placed on {{ formatDateTime(order.created_at) }}
                     </p>
                 </div>
                 <LinkButton
@@ -235,7 +235,7 @@ const getStatusBadge = (status: Order['status']) => {
                                     </p>
                                 </div>
                                 <p class="text-sm">
-                                    {{ formatDate(order.created_at) }}
+                                    {{ formatDateTime(order.created_at) }}
                                 </p>
                             </div>
 

@@ -7,8 +7,8 @@ export function useFormatters() {
         }).format(amount);
     };
 
-    // Format date string to readable format
-    const formatDate = (dateString: string): string => {
+    // Format date string to readable date and time
+    const formatDateTime = (dateString: string): string => {
         return new Intl.DateTimeFormat('en-US', {
             month: 'short',
             day: 'numeric',
@@ -30,7 +30,7 @@ export function useFormatters() {
 
     return {
         formatCurrency,
-        formatDate,
+        formatDateTime,
         formatDateOnly,
     };
 }

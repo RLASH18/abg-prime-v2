@@ -31,7 +31,7 @@ interface Props {
 }
 
 defineProps<Props>();
-const { formatCurrency, formatDate } = useFormatters();
+const { formatCurrency, formatDateTime } = useFormatters();
 
 const outstandingColumns: DataTableColumn[] = [
     {
@@ -57,7 +57,7 @@ const outstandingColumns: DataTableColumn[] = [
     {
         label: 'Created At',
         key: 'created_at',
-        render: (value) => formatDate(value),
+        render: (value) => formatDateTime(value),
     },
 ];
 </script>

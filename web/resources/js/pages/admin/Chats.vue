@@ -21,7 +21,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatDate } = useFormatters();
+const { formatDateTime } = useFormatters();
 const { getInitials } = useInitials();
 const { fetchMessages, sendMessage, markAsRead } = useChatAdmin();
 
@@ -253,7 +253,7 @@ onBeforeUnmount(() => {
                                             class="text-xs text-muted-foreground"
                                         >
                                             {{
-                                                formatDate(
+                                                formatDateTime(
                                                     conversation.last_message_at,
                                                 )
                                             }}
@@ -383,7 +383,7 @@ onBeforeUnmount(() => {
                                                 : 'text-muted-foreground',
                                         ]"
                                     >
-                                        {{ formatDate(message.created_at) }}
+                                        {{ formatDateTime(message.created_at) }}
                                     </p>
                                 </div>
                             </div>

@@ -51,7 +51,7 @@ const statusIcon = computed(() => {
     return props.supplier.status === 'active' ? CheckCircle2 : XCircle;
 });
 
-const { formatDate } = useFormatters();
+const { formatDateTime } = useFormatters();
 </script>
 
 <template>
@@ -247,7 +247,11 @@ const { formatDate } = useFormatters();
                                     Created Date
                                 </p>
                                 <p class="text-lg font-semibold">
-                                    {{ formatDate(props.supplier.created_at) }}
+                                    {{
+                                        formatDateTime(
+                                            props.supplier.created_at,
+                                        )
+                                    }}
                                 </p>
                             </div>
 
@@ -259,7 +263,11 @@ const { formatDate } = useFormatters();
                                     Last Updated
                                 </p>
                                 <p class="text-lg font-semibold">
-                                    {{ formatDate(props.supplier.updated_at) }}
+                                    {{
+                                        formatDateTime(
+                                            props.supplier.updated_at,
+                                        )
+                                    }}
                                 </p>
                             </div>
                         </div>

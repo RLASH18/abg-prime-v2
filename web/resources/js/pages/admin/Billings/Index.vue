@@ -35,7 +35,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatCurrency, formatDate } = useFormatters();
+const { formatCurrency, formatDateTime } = useFormatters();
 
 // Initialize filters
 const { filters, updateFilter, resetFilters } = useFilters(
@@ -109,7 +109,7 @@ const columns: DataTableColumn<Billing>[] = [
     {
         label: 'Paid At',
         key: 'paid_at',
-        render: (value) => (value ? formatDate(value) : '-'),
+        render: (value) => (value ? formatDateTime(value) : '-'),
     },
 ];
 

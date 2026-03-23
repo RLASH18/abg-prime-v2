@@ -36,7 +36,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatCurrency, formatDate } = useFormatters();
+const { formatCurrency, formatDateTime } = useFormatters();
 
 // Modal state
 const showStatusModal = ref(false);
@@ -164,7 +164,7 @@ const getStatusColor = (status: string) => {
                                 }}
                             </div>
                             <div class="mt-1 text-xs text-muted-foreground">
-                                {{ formatDate(order.created_at) }}
+                                {{ formatDateTime(order.created_at) }}
                             </div>
                         </div>
                         <span

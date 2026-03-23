@@ -36,7 +36,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatDate } = useFormatters();
+const { formatDateTime } = useFormatters();
 
 // Modal state
 const isEditModalOpen = ref(false);
@@ -96,12 +96,12 @@ const columns: DataTableColumn<Delivery>[] = [
     {
         label: 'Scheduled Date',
         key: 'scheduled_date',
-        render: (value) => formatDate(value),
+        render: (value) => formatDateTime(value),
     },
     {
         label: 'Actual Delivery',
         key: 'actual_delivery_date',
-        render: (value) => (value ? formatDate(value) : '-'),
+        render: (value) => (value ? formatDateTime(value) : '-'),
     },
     {
         label: 'Status',

@@ -23,7 +23,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatDate, formatCurrency } = useFormatters();
+const { formatDateTime, formatCurrency } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -150,7 +150,7 @@ const subtotal = computed(() => {
                                         Created At
                                     </p>
                                     <p class="text-sm font-medium">
-                                        {{ formatDate(billing.created_at) }}
+                                        {{ formatDateTime(billing.created_at) }}
                                     </p>
                                 </div>
                             </div>
@@ -169,7 +169,7 @@ const subtotal = computed(() => {
                                         Paid At
                                     </p>
                                     <p class="text-sm font-medium">
-                                        {{ formatDate(billing.paid_at) }}
+                                        {{ formatDateTime(billing.paid_at) }}
                                     </p>
                                 </div>
                             </div>

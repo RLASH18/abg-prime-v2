@@ -23,7 +23,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatCurrency, formatDate } = useFormatters();
+const { formatCurrency, formatDateTime } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -87,7 +87,8 @@ const getStatusIcon = (status: string) => {
                         Delivery #{{ delivery.id.toString().padStart(4, '0') }}
                     </h1>
                     <p class="mt-1 text-sm text-muted-foreground">
-                        Scheduled for {{ formatDate(delivery.scheduled_date) }}
+                        Scheduled for
+                        {{ formatDateTime(delivery.scheduled_date) }}
                     </p>
                 </div>
                 <div class="flex gap-2">
@@ -132,7 +133,7 @@ const getStatusIcon = (status: string) => {
                             Delivered On
                         </p>
                         <p class="text-lg font-semibold text-green-700">
-                            {{ formatDate(delivery.actual_delivery_date) }}
+                            {{ formatDateTime(delivery.actual_delivery_date) }}
                         </p>
                     </div>
                 </div>
@@ -231,7 +232,9 @@ const getStatusIcon = (status: string) => {
                                     Scheduled Date
                                 </p>
                                 <p class="font-medium">
-                                    {{ formatDate(delivery.scheduled_date) }}
+                                    {{
+                                        formatDateTime(delivery.scheduled_date)
+                                    }}
                                 </p>
                             </div>
                         </div>
@@ -290,7 +293,7 @@ const getStatusIcon = (status: string) => {
                             <div class="flex-1 pb-8">
                                 <p class="font-medium">Delivery Created</p>
                                 <p class="text-sm text-muted-foreground">
-                                    {{ formatDate(delivery.created_at) }}
+                                    {{ formatDateTime(delivery.created_at) }}
                                 </p>
                             </div>
                         </div>
@@ -317,7 +320,7 @@ const getStatusIcon = (status: string) => {
                             >
                                 <p class="font-medium">Last Updated</p>
                                 <p class="text-sm text-muted-foreground">
-                                    {{ formatDate(delivery.updated_at) }}
+                                    {{ formatDateTime(delivery.updated_at) }}
                                 </p>
                             </div>
                         </div>
@@ -336,7 +339,7 @@ const getStatusIcon = (status: string) => {
                                 </p>
                                 <p class="text-sm text-muted-foreground">
                                     {{
-                                        formatDate(
+                                        formatDateTime(
                                             delivery.actual_delivery_date,
                                         )
                                     }}

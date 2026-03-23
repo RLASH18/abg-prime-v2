@@ -25,7 +25,7 @@ interface Props {
 }
 
 defineProps<Props>();
-const { formatCurrency, formatDate } = useFormatters();
+const { formatCurrency, formatDateTime } = useFormatters();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -143,7 +143,7 @@ const viewOrder = (orderId: number) => {
                                 >
                                     <div class="flex items-center gap-1">
                                         <Calendar class="h-4 w-4" />
-                                        {{ formatDate(order.created_at) }}
+                                        {{ formatDateTime(order.created_at) }}
                                     </div>
                                     <span>•</span>
                                     <div class="flex items-center gap-1">
