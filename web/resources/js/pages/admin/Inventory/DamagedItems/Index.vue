@@ -34,7 +34,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatCurrency } = useFormatters();
+const { formatCurrency, formatDateOnly } = useFormatters();
 
 const { filters, updateFilter, resetFilters } = useFilters(
     damagedItemsRoutes.index().url,
@@ -93,6 +93,11 @@ const columns: DataTableColumn<DamagedItem>[] = [
         label: 'Remarks',
         key: 'remarks',
         render: (value) => value || '-',
+    },
+    {
+        label: 'Created at',
+        key: 'created_at',
+        render: (value) => formatDateOnly(value),
     },
 ];
 
