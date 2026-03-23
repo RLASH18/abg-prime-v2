@@ -48,11 +48,9 @@
 #define BUZZER_PIN  3   // passive buzzer signal pin
 
 // ── Buzzer configuration ────────────────────────────────────────
-#define BUZZ_FREQ_HI   1500   // Hz — high tone
-#define BUZZ_FREQ_LO   1000   // Hz — low tone
-#define BUZZ_DURATION   150   // ms — duration of each tone burst
-#define BUZZ_PAUSE       80   // ms — pause between bursts
-#define BUZZ_REPEATS      3   // number of hi-lo cycles
+#define BUZZ_FREQ_HI   1500   // Hz — high tone (for MOTION)
+#define BUZZ_FREQ_LO   1000   // Hz — low tone (for CLEAR)
+#define BUZZ_DURATION   200   // ms — duration of each tone burst
 
 MFRC522 rfid(SS_PIN, RST_PIN);
 MFRC522::MIFARE_Key key;
@@ -69,7 +67,8 @@ const unsigned long CARD_TIMEOUT_MS = 7000;
 const byte          MAX_AUTH_TRIES  = 3;
 
 String inputBuffer  = "";
-bool   lastIrMotion = false;   // tracks previous IR state to avoid serial flooding
+bool   lastIrPinState = false;   // tracks previous IR pin state for edge detection
+bool   systemTriggered = false;  // tracks the toggle state (true = MOTION, false = CLEAR)
 
 // ════════════════════════════════════════════════════════════════
 void setup() {
@@ -99,18 +98,24 @@ void loop() {
     }
   }
 
-  // ── IR Sensor (non-blocking, state-change only) ───────────────
-  // Only prints when the state changes to avoid flooding the serial
-  // buffer and delaying RFID command responses.
-  bool motionNow = (digitalRead(IR_PIN) == LOW);
-  if (motionNow != lastIrMotion) {
-    lastIrMotion = motionNow;
-    Serial.println(motionNow ? "MOTION" : "CLEAR");
-    // Sound the buzzer when an obstacle is detected
-    if (motionNow) {
-      soundBuzzer();
+  // ── IR Sensor (Toggle Logic) ───────────────
+  // A single pass of the hand (or button press) counts as one trigger.
+  // First trigger sends MOTION, second trigger sends CLEAR, and so on.
+  bool currentIrState = (digitalRead(IR_PIN) == LOW);
+  
+  // Detect leading edge (object just entered the sensor path)
+  if (currentIrState && !lastIrPinState) {
+    systemTriggered = !systemTriggered; // Toggle state
+    
+    if (systemTriggered) {
+      Serial.println("MOTION");
+      soundBuzzer(BUZZ_FREQ_HI);
+    } else {
+      Serial.println("CLEAR");
+      soundBuzzer(BUZZ_FREQ_LO);
     }
   }
+  lastIrPinState = currentIrState;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -143,7 +148,7 @@ void handleCommand(const String& cmd) {
     doWrite(payload);
 
   } else if (cmd == "BUZZ_TEST") {
-    soundBuzzer();
+    soundBuzzer(BUZZ_FREQ_HI);
     Serial.println("BUZZ_OK");
 
   } else {
@@ -359,17 +364,11 @@ void haltCard() {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  Buzzer alert — two-tone alarm pattern
-//  Plays a hi-lo alternating tone to grab cashier attention.
-//  Total duration ≈ BUZZ_REPEATS × (2 × BUZZ_DURATION + 2 × BUZZ_PAUSE)
+//  Buzzer alert — single tone short beep
 // ════════════════════════════════════════════════════════════════
-void soundBuzzer() {
-  for (byte i = 0; i < BUZZ_REPEATS; i++) {
-    tone(BUZZER_PIN, BUZZ_FREQ_HI, BUZZ_DURATION);
-    delay(BUZZ_DURATION + BUZZ_PAUSE);
-    tone(BUZZER_PIN, BUZZ_FREQ_LO, BUZZ_DURATION);
-    delay(BUZZ_DURATION + BUZZ_PAUSE);
-  }
+void soundBuzzer(int frequency) {
+  tone(BUZZER_PIN, frequency, BUZZ_DURATION);
+  delay(BUZZ_DURATION + 50); // Small blocking delay to ensure beep clarity
   noTone(BUZZER_PIN);
   digitalWrite(BUZZER_PIN, LOW);   // ensure pin is low when idle
 }

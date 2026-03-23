@@ -61,6 +61,11 @@ class SecurityLogs(BaseView):
 
         self.refresh_logs()
 
+    def tkraise(self, aboveThis=None):
+        """Override to refresh logs when navigating to this view."""
+        self.refresh_logs()
+        super().tkraise(aboveThis)
+
     def refresh_logs(self):
         """Read security_log.txt and update the table."""
         for row in self._tree.get_children():

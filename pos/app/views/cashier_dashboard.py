@@ -478,5 +478,17 @@ class CashierDashboard(BaseView):
         )
 
     def on_ir_clear(self) -> None:
-        """Called when the IR path becomes clear — no action needed."""
-        pass
+        """Called when the IR path becomes clear."""
+        # Release the debounce immediately when path is clear
+        self._ir_motion_pending = False
+        
+        # Show a brief confirmation on the status bar if no other operation is active
+        if not self._scanning and self._scan_status_var.get() == "":
+            self._scan_status_var.set("✅ Path Clear")
+            if self._root:
+                self._root.after(2000, lambda: self._scan_status_var.set(""))
+        
+        # We don't necessarily need a modal popup for CLEAR as it might be annoying,
+        # but the user said "show clear", so let's log it or show a status message.
+        # For now, we'll stick to a status bar update to avoid popup fatigue.
+        log.info("IR Sensor: Path Clear")
