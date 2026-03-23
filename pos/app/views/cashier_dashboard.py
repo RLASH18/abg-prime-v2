@@ -4,6 +4,7 @@ Cashier Dashboard view.
 import logging
 import tkinter as tk
 import winsound  # For fallback PC beep
+from datetime import datetime
 from tkinter import ttk, messagebox
 from app.theme.styles import COLORS, FONTS
 from app.views.base_view import BaseView
@@ -126,8 +127,8 @@ class CashierDashboard(BaseView):
         card_outer.grid_rowconfigure(0, weight=1)
         card_outer.grid_columnconfigure(0, weight=1)
 
-        # Only 5 columns — exactly as shown in the image (no ACTION column)
-        columns = ("code", "name", "qty", "price", "total")
+        # 6 columns — added DATE column
+        columns = ("code", "name", "qty", "price", "total", "date")
         self._tree = ttk.Treeview(card_outer, columns=columns,
                                    show="headings", style="POS.Treeview",
                                    selectmode="browse")
@@ -138,6 +139,7 @@ class CashierDashboard(BaseView):
             "qty":   ("QTY",         80, "center"),
             "price": ("PRICE",      120, "e"),
             "total": ("TOTAL",      120, "e"),
+            "date":  ("DATE",       120, "center"),
         }
         for col, (heading, width, anchor) in col_cfg.items():
             # Use the same anchor for heading and data so they stay aligned
@@ -354,6 +356,7 @@ class CashierDashboard(BaseView):
             self._cart.append({
                 "code": code, "action": action, "name": name,
                 "qty": qty, "price": price, "total": qty * price,
+                "date": datetime.now().strftime("%b %d, %Y"),
             })
 
         self._refresh_tree()
@@ -384,6 +387,7 @@ class CashierDashboard(BaseView):
         # Send all cart items to the server sequentially via a queue
         self._pending = list(self._cart)
         self._failed: list[str] = []
+        self._results: list[dict] = []
         self._process_next_item()
 
     def _process_next_item(self):
@@ -403,6 +407,14 @@ class CashierDashboard(BaseView):
     def _on_item_sent(self, result: dict, item: dict):
         if not result["ok"]:
             self._failed.append(f"{item['code']} — {result['message']}")
+        else:
+            self._results.append({
+                "code":    item["code"],
+                "name":    item["name"],
+                "action":  item["action"],
+                "qty":     item["qty"],
+                "new_qty": result.get("data", {}).get("quantity", "?"),
+            })
         self._process_next_item()
 
     def _on_all_done(self):
@@ -416,7 +428,14 @@ class CashierDashboard(BaseView):
                 "Some Items Failed",
                 f"The following items could not be synced:\n\n{errors}")
         else:
-            messagebox.showinfo("Done", "Transaction completed!\nStock updated successfully.")
+            lines = ["Transaction completed! Stock updated:\n"]
+            for r in self._results:
+                action_label = "+" if r["action"] == "add" else "-"
+                lines.append(
+                    f"  {r['code']} — {r['name']}\n"
+                    f"    {action_label}{r['qty']} unit(s)  →  New Qty: {r['new_qty']}"
+                )
+            messagebox.showinfo("Done", "\n".join(lines))
             self._clear_cart()
 
     # ── Tree / Summary helpers ─────────────────────────────────────────────────
@@ -428,6 +447,7 @@ class CashierDashboard(BaseView):
             self._tree.insert("", tk.END, values=(
                 item["code"], item["name"], item["qty"],
                 f"₱{item['price']:.2f}", f"₱{item['total']:.2f}",
+                item.get("date", ""),
             ))
 
     def _clear_cart(self):
