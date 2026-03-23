@@ -1,4 +1,4 @@
-# ABG Prime Builders - Hardware & Firmware
+# ABG Prime - Hardware & Firmware
 
 This directory contains the Arduino firmware and hardware configuration for the RFID and IR sensor-based inventory monitoring system.
 
