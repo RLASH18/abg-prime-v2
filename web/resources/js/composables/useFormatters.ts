@@ -19,8 +19,18 @@ export function useFormatters() {
         }).format(new Date(dateString));
     };
 
+    // Format date string to date only (no time)
+    const formatDateOnly = (dateString: string): string => {
+        return new Intl.DateTimeFormat('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+        }).format(new Date(dateString));
+    };
+
     return {
         formatCurrency,
         formatDate,
+        formatDateOnly,
     };
 }

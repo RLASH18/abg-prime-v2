@@ -40,7 +40,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatCurrency } = useFormatters();
+const { formatCurrency, formatDateOnly } = useFormatters();
 
 // Modal state
 const showDamageModal = ref(false);
@@ -132,6 +132,18 @@ const columns: DataTableColumn<InventoryItem>[] = [
         label: 'Restock Threshold',
         key: 'restock_threshold',
         align: 'right',
+    },
+    {
+        label: 'Created at',
+        key: 'created_at',
+        align: 'left',
+        render: (value) => formatDateOnly(value),
+    },
+    {
+        label: 'Updated at',
+        key: 'updated_at',
+        align: 'left',
+        render: (value) => formatDateOnly(value),
     },
 ];
 
@@ -229,9 +241,10 @@ const actions: DataTableAction<InventoryItem>[] = [
                 <!-- Custom slot for category with badge -->
                 <template #cell-category="{ value }">
                     <span
-                        class="inline-flex items-center rounded-full border border-primary/10 bg-primary/10 px-2 py-1 text-xs font-medium text-primary"
+                        class="inline-flex max-w-[120px] items-center rounded-full border border-primary/10 bg-primary/10 px-2 py-1 text-xs font-medium text-primary md:max-w-none"
+                        :title="value"
                     >
-                        {{ value }}
+                        <span class="min-w-0 truncate">{{ value }}</span>
                     </span>
                 </template>
 
@@ -256,6 +269,20 @@ const actions: DataTableAction<InventoryItem>[] = [
                         class="font-semibold text-primary"
                         title="In Stock"
                     >
+                        {{ value }}
+                    </span>
+                </template>
+
+                <!-- Created at -->
+                <template #cell-created_at="{ value }">
+                    <span class="block whitespace-nowrap">
+                        {{ value }}
+                    </span>
+                </template>
+
+                <!-- Updated at -->
+                <template #cell-updated_at="{ value }">
+                    <span class="block whitespace-nowrap">
                         {{ value }}
                     </span>
                 </template>
