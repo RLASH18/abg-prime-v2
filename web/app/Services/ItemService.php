@@ -50,7 +50,7 @@ class ItemService
             };
         });
 
-        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        return $query->orderBy('updated_at', 'desc')->paginate($perPage);
     }
 
     /**
