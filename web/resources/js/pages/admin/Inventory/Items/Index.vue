@@ -40,7 +40,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { formatCurrency, formatDateOnly } = useFormatters();
+const { formatCurrency, formatDateOnly, formatDateTime } = useFormatters();
 
 // Modal state
 const showDamageModal = ref(false);
@@ -137,14 +137,14 @@ const columns: DataTableColumn<InventoryItem>[] = [
         label: 'Created at',
         key: 'created_at',
         align: 'left',
-        render: (value) => formatDateOnly(value),
+        render: (value) => formatDateTime(value),
     },
     {
         label: 'Updated at',
         key: 'updated_at',
         align: 'left',
         render: (value, row) =>
-            row.updated_at === row.created_at ? '—' : formatDateOnly(value),
+            row.updated_at === row.created_at ? '—' : formatDateTime(value),
     },
 ];
 

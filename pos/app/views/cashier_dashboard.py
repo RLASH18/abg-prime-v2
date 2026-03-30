@@ -44,8 +44,16 @@ class CashierDashboard(BaseView):
     # ── Build ──────────────────────────────────────────────────────────────────
 
     def _build(self):
-        self.build_header(self, "Cashier Dashboard",
-                          "Manage transactions and scan items.")
+        header = self.build_header(self, "Cashier Dashboard",
+                                   "Manage transactions and scan items.")
+
+        # Live Clock in Header (Top Right)
+        self._clock_var = tk.StringVar()
+        tk.Label(header, textvariable=self._clock_var,
+                 bg=COLORS["bg"], fg=COLORS["text_secondary"],
+                 font=FONTS["label_bold"]).place(relx=1.0, rely=0.5, anchor="e", x=-28)
+        self._update_clock()
+
         wrap = tk.Frame(self, bg=COLORS["bg"], padx=32)
         wrap.pack(fill=tk.BOTH, expand=True)
 
@@ -56,6 +64,12 @@ class CashierDashboard(BaseView):
 
         self._build_table(body)
         self._build_order_summary(body)
+
+    def _update_clock(self):
+        """Update the live header clock every second."""
+        now = datetime.now().strftime("%A, %B %d, %Y  |  %I:%M:%S %p")
+        self._clock_var.set(now)
+        self.after(1000, self._update_clock)
 
     # ── Action Bar ─────────────────────────────────────────────────────────────
 
@@ -134,12 +148,12 @@ class CashierDashboard(BaseView):
                                    selectmode="browse")
 
         col_cfg = {
-            "code":  ("ITEM CODE",  160, "w"),
-            "name":  ("ITEM NAME",    0, "w"),
-            "qty":   ("QTY",         80, "center"),
-            "price": ("PRICE",      120, "e"),
-            "total": ("TOTAL",      120, "e"),
-            "date":  ("DATE",       120, "center"),
+            "code":  ("ITEM CODE",  100, "w"),
+            "name":  ("ITEM NAME",  200, "w"),
+            "qty":   ("QTY",         60, "center"),
+            "price": ("PRICE",      100, "e"),
+            "total": ("TOTAL",      100, "e"),
+            "date":  ("DATE & TIME", 160, "center"),
         }
         for col, (heading, width, anchor) in col_cfg.items():
             # Use the same anchor for heading and data so they stay aligned
@@ -356,7 +370,7 @@ class CashierDashboard(BaseView):
             self._cart.append({
                 "code": code, "action": action, "name": name,
                 "qty": qty, "price": price, "total": qty * price,
-                "date": datetime.now().strftime("%b %d, %Y"),
+                "date": datetime.now().strftime("%b %d, %Y %I:%M %p"),
             })
 
         self._refresh_tree()
@@ -444,8 +458,11 @@ class CashierDashboard(BaseView):
         for row in self._tree.get_children():
             self._tree.delete(row)
         for item in self._cart:
+            # Truncate name for display if it's too long
+            display_name = (item["name"][:22] + '..') if len(item["name"]) > 24 else item["name"]
+            
             self._tree.insert("", tk.END, values=(
-                item["code"], item["name"], item["qty"],
+                item["code"], display_name, item["qty"],
                 f"₱{item['price']:.2f}", f"₱{item['total']:.2f}",
                 item.get("date", ""),
             ))
