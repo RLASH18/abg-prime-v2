@@ -48,8 +48,8 @@
 #define BUZZER_PIN  3   // passive buzzer signal pin
 
 // ── Buzzer configuration ────────────────────────────────────────
-#define BUZZ_FREQ_HI   1500   // Hz — high tone (for MOTION)
-#define BUZZ_FREQ_LO   1000   // Hz — low tone (for CLEAR)
+#define BUZZ_FREQ_HI   3000   // Hz — high tone (for MOTION)
+#define BUZZ_FREQ_LO   2000   // Hz — low tone (for CLEAR)
 #define BUZZ_DURATION   200   // ms — duration of each tone burst
 
 MFRC522 rfid(SS_PIN, RST_PIN);
@@ -109,10 +109,10 @@ void loop() {
     
     if (systemTriggered) {
       Serial.println("MOTION");
-      soundBuzzer(BUZZ_FREQ_HI);
+      soundBuzzer(BUZZ_FREQ_HI, 3); // 3 beeps for MOTION
     } else {
       Serial.println("CLEAR");
-      soundBuzzer(BUZZ_FREQ_LO);
+      soundBuzzer(BUZZ_FREQ_LO, 1); // 1 beep for CLEAR
     }
   }
   lastIrPinState = currentIrState;
@@ -148,7 +148,7 @@ void handleCommand(const String& cmd) {
     doWrite(payload);
 
   } else if (cmd == "BUZZ_TEST") {
-    soundBuzzer(BUZZ_FREQ_HI);
+    soundBuzzer(BUZZ_FREQ_HI, 2);
     Serial.println("BUZZ_OK");
 
   } else {
@@ -364,11 +364,14 @@ void haltCard() {
 }
 
 // ════════════════════════════════════════════════════════════════
-//  Buzzer alert — single tone short beep
+//  Buzzer alert — configurable beep count
 // ════════════════════════════════════════════════════════════════
-void soundBuzzer(int frequency) {
-  tone(BUZZER_PIN, frequency, BUZZ_DURATION);
-  delay(BUZZ_DURATION + 50); // Small blocking delay to ensure beep clarity
-  noTone(BUZZER_PIN);
+void soundBuzzer(int frequency, int count) {
+  for (int i = 0; i < count; i++) {
+    tone(BUZZER_PIN, frequency, BUZZ_DURATION);
+    delay(BUZZ_DURATION + 50); // Small blocking delay to ensure beep clarity
+    noTone(BUZZER_PIN);
+    if (i < count - 1) delay(50); // Gap between beeps
+  }
   digitalWrite(BUZZER_PIN, LOW);   // ensure pin is low when idle
 }

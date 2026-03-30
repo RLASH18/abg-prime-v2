@@ -283,7 +283,8 @@ class ArduinoBridge:
     def _read_terminal_line(self) -> str:
         """
         Read lines from the Arduino until a terminal line is received.
-        TAG_TYPE lines are logged and skipped; everything else is returned.
+        Autonomous messages (MOTION, CLEAR, TAG_TYPE) are handled/logged
+        and skipped; everything else is returned as the command result.
         """
         while True:
             raw = self._serial.readline()
@@ -293,9 +294,24 @@ class ArduinoBridge:
             if not line:
                 continue
             log.debug("ArduinoBridge ← %r", line)
+
+            # Log to local security file
+            self._log_security_event(line)
+
             if line.startswith("TAG_TYPE:"):
                 log.info("Tag type: %s", line[9:])
                 continue                     # informational, keep reading
+            
+            if line == "MOTION":
+                if self._ir_on_motion:
+                    self._ir_tk_root.after(0, self._ir_on_motion)
+                continue                     # autonomous, keep reading for CARD/WRITE_OK
+                
+            if line == "CLEAR":
+                if self._ir_on_clear:
+                    self._ir_tk_root.after(0, self._ir_on_clear)
+                continue                     # autonomous, keep reading for CARD/WRITE_OK
+
             return line                      # CARD:…  NOTAG  WRITE_OK  ERROR:…  etc.
 
     def _log_security_event(self, event: str):

@@ -478,19 +478,26 @@ class CashierDashboard(BaseView):
 
     def on_ir_motion(self) -> None:
         """
-        Called by POSApp when the Arduino sends a MOTION line.
-        Shows a security alert on the dashboard.
+        Called when the Arduino sends a MOTION line.
+        Shows an alert and sounds 3 PC beeps to match the hardware.
         """
         # Debounce: ignore rapid follow-up MOTION signals
         if self._ir_motion_pending:
             return
         self._ir_motion_pending = True
         
+        # PC Beep sequence: 3 beeps at 2500Hz
+        try:
+            for _ in range(3):
+                winsound.Beep(2500, 100)
+                if _ < 2: self._root.after(50) # small gap
+        except Exception:
+            pass
+
         # Release the debounce after 3 seconds
         if self._root:
             self._root.after(3000, lambda: setattr(self, '_ir_motion_pending', False))
 
-        # Show the alert (This is the 'notif' you wanted to keep)
         messagebox.showwarning(
             "⚠️ STORAGE SECURITY ALERT",
             "Motion detected at the storage room entrance!\n\n"
@@ -499,16 +506,19 @@ class CashierDashboard(BaseView):
 
     def on_ir_clear(self) -> None:
         """Called when the IR path becomes clear."""
-        # Release the debounce immediately when path is clear
+        # Release the debounce immediately
         self._ir_motion_pending = False
         
-        # Show a brief confirmation on the status bar if no other operation is active
+        # PC Beep (1 beep)
+        try:
+            winsound.Beep(1500, 150)
+        except Exception:
+            pass
+
+        # Brief status confirmation
         if not self._scanning and self._scan_status_var.get() == "":
             self._scan_status_var.set("✅ Path Clear")
             if self._root:
                 self._root.after(2000, lambda: self._scan_status_var.set(""))
         
-        # We don't necessarily need a modal popup for CLEAR as it might be annoying,
-        # but the user said "show clear", so let's log it or show a status message.
-        # For now, we'll stick to a status bar update to avoid popup fatigue.
         log.info("IR Sensor: Path Clear")
