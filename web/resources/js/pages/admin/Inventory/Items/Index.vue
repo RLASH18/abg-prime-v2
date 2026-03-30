@@ -143,7 +143,8 @@ const columns: DataTableColumn<InventoryItem>[] = [
         label: 'Updated at',
         key: 'updated_at',
         align: 'left',
-        render: (value) => formatDateOnly(value),
+        render: (value, row) =>
+            row.updated_at === row.created_at ? '—' : formatDateOnly(value),
     },
 ];
 
